@@ -7,7 +7,15 @@ const Home = () => {
 
       {/* Main Content */}
       <div className="flex-1 h-full overflow-y-auto">
-        <div className="p-8 h-full flex flex-col gap-6">
+        <div className="p-8 mt-5 h-full flex flex-col gap-6">
+          <div>
+            <h1 className="text-[48px] font-semibold text-black mb-2" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
+                Home
+              </h1>
+              <p className="text-base text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
+                Visão geral do sistema
+              </p>
+          </div>
           {/* FULL WIDTH STATUS CARDS */}
           <div className="w-full">
             <div className="flex gap-3">
@@ -19,7 +27,7 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <div className="text-[14px] text-[#31BA27] font-medium" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                  <div className="text-[18px] text-[#31BA27] font-medium" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                     Máquinas Ativas
                   </div>
                   <div className="text-xl text-[#31BA27] font-semibold leading-tight" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
@@ -36,7 +44,7 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <div className="text-[14px] text-[#E6E320] font-medium" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                  <div className="text-[18px] text-[#E6E320] font-medium" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                     Em Manutenção
                   </div>
                   <div className="text-xl text-[#E6E320] font-semibold leading-tight" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
@@ -53,7 +61,7 @@ const Home = () => {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <div className="text-[14px] text-[#F21515] font-medium" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                  <div className="text-[18px] text-[#F21515] font-medium" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                     Alertas
                   </div>
                   <div className="text-xl text-[#F21515] font-semibold leading-tight" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
@@ -81,16 +89,12 @@ const Home = () => {
             </div>
           </div>
 
+
           {/* GRID COM O RESTANTE DO CONTEÚDO */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
             {/* coluna esquerda: título, últimas manutenções, etc. */}
             <div className="flex flex-col">
-              <h1 className="text-[36px] font-semibold text-black mb-2" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
-                Home
-              </h1>
-              <p className="text-xs text-[#767575] mb-[30px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                Visão geral do sistema
-              </p>
+              
               
               {/* Últimas Manutenções */}
               <div className="bg-white rounded-[10px] p-6 flex-1 overflow-hidden flex flex-col">
@@ -106,14 +110,14 @@ const Home = () => {
                   {[1, 2, 3, 4].map((item) => (
                     <div key={item} className="bg-[#D9D9D970] rounded-lg p-4 flex flex-col gap-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-black text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                        <span className="text-black text-[14px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                           Máquina X
                         </span>
                         <span className="bg-[#73E064D4] text-[#595454] text-[12px] px-2 py-[3px] rounded-[10px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                           Concluída
                         </span>
                       </div>
-                      <p className="text-[#595454] text-[px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
+                      <p className="text-[#595454] text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                         preventiva - dd/mm/aaaa
                       </p>
                     </div>
@@ -125,16 +129,16 @@ const Home = () => {
             {/* coluna direita: previsões, alertas, total de máquinas, etc. */}
             <div className="flex flex-col">
               {/* Previsões */}
-              <div className="bg-white rounded-[10px] pt-[17px] flex-1 overflow-hidden flex flex-col">
-                <div className="flex items-center gap-3 px-4 pb-[13px] mb-[13px]">
-                  <svg className="w-[52px] h-11 text-[#373535]" fill="currentColor" viewBox="0 0 20 20">
+              <div className="bg-white rounded-[10px] p-6 flex-1 overflow-hidden flex flex-col">
+                <div className="flex items-center gap-[7px] mb-[21px]">
+                  <svg className="w-7 h-[27px] text-[#373535]" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
                   </svg>
                   <h2 className="text-[#373535] text-base" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                     Previsões
                   </h2>
                 </div>
-                <div className="space-y-2 overflow-y-auto flex-1 px-6 pb-4">
+                <div className="space-y-2 overflow-y-auto flex-1">
                   {[
                     { status: 'Prevista', color: '#0084FFD4' },
                     { status: 'Urgente', color: '#D4D116D4' },
@@ -143,7 +147,7 @@ const Home = () => {
                   ].map((item, index) => (
                     <div key={index} className="bg-[#D9D9D970] rounded-lg p-4 flex flex-col gap-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-black text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                        <span className="text-black text-[14px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                           Máquina X
                         </span>
                         <span 
@@ -153,7 +157,7 @@ const Home = () => {
                           {item.status}
                         </span>
                       </div>
-                      <p className="text-[#595454] text-[10px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
+                      <p className="text-[#595454] text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                         preventiva - dd/mm/aaaa
                       </p>
                     </div>
