@@ -64,3 +64,33 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Customização do InputText */
+.p-inputtext {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.p-inputtext::placeholder {
+  color: #9CA3AF;
+  font-weight: 400;
+}
+
+/* Customização do Dropdown */
+.p-dropdown {
+  font-family: 'Poppins', sans-serif !important;
+  display: flex;
+  align-items: center;
+}
+
+.p-dropdown .p-dropdown-trigger {
+  width: 3rem;
+}
+
+.p-dropdown-panel {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Ícone do filtro customizado */
+.p-dropdown .p-dropdown-trigger .p-icon {
+  color: #6B7280;
+}
