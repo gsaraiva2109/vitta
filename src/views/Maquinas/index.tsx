@@ -450,7 +450,7 @@ const Maquinas = () => {
                   </div>
                 </div>
               ))
-            )}
+            }
           </div>
         </div>
 
