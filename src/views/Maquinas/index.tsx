@@ -174,7 +174,7 @@ const Maquinas = () => {
         severity: 'error',
         summary: 'Máquina removida',
         style: { minWidth: '20rem' },
-        icon(options) {
+        icon() {
           return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
         },
         detail: 'A máquina foi excluída e não poderá ser recuperada.',
@@ -190,7 +190,7 @@ const Maquinas = () => {
       severity: 'info',
       summary: 'Ação cancelada',
       style: { minWidth: '20rem' },
-      icon(options) {
+      icon() {
         return <i className="pi pi-info-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
       },
       detail: 'A exclusão foi cancelada.',
@@ -241,9 +241,7 @@ const Maquinas = () => {
               style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
               onClick={() => setShowCreate(true)}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
-              </svg>
+              <i className="pi pi-plus" style={{ fontSize: '1.5rem' }} />
               <span className="text-lg">Nova Máquina</span>
             </button>
           </div>
@@ -311,7 +309,7 @@ const Maquinas = () => {
                 <div className="flex items-start justify-between gap-3">
                   {/* Left: título e patrimônio */}
                   <div className="flex-1">
-                    <h3 className="text-xl text-gray-700 font-medium" style={{ fontFamily: 'Poppins', fontWeight: 500 }}>{m.name}</h3>
+                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins'}}>{m.name}</h3>
                     <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
                       Patrimônio: <span className="text-gray-500 font-medium">{m.patrimony}</span>
                     </div>
