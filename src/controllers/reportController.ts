@@ -2,12 +2,33 @@ import type { ReportData, ReportFilters, ReportSummary } from '../models/report'
 import { loadMachines } from './machinesController';
 import { loadMaintenances } from './maintenancesController';
 
+// Converte dd/mm/yyyy para objeto Date
+const parseBRDate = (br: string): Date | null => {
+  if (!br) return null;
+  const [d, m, y] = br.split('/');
+  if (!d || !m || !y) return null;
+  return new Date(+y, +m - 1, +d);
+};
+
+// Verifica se uma data está dentro do intervalo (inclusivo)
+const isDateInRange = (dateStr: string, startStr: string, endStr: string): boolean => {
+  const date = parseBRDate(dateStr);
+  if (!date) return false;
+
+  const start = parseBRDate(startStr);
+  const end = parseBRDate(endStr);
+
+  if (start && date < start) return false;
+  if (end && date > end) return false;
+  return true;
+};
+
 export const generateReport = (
   type: string,
   filters: ReportFilters
 ): { data: ReportData[]; summary: ReportSummary } => {
-  const machines = loadMachines();
-  const maintenances = loadMaintenances();
+  const machines = loadMachines([]);
+  const maintenances = loadMaintenances([]);
 
   let filteredData: ReportData[] = [];
   
@@ -20,6 +41,7 @@ export const generateReport = (
         funcao: m.funcao,
         status: m.status,
         dataAquisicao: m.acquisitionDate,
+        localizacao: m.location,
       }));
       break;
       
@@ -32,6 +54,7 @@ export const generateReport = (
           funcao: m.funcao,
           status: m.status,
           dataAquisicao: m.acquisitionDate,
+          localizacao: m.location,
         }));
       break;
       
@@ -45,6 +68,7 @@ export const generateReport = (
           funcao: machine?.funcao || 'N/A',
           status: maint.status,
           dataAquisicao: maint.performedDate,
+          localizacao: machine?.location || 'N/A',
         };
       });
       break;
@@ -58,6 +82,7 @@ export const generateReport = (
           funcao: m.funcao,
           status: m.status,
           dataAquisicao: m.acquisitionDate,
+          localizacao: m.location,
         }));
       break;
       
@@ -70,6 +95,7 @@ export const generateReport = (
           funcao: m.funcao,
           status: m.status,
           dataAquisicao: m.acquisitionDate,
+          localizacao: m.location,
         }));
       break;
       
@@ -80,8 +106,19 @@ export const generateReport = (
   // Aplica filtros de data e localização
   if (filters.dataInicio || filters.dataFim || filters.localizacao) {
     filteredData = filteredData.filter(item => {
-      // Lógica de filtragem por data e localização
-      return true; // Simplificado para exemplo
+      // Filtro por data de aquisição
+      if (filters.dataInicio || filters.dataFim) {
+        if (!isDateInRange(item.dataAquisicao, filters.dataInicio, filters.dataFim)) {
+          return false;
+        }
+      }
+
+      // Filtro por localização
+      if (filters.localizacao && item.localizacao !== filters.localizacao) {
+        return false;
+      }
+
+      return true;
     });
   }
   
@@ -89,7 +126,7 @@ export const generateReport = (
   const summary: ReportSummary = {
     total: filteredData.length,
     ativos: filteredData.filter(d => d.status === 'Ativo').length,
-    manutencao: filteredData.filter(d => d.status.includes('manutenção')).length,
+    manutencao: filteredData.filter(d => d.status.includes('manutenção') || d.status.includes('Manutenção')).length,
     descartados: filteredData.filter(d => d.status === 'Inativo').length,
   };
   

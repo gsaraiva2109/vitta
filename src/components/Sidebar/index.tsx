@@ -9,7 +9,7 @@ interface MenuItem {
 }
 
 interface SidebarProps {
-  currentPage?: string; // agora opcional, usaremos NavLink para estado ativo
+  currentPage?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = () => {

@@ -193,8 +193,8 @@ const Manutencoes = () => {
         visible={confirmVisible}
         onHide={() => (setConfirmVisible(false), setToDelete(null))}
         message="Tem certeza que deseja remover esta manutenção?"
-        header={options => <span className="font-semibold ml-2">Confirmação</span>}
-        icon={options => <i className="pi pi-exclamation-triangle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>}
+        header={<span className="font-semibold ml-2">Confirmação</span>}
+        icon={<i className="pi pi-exclamation-triangle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>}
         accept={acceptDelete}
         reject={rejectDelete}
         style={{ width: '36rem' }}

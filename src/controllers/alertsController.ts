@@ -20,7 +20,6 @@ export const generateAlerts = (machines: Machine[]): Alert[] => {
   const alerts: Alert[] = [];
 
   machines.forEach((m) => {
-    // Exemplo: próxima manutenção baseada em acquisitionDate + maintenanceInterval (meses)
     if (m.maintenanceInterval && m.acquisitionDate) {
       const acquired = parseDate(m.acquisitionDate);
       if (acquired) {
@@ -58,7 +57,6 @@ export const generateAlerts = (machines: Machine[]): Alert[] => {
       }
     }
 
-    // Exemplo: calibração
     if (m.calibrationInterval && m.acquisitionDate) {
       const acquired = parseDate(m.acquisitionDate);
       if (acquired) {
