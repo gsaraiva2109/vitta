@@ -303,20 +303,20 @@ const Manutencoes = () => {
                     {/* Linhas info */}
                     <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                       <div>
-                        <div className="text-xs text-gray-500 mb-0.5">Custo</div>
-                        <div className="text-gray-700 font-medium">R$ {m.cost.toFixed(2)}</div>
+                        <div className="text-base font-medium text-gray-700">Custo</div>
+                        <div className="text-gray-500 font-xs mb-0.5">R$ {m.cost.toFixed(2)}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-gray-500 mb-0.5">Data realizada</div>
-                        <div className="text-gray-700 font-medium">{m.performedDate || 'dd/mm/aaaa'}</div>
+                        <div className="text-base font-medium text-gray-700">Data realizada</div>
+                        <div className="text-gray-500 font-xs mb-0.5">{m.performedDate || 'dd/mm/aaaa'}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-gray-500 mb-0.5">Empresa</div>
-                        <div className="text-gray-700 font-medium">{m.company}</div>
+                        <div className="text-base font-medium text-gray-700">Empresa</div>
+                        <div className="text-gray-500 font-xs mb-0.5">{m.company}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-gray-500 mb-0.5">Próxima manutenção</div>
-                        <div className="text-gray-700 font-medium">{m.nextDate || 'dd/mm/aaaa'}</div>
+                        <div className="text-base font-medium text-gray-700">Próxima manutenção</div>
+                        <div className="text-gray-500 font-xs mb-0.5">{m.nextDate || 'dd/mm/aaaa'}</div>
                       </div>
                     </div>
                   </div>
@@ -324,7 +324,7 @@ const Manutencoes = () => {
                   {/* Direita: badge + ações */}
                   <div className="ml-auto flex flex-col items-end mr-8 flex-shrink-0">
                     <div
-                      className={`w-36 h-7 mr-3 flex items-center justify-center truncate text-xs rounded-full ${badgeForMaintStatus(m.status)} shadow-[0_6px_18px_rgba(0,0,0,0.08)]`}
+                      className={`w-36 h-7 mr-3 flex items-center justify-center truncate text-sm rounded-full ${badgeForMaintStatus(m.status)} shadow-[0_6px_18px_rgba(0,0,0,0.08)]`}
                       title={m.status}
                       style={{ whiteSpace: 'nowrap' }}
                     >
