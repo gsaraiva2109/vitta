@@ -175,7 +175,7 @@ const Home = () => {
                         <StatusBadge status={m.status} />
                       </div>
                       <p className="text-[#595454] text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                        preventiva - {m.acquisitionDate || 'dd/mm/aaaa'}
+                        Preventiva - {m.acquisitionDate || 'dd/mm/aaaa'}
                       </p>
                     </div>
                   ))}
@@ -207,7 +207,7 @@ const Home = () => {
                         <StatusBadge status={m.status} />
                       </div>
                       <p className="text-[#595454] text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                        preventiva - {m.acquisitionDate || 'dd/mm/aaaa'}
+                        Preventiva - {m.acquisitionDate || 'dd/mm/aaaa'}
                       </p>
                     </div>
                   ))}

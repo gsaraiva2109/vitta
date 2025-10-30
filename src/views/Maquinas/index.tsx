@@ -343,8 +343,8 @@ const Maquinas = () => {
                 <div className="flex items-start justify-between gap-3">
                   {/* Left: título e patrimônio */}
                   <div className="flex-1">
-                    <h3 className="text-xl text-gray-700 font-medium" style={{ fontFamily: 'Poppins', fontWeight: 500 }}>{m.name}</h3>
-                    <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins', fontWeight: 400 }}>
+                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins, sans-serif'}}>{m.name}</h3>
+                    <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                       Patrimônio: <span className="text-gray-500 font-medium">{m.patrimony}</span>
                     </div>
                   </div>
