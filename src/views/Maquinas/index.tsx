@@ -190,7 +190,7 @@ const Maquinas = () => {
         severity: 'error',
         summary: 'Máquina removida',
         style: { minWidth: '20rem' },
-        icon(options) {
+        icon() {
           return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
         },
         detail: 'A máquina foi excluída e não poderá ser recuperada.',
@@ -206,7 +206,7 @@ const Maquinas = () => {
       severity: 'info',
       summary: 'Ação cancelada',
       style: { minWidth: '20rem' },
-      icon(options) {
+      icon() {
         return <i className="pi pi-info-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
       },
       detail: 'A exclusão foi cancelada.',
@@ -222,19 +222,19 @@ const Maquinas = () => {
         visible={confirmVisible}
         onHide={() => (setConfirmVisible(false), setMachineToDelete(null))}
         message="Tem certeza que deseja remover esta máquina?"
-        // header={(options) => (
-        //   <span className="font-semibold ml-2">Confirmação</span>
-        // )}
-        // icon={(options) => (
-        //   <i
-        //     className="pi pi-exclamation-triangle"
-        //     style={{
-        //       fontSize: "2rem",
-        //       marginLeft: "0.5rem",
-        //       marginRight: "0.5rem",
-        //     }}
-        //   ></i>
-        // )}
+        header={() => (
+          <span className="font-semibold ml-2">Confirmação</span>
+        )}
+        icon={() => (
+          <i
+            className="pi pi-exclamation-triangle"
+            style={{
+              fontSize: "2rem",
+              marginLeft: "0.5rem",
+              marginRight: "0.5rem",
+            }}
+          ></i>
+        )}
         accept={acceptDelete}
         reject={rejectDelete}
         style={{ width: "36rem" }}
@@ -274,16 +274,14 @@ const Maquinas = () => {
               style={{ fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
               onClick={() => setShowCreate(true)}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
-              </svg>
+              <i className="pi pi-plus" style={{ fontSize: "1.5rem"}}></i>
               <span className="text-lg">Nova Máquina</span>
             </button>
           </div>
 
           {/* Container arredondado com as barras de busca e filtro */}
           <div className="bg-white rounded-2xl mt-8 p-6 shadow-sm">
-            <div className="flex flex-col sm:flex-row gap-4 w-full items-center">
+            <div className="flex flex-col lg:flex-row gap-4 w-full items-center">
               {/* Input de Busca */}
               <div className="flex-1 relative">
                 <svg
@@ -299,11 +297,10 @@ const Maquinas = () => {
                   onChange={(e) =>
                     setSearch((e.target as HTMLInputElement).value)
                   }
-                  className="w-full h-[52px] pl-12 pr-4 text-base rounded-xl border border-gray-200 shadow-sm"
+                  className="w-full h-[48px] pl-12 pr-4 text-sm rounded-xl border border-gray-200 shadow-sm"
                   style={{
                     fontFamily: "Poppins, sans-serif",
-                    fontWeight: 400,
-                    fontSize: "15px",
+                    fontWeight: 400
                   }}
                 />
               </div>
@@ -413,32 +410,32 @@ const Maquinas = () => {
                     }}
                   >
                     <div>
-                      <div className="text-xs text-gray-500 mb-0.5">Função</div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="font-medium text-gray-700 ">Função</div>
+                      <div className="text-gray-500 font-xs mb-0.5">
                         {m.funcao}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-0.5">
+                      <div className="font-medium text-gray-700 mb-0.5">
                         Fabricante
                       </div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="text-gray-500 font-xs mb-0.5">
                         {m.fabricante}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-0.5">
+                      <div className="font-medium text-gray-700">
                         Data de aquisição
                       </div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="text-gray-500 font-xs mb-0.5">
                         {m.acquisitionDate}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-0.5">
+                      <div className="font-medium text-gray-700">
                         Localização
                       </div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="text-gray-500 font-xs mb-0.5">
                         {m.location}
                       </div>
                     </div>
