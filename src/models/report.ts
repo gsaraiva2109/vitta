@@ -9,10 +9,10 @@ export type ReportType =
   | 'manutencoes-atrasadas';
 
 export interface ReportFilters {
-  dataInicio?: string;
-  dataFim?: string;
-  fabricante?: string;
-  localizacao?: string;
+  dataInicio: string;
+  dataFim: string;
+  fabricante: string;
+  localizacao: string;
 }
 
 export interface ReportData {
@@ -21,6 +21,7 @@ export interface ReportData {
   funcao: string;
   status: string;
   dataAquisicao: string;
+  localizacao?: string;
 }
 
 export interface ReportSummary {
