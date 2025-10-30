@@ -8,7 +8,6 @@
 // export default Relatorios;
 
 import Sidebar from "../../components/Sidebar";
-import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { useState } from "react";
@@ -34,8 +33,8 @@ const Relatorios = () => {
   });
   const [reportData, setReportData] = useState<ReportData[]>([]);
   const [summary, setSummary] = useState<ReportSummary | null>(null);
-  const [dateInicio, setDateInicio] = useState<Date | null>(null);
-  const [dateFim, setDateFim] = useState<Date | null>(null);
+  const [dateInicio, setDateInicio] = useState<string>('');
+  const [dateFim, setDateFim] = useState<string>('');
 
   const reportTypes: ReportTypeCard[] = [
     { id: 'geral', label: 'Relatório Geral', icon: 'pi pi-file', iconColor: 'text-gray-700' },
@@ -70,12 +69,19 @@ const Relatorios = () => {
     setSummary(result.summary);
   };
 
+  // Converte ISO (yyyy-mm-dd) para dd/mm/yyyy
+  const isoToBR = (iso: string) => {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  };
+
   const handleFilterChange = () => {
     if (selectedReport) {
       const updatedFilters = {
         ...filters,
-        dataInicio: dateInicio ? dateInicio.toLocaleDateString('pt-BR') : '',
-        dataFim: dateFim ? dateFim.toLocaleDateString('pt-BR') : '',
+        dataInicio: isoToBR(dateInicio),
+        dataFim: isoToBR(dateFim),
       };
       const result = generateReport(selectedReport, updatedFilters);
       setReportData(result.data);
@@ -139,16 +145,15 @@ const Relatorios = () => {
                   <label className="text-sm text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     Data Início
                   </label>
-                  <Calendar
+                  <input
+                    type="date"
                     value={dateInicio}
                     onChange={(e) => {
-                      setDateInicio(e.value as Date);
+                      setDateInicio(e.target.value);
                       setTimeout(handleFilterChange, 100);
                     }}
-                    dateFormat="dd/mm/yy"
-                    placeholder="dd/mm/aaaa"
-                    className="w-full"
-                    showIcon
+                    className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700"
+                    style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }}
                   />
                 </div>
 
@@ -156,16 +161,15 @@ const Relatorios = () => {
                   <label className="text-sm text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     Data Fim
                   </label>
-                  <Calendar
+                  <input
+                    type="date"
                     value={dateFim}
                     onChange={(e) => {
-                      setDateFim(e.value as Date);
+                      setDateFim(e.target.value);
                       setTimeout(handleFilterChange, 100);
                     }}
-                    dateFormat="dd/mm/yy"
-                    placeholder="dd/mm/aaaa"
-                    className="w-full"
-                    showIcon
+                    className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700"
+                    style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }}
                   />
                 </div>
 
@@ -180,8 +184,8 @@ const Relatorios = () => {
                       setTimeout(handleFilterChange, 100);
                     }}
                     options={fabricantes}
-                    placeholder="Todos"
-                    className="w-full"
+                    placeholder="Fabricante"
+                    className="w-full h-11"
                   />
                 </div>
 
@@ -196,8 +200,8 @@ const Relatorios = () => {
                       setTimeout(handleFilterChange, 100);
                     }}
                     options={localizacoes}
-                    placeholder="Todos"
-                    className="w-full"
+                    placeholder="Localização"
+                    className="w-full h-11"
                   />
                 </div>
               </div>
