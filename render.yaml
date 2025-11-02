@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: vitta-backend
+    env: node
+    branch: main
+    plan: free
+    buildCommand: cd api && npm install
+    startCommand: cd api && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /
