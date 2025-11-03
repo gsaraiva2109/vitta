@@ -9,9 +9,9 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=3000
     networks:
-      - shared_services_default
+      - shared_backend_network
 
 networks:
-  shared_services_default:
+  shared_backend_network:
     external: true
     name: shared_backend_network
