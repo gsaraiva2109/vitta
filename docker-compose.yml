@@ -1,0 +1,17 @@
+services:
+  vitta-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vitta-backend
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=3000
+    networks:
+      - shared_services_default
+
+networks:
+  shared_services_default:
+    external: true
+    name: shared_backend_network
