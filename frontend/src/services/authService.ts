@@ -1,7 +1,5 @@
 import type { LoginRequest, LoginResponse } from '../models/User';
 
-const API_BASE = import.meta.env.VITE_API_URL || '';
-
 export async function login(payload: LoginRequest): Promise<LoginResponse> {
   const res = await fetch(`/api/auth/login`, {
     method: 'POST',
