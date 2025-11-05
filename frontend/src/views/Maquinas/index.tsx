@@ -452,10 +452,14 @@ const Maquinas = () => {
         </div>
 
         {viewTarget && (
-          <ViewMachine
-            machine={viewTarget}
-            onClose={() => setViewTarget(null)}
-          />
+          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
+            <div className="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl">
+              <ViewMachine
+                machine={viewTarget}
+                onCancel={() => setViewTarget(null)}
+              />
+            </div>
+          </div>
         )}
         {showCreate && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">

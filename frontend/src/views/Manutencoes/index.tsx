@@ -9,6 +9,7 @@ import type { Maintenance } from "../../models/Maintenance";
 import { loadMaintenances, removeMaintenance, addMaintenance, updateMaintenance } from "../../controllers/maintenancesController";
 import CreateMaintenance from "./CreateMaintenance";
 import EditMaintenance from "./EditMaintenance";
+import ViewMaintenance from "./ViewMaintenance";
 
 const initialMaintenances: Maintenance[] = [
   {
@@ -85,14 +86,6 @@ const Manutencoes = () => {
   useEffect(() => {
     setList(loadMaintenances(initialMaintenances));
   }, []);
-
-  // Fechar visualização com ESC
-  useEffect(() => {
-    if (!viewTarget) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setViewTarget(null);
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [viewTarget]);
 
   const statusOptions = [
     { label: "Todos os status", value: "" },
@@ -373,59 +366,12 @@ const Manutencoes = () => {
 
         {/* Overlay de visualização (fecha com ESC e botão no topo direito) */}
         {viewTarget && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-            <div className="relative w-full max-w-[900px] rounded-2xl bg-white shadow-2xl">
-              {/* Botão fechar (X) no canto superior direito */}
-              <button
-                aria-label="Fechar"
-                onClick={() => setViewTarget(null)}
-                className="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-md bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
-              >
-                <i className="pi pi-times text-base" />
-              </button>
-
-              {/* Cabeçalho (título) */}
-              <div className="px-8 pt-8 pb-3">
-                <h2
-                  className="text-[24px] font-semibold text-gray-900"
-                  style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
-                >
-                  Manutenção da {viewTarget.machineName}
-                </h2>
-              </div>
-
-              {/* Corpo – 2 colunas conforme a imagem */}
-              <div className="px-8 pb-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10 text-[15px]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">Responsável:</span> {viewTarget.responsible || '—'}
-                  </div>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">Valor:</span> R$ {viewTarget.cost.toFixed(2)}
-                  </div>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">Empresa responsável:</span> {viewTarget.company || '—'}
-                  </div>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">Tipo:</span> {viewTarget.type || '—'}
-                  </div>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">RC/OC:</span> {viewTarget.rcOc || '—'}
-                  </div>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">Status:</span> {viewTarget.status}
-                  </div>
-                  <div className="text-gray-900">
-                    <span className="font-semibold">Data da Manutenção:</span> {viewTarget.performedDate || 'xx/xx/xxxx'}
-                  </div>
-                  <div className="text-gray-900 md:col-span-1">
-                    {/* Espaço para manter a grade simétrica em telas médias */}
-                  </div>
-                  <div className="text-gray-900 md:col-span-2">
-                    <span className="font-semibold">Observações:</span> {viewTarget.observacoes || '—'}
-                  </div>
-                </div>
-              </div>
+          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
+            <div className="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl">
+              <ViewMaintenance
+                maintenance={viewTarget}
+                onCancel={() => setViewTarget(null)}
+              />
             </div>
           </div>
         )}

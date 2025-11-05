@@ -93,8 +93,8 @@ const EditMachine = ({ machine, onCancel, onSubmit }: Props) => {
             value={tempJustificativa}
             onChange={(e) => setTempJustificativa(e.target.value)}
             placeholder="Informe a justificativa para inativar esta máquina"
-            className="w-full min-h-[120px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]"
-            style={{ fontFamily: 'Poppins, sans-serif', resize: 'vertical' }}
+            className="w-full min-h-[120px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none"
+            style={{ fontFamily: 'Poppins, sans-serif' }}
           />
           <div className="flex justify-end gap-3">
             <Button
@@ -177,7 +177,7 @@ const EditMachine = ({ machine, onCancel, onSubmit }: Props) => {
           </div>
           <div className="md:col-span-2 flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Observações</label>
-            <textarea value={form.observacoes || ''} onChange={(e) => handle('observacoes', e.target.value)} className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
+            <textarea value={form.observacoes || ''} onChange={(e) => handle('observacoes', e.target.value)} className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none" />
           </div>
         </div>
       </div>

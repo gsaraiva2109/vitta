@@ -250,7 +250,7 @@ const Relatorios = () => {
                     {summary.total}
                   </div>
                   <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                    total
+                    Total
                   </div>
                 </div>
 
@@ -259,7 +259,7 @@ const Relatorios = () => {
                     {summary.ativos}
                   </div>
                   <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                    ativos
+                    Ativos
                   </div>
                 </div>
 
@@ -268,7 +268,7 @@ const Relatorios = () => {
                     {summary.manutencao}
                   </div>
                   <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                    manutenção
+                    Manutenção
                   </div>
                 </div>
 
@@ -291,7 +291,7 @@ const Relatorios = () => {
                         Nome
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                        patrimônio
+                        Patrimônio
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
                         Função
