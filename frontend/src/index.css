@@ -94,3 +94,11 @@ button:focus-visible {
 .p-dropdown .p-dropdown-trigger .p-icon {
   color: #6B7280;
 }
+
+.input-focus-group input:focus,
+.input-focus-group .p-password input:focus,
+.input-focus-group .p-inputtext:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
