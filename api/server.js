@@ -10,6 +10,7 @@ import './models/index.js';
 
 // Importando Rotas
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import maquinaRoutes from './routes/maquinaRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
   // Usar as rotas
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/maquinas', maquinaRoutes);
 
 
 // Rota coringa: deve ser a **última**

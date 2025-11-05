@@ -1,10 +1,13 @@
 import express from 'express';
+import { getAll, getById, getByMatricula, create, update, remove } from '../controllers/usuarioController.js';
+
 const router = express.Router();
 
-// rota de exemplo: listar / testar
-router.get('/', (req, res) => {
-  res.json({ ok: true, mensagem: 'rota de usuarios funcionando' });
-});
+router.get('/', getAll);
+router.get('/matricula/:matricula', getByMatricula); 
+router.get('/:id', getById);
+router.post('/', create);
+router.put('/:id', update);
+router.delete('/:id', remove);
 
-// export
 export default router;
