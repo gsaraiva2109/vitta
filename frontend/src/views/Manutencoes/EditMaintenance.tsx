@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
+import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
 import type { Maintenance } from '../../models/Maintenance';
 
 interface Props {
@@ -43,6 +44,7 @@ const parseBRLToNumber = (v: string) => {
 };
 
 const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
+  const toast = useRef<Toast>(null);
   const [form, setForm] = useState({
     id: maintenance.id,
     machineName: maintenance.machineName,
@@ -63,7 +65,7 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
     e.preventDefault();
     const required: (keyof typeof form)[] = ['machineName', 'cost', 'type', 'status', 'responsible', 'rcOc'];
     if (required.some(f => !String(form[f]).trim())) {
-      alert('Preencha os campos obrigatórios.');
+      showToast(toast, ToastMessages.validation.requiredFields);
       return;
     }
     const payload: Maintenance = {
@@ -79,11 +81,14 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
       rcOc: form.rcOc,
       observacoes: form.observacoes,
     };
+    showToast(toast, ToastMessages.manutencao.updated);
     onSubmit(payload);
   };
 
   return (
-    <form onSubmit={submit} className="flex flex-col">
+    <>
+      <Toast ref={toast} />
+      <form onSubmit={submit} className="flex flex-col">
       <header className="px-8 pt-8 pb-4">
         <h2 className="text-2xl font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
           Editar Manutenção
@@ -140,6 +145,7 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
         </button>
       </footer>
     </form>
+    </>
   );
 };
 

@@ -1,5 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
 import type { Machine } from '../../models/Machine';
 import { brToISO, isoToBR } from '../../controllers/machinesController';
 
@@ -10,20 +13,106 @@ interface Props {
 }
 
 const EditMachine = ({ machine, onCancel, onSubmit }: Props) => {
+  const toast = useRef<Toast>(null);
   const [form, setForm] = useState<Machine>(machine);
+  const [showJustificativaDialog, setShowJustificativaDialog] = useState(false);
+  const [tempJustificativa, setTempJustificativa] = useState('');
   const acquisitionISO = useMemo(() => brToISO(form.acquisitionDate), [form.acquisitionDate]);
 
-  const handle = (k: keyof Machine, v: string) =>
+  const handle = (k: keyof Machine, v: string) => {
+    if (k === 'status' && v === 'Inativo') {
+      setTempJustificativa(form.justificativaInativo || '');
+      setShowJustificativaDialog(true);
+      return;
+    }
+    if (k === 'status' && v !== 'Inativo' && form.status === 'Inativo') {
+      setForm(prev => ({ ...prev, [k]: v, justificativaInativo: '' }));
+      return;
+    }
     setForm(prev => ({ ...prev, [k]: v }));
+  };
+
+  const handleSaveJustificativa = () => {
+    if (!tempJustificativa.trim()) {
+      showToast(toast, ToastMessages.justificativa.required);
+      return;
+    }
+    setForm(prev => ({ ...prev, status: 'Inativo', justificativaInativo: tempJustificativa }));
+    setShowJustificativaDialog(false);
+    showToast(toast, ToastMessages.justificativa.saved);
+  };
+
+  const handleCancelJustificativa = () => {
+    setShowJustificativaDialog(false);
+    setTempJustificativa('');
+    showToast(toast, ToastMessages.justificativa.cancelled);
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const required: (keyof Machine)[] = ['name', 'patrimony', 'funcao', 'acquisitionDate', 'serialNumber' as any];
-    if (required.some(f => !(form as any)[f])) return alert('Preencha os campos obrigatórios.');
-    onSubmit({ ...form, acquisitionDate: isoToBR(acquisitionISO) });
+    const required: (keyof Machine)[] = ['name', 'patrimony', 'funcao', 'acquisitionDate', 'serialNumber'];
+    if (required.some(f => !form[f])) {
+      showToast(toast, ToastMessages.validation.requiredFields);
+      return;
+    }
+    
+    if (form.status === 'Inativo' && !form.justificativaInativo?.trim()) {
+      showToast(toast, ToastMessages.justificativa.missing);
+      setTempJustificativa('');
+      setShowJustificativaDialog(true);
+      return;
+    }
+    
+    showToast(toast, ToastMessages.maquina.updated);
+    onSubmit(form);
   };
 
   return (
+    <>
+      <Toast ref={toast} position="top-right" />
+      
+      <Dialog
+        visible={showJustificativaDialog}
+        onHide={handleCancelJustificativa}
+        style={{ width: '540px', borderRadius: '12px', overflow: 'hidden' }}
+        showCloseIcon={false}
+        closeOnEscape={true}
+        resizable={false}
+        modal
+        draggable={false}
+        pt={{
+          root: { className: 'rounded-xl overflow-hidden' },
+          content: { className: 'p-0 rounded-xl' }
+        }}
+      >
+        <div className="flex flex-col gap-4 px-6 py-6">
+          <label className="text-base font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            Justificativa *
+          </label>
+          <textarea
+            value={tempJustificativa}
+            onChange={(e) => setTempJustificativa(e.target.value)}
+            placeholder="Informe a justificativa para inativar esta máquina"
+            className="w-full min-h-[120px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]"
+            style={{ fontFamily: 'Poppins, sans-serif', resize: 'vertical' }}
+          />
+          <div className="flex justify-end gap-3">
+            <Button
+              label="Cancelar"
+              onClick={handleCancelJustificativa}
+              className="px-6 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}
+            />
+            <Button
+              label="Salvar"
+              onClick={handleSaveJustificativa}
+              className="px-6 py-2 rounded-lg bg-[#0084FF] text-white hover:bg-[#0073E6]"
+              style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
+            />
+          </div>
+        </div>
+      </Dialog>
+
     <form onSubmit={submit} className="flex flex-col">
       <header className="px-8 pt-8 pb-4">
         <h2 className="text-2xl font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
@@ -102,6 +191,7 @@ const EditMachine = ({ machine, onCancel, onSubmit }: Props) => {
         </button>
       </footer>
     </form>
+    </>
   );
 };
 

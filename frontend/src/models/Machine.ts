@@ -13,4 +13,5 @@ export interface Machine {
   modelo?: string;
   rcOc?: string;
   observacoes?: string;
+  justificativaInativo?: string; // justificativa quando status for Inativo
 }
