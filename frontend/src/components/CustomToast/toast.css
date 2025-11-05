@@ -1,0 +1,22 @@
+.p-toast .p-toast-message .p-toast-message-icon {
+  margin-right: 0.75rem;
+  margin-left: 0.5rem;
+}
+
+.p-toast .p-toast-message {
+  padding: 1rem 1.25rem;
+}
+
+.p-toast .p-toast-message-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.p-toast .p-toast-message .p-toast-icon-close {
+  display: none !important;
+}
+
+.p-toast .p-toast-message-content {
+  padding-right: 0 !important;
+}

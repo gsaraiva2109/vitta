@@ -65,7 +65,17 @@ const Sidebar: React.FC<SidebarProps> = () => {
   return (
     <div className="w-[282px] flex-shrink-0 h-full flex flex-col bg-white">
       <div className="h-[67px] border-b border-[#0000001C] flex items-center justify-center">
-        {/* Logo space */}
+        <svg width="151" height="37" viewBox="0 0 151 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M74.1088 9.08L68.2768 26H62.2528L56.3968 9.08H61.4368L65.2768 21.296L69.0928 9.08H74.1088ZM80.7785 9.08V26H76.0745V9.08H80.7785ZM96.7013 9.08V12.824H92.1893V26H87.4853V12.824H83.0213V9.08H96.7013ZM111.686 9.08V12.824H107.174V26H102.47V12.824H98.0057V9.08H111.686ZM124.63 23.24H118.63L117.718 26H112.774L118.942 9.08H124.366L130.51 26H125.542L124.63 23.24ZM123.454 19.64L121.63 14.168L119.83 19.64H123.454Z" fill="#67B476"/>
+          <g clipPath="url(#clip0_415_1671)">
+            <path d="M18.5 0.5C28.4417 0.5 36.5 8.55495 36.5 18.5C36.5 28.445 28.4417 36.5 18.5 36.5C8.5583 36.5 0.5 28.445 0.5 18.5C0.5 8.55495 8.5583 0.5 18.5 0.5ZM18.5 9.90625C17.5835 9.90625 16.8438 10.6514 16.8438 11.5625V16.8438H11.5625C10.646 16.8438 9.90625 17.5889 9.90625 18.5C9.90625 19.4111 10.646 20.1562 11.5625 20.1562H16.8438V25.4375C16.8438 26.3486 17.5835 27.0938 18.5 27.0938C19.4165 27.0938 20.1562 26.3486 20.1562 25.4375V20.1562H25.4375C26.354 20.1562 27.0938 19.4111 27.0938 18.5C27.0938 17.5889 26.354 16.8438 25.4375 16.8438H20.1562V11.5625C20.1562 10.6514 19.4165 9.90625 18.5 9.90625Z" fill="#6CCF78" stroke="#67B476"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_415_1671">
+              <rect width="37" height="37" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg>
       </div>
       <div className="flex flex-col pt-[91px] px-[29px] flex-1">
         {menuItems.map((item) => (
@@ -75,10 +85,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
                 className={`relative flex items-center gap-3.5 py-2.5 px-[17px] mb-4 rounded-lg cursor-pointer transition-all
                 ${isActive ? 'bg-[#0084FF3B] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]' : 'hover:bg-gray-50'}`}
               >
-                {/* barra azulada com blur quando ativo */}
-                {isActive && (
-                  <span className="absolute left-0 top-1 bottom-1 w-1.5 bg-[#0084FF]/60 rounded-full blur-[2px]" />
-                )}
+                
                 <div className={isActive ? 'text-[#0084FF]' : 'text-[#373535]'}>
                   {item.icon}
                 </div>
