@@ -22,6 +22,10 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7"
   },
+  "optionalDependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0"
+  },
   "devDependencies": {
     "sequelize-cli": "^6.6.3"
   }

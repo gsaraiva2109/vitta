@@ -10,6 +10,7 @@ import './models/index.js';
 
 // Importando Rotas
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 
   // Usar as rotas
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/maquinas', maquinaRoutes);
 
 

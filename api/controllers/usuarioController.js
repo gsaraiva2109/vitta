@@ -39,7 +39,13 @@ export async function getByMatricula(req, res) {
 
 export async function create(req, res) {
   try {
-    const usuario = await Usuario.create(req.body);
+    // Hash senha before storing (if provided)
+    const payload = { ...req.body };
+    if (payload.senha) {
+      const bcrypt = await import('bcryptjs');
+      payload.senha = await bcrypt.hash(payload.senha, 10);
+    }
+    const usuario = await Usuario.create(payload);
     res.status(201).json(usuario);
   } catch (error) {
     res.status(400).json({ error: error.message });
