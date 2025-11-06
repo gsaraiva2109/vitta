@@ -6,10 +6,10 @@ services:
     volumes:
       - './dist:/usr/share/nginx/html'
     networks:
-      - coolify-proxy
+      - coolify
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=coolify-proxy" 
+      - "traefik.docker.network=coolify"
       
       - "traefik.http.routers.vitta-http.rule=Host(`vitta.gsaraiva.com.br`)"
       - "traefik.http.routers.vitta-http.entrypoints=web"
@@ -43,11 +43,11 @@ services:
       - 'DATABASE_URL=${DATABASE_URL}'
       - PORT=3000
     networks:
-      - coolify-proxy
+      - coolify
       - shared_backend_network
 
 networks:
   shared_backend_network:
     external: true
-  coolify-proxy:
+  coolify:
     external: true
