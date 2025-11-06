@@ -43,7 +43,6 @@ services:
       - PORT=3000
     networks:
       - shared_backend_network
-      - vitta-network
 
 networks:
   shared_backend_network:
