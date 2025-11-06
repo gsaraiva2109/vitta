@@ -1,17 +1,13 @@
-# Dockerfile
-FROM node:18-alpine AS base
+FROM node:20-alpine
+
 WORKDIR /usr/src/app
 
-FROM base AS deps
-COPY api/package.json api/package-lock.json ./
-RUN npm install
+COPY api/package*.json ./
 
-FROM base AS build
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY api/. .
+RUN npm install --omit=dev
 
-FROM base AS production
+COPY api/ .
+
 ENV NODE_ENV=production
-COPY --from=build /usr/src/app .
 EXPOSE 3000
 CMD ["node", "server.js"]

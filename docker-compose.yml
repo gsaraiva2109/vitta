@@ -2,24 +2,35 @@ services:
   vitta-frontend:
     image: nginx:alpine
     container_name: vitta-frontend
-    restart: unless-stopped
     volumes:
-      - frontend_dist:/usr/share/nginx/html
+      - ./dist:/usr/share/nginx/html
     labels:
       - "traefik.enable=true"
-      
-      - "traefik.http.routers.vitta-frontend.rule=Host(`vitta.gsaraiva.com.br`)"
-      - "traefik.http.routers.vitta-frontend.entrypoints=websecure"
-      - "traefik.http.routers.vitta-frontend.service=vitta-frontend"
-      - "traefik.http.routers.vitta-frontend.priority=1"
-      - "traefik.http.routers.vitta-frontend.tls=true"
-      - "traefik.http.routers.vitta-frontend.tls.certresolver=cloudflare"
-
-      - "traefik.http.services.vitta-frontend.loadbalancer.server.port=80"
+      - "traefik.docker.network=coolify-proxy"
       
       - "traefik.http.routers.vitta-http.rule=Host(`vitta.gsaraiva.com.br`)"
       - "traefik.http.routers.vitta-http.entrypoints=web"
       - "traefik.http.routers.vitta-http.middlewares=redirect-to-https@docker"
+
+      - "traefik.http.routers.vitta-frontend-secure.rule=Host(`vitta.gsaraiva.com.br`)"
+      - "traefik.http.routers.vitta-frontend-secure.entrypoints=websecure"
+      - "traefik.http.routers.vitta-frontend-secure.service=vitta-frontend-svc"
+      - "traefik.http.routers.vitta-frontend-secure.priority=1"
+      - "traefik.http.routers.vitta-frontend-secure.tls=true"
+      - "traefik.http.routers.vitta-frontend-secure.tls.certresolver=lets-encrypt"
+
+      - "traefik.http.routers.vitta-backend-secure.rule=Host(`vitta.gsaraiva.com.br`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.vitta-backend-secure.entrypoints=websecure"
+      - "traefik.http.routers.vitta-backend-secure.service=vitta-backend-svc"
+      - "traefik.http.routers.vitta-backend-secure.priority=10"
+      - "traefik.http.routers.vitta-backend-secure.tls=true"
+      - "traefik.http.routers.vitta-backend-secure.tls.certresolver=lets-encrypt"
+      
+      - "traefik.http.routers.vitta-backend-secure.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
+
+      - "traefik.http.services.vitta-frontend-svc.loadbalancer.server.port=80"
+      - "traefik.http.services.vitta-backend-svc.loadbalancer.server.port=3000"
 
   vitta-backend:
     build:
@@ -32,26 +43,8 @@ services:
       - PORT=3000
     networks:
       - shared_backend_network
-    labels:
-      - "traefik.enable=true"
-
-      - "traefik.http.routers.vitta-backend.rule=Host(`vitta.gsaraiva.com.br`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.vitta-backend.entrypoints=websecure"
-      - "traefik.http.routers.vitta-backend.service=vitta-backend"
-      - "traefik.http.routers.vitta-backend.priority=10"
-      - "traefik.http.routers.vitta-backend.tls=true"
-      - "traefik.http.routers.vitta-backend.tls.certresolver=cloudflare"
-      
-      - "traefik.http.routers.vitta-backend.middlewares=strip-api-prefix"
-      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
-
-      - "traefik.http.services.vitta-backend.loadbalancer.server.port=3000"
-
-volumes:
-  frontend_dist:
+      - vitta-network
 
 networks:
-  # IMPORTANT: Make sure this is the real name of your shared network
   shared_backend_network:
     external: true
-    name: shared_backend_network
