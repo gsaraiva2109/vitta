@@ -10,7 +10,7 @@ services:
         - CMD
         - curl
         - '-f'
-        - 'http://127.0.0.1:80/health'
+        - 'http://localhost:80/health'
       interval: 5s
       timeout: 20s
       retries: 10
@@ -57,7 +57,7 @@ services:
         - CMD
         - curl
         - '-f'
-        - 'http://127.0.0.1:3000/api/health'
+        - 'http://localhost:3000/api/health'
       interval: 5s
       timeout: 20s
       retries: 10
