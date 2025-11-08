@@ -31,7 +31,7 @@ services:
       - "traefik.http.routers.vitta-backend-secure.middlewares=strip-api-prefix"
       - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
       
-      - "traefik.http.services.vitta-frontend-svc.loadbalancer.server.port=80"
+      - "traefik.http.services.vitta-frontend-svc.loadbalancer.server.port=443"
       - "traefik.http.services.vitta-backend-svc.loadbalancer.server.port=3000"
 
   vitta-backend:
