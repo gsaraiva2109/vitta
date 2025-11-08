@@ -5,15 +5,6 @@ services:
     restart: unless-stopped
     volumes:
       - './dist:/usr/share/nginx/html'
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - '-f'
-        - 'http://localhost:80/health'
-      interval: 5s
-      timeout: 20s
-      retries: 10
     networks:
       - traefik_proxy_network
       - shared_backend_network
