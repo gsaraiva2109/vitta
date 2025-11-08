@@ -1,10 +1,14 @@
 FROM node:20-alpine AS builder
+
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
 WORKDIR /app
 
-COPY package*.json ./
+COPY frontend/package*.json ./
 RUN npm install
 
-COPY . .
+COPY frontend/. .
 RUN npm run build
 
 RUN ls -la /app/dist
@@ -15,7 +19,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN chown -R 101:101 /usr/share/nginx/html
+RUN chown -R nginx:nginx /usr/share/nginx/html
 RUN ls -l /usr/share/nginx/html
 
 EXPOSE 80
