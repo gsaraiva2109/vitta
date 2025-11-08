@@ -1,6 +1,9 @@
 services:
   vitta-frontend:
     image: 'nginx:alpine'
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: vitta-frontend
     restart: unless-stopped
     volumes:
@@ -36,7 +39,7 @@ services:
 
   vitta-backend:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     container_name: vitta-backend
     restart: unless-stopped
