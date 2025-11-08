@@ -2,11 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY api/package*.json ./
 
 RUN npm install --omit=dev
 
-COPY . .
+COPY api/. .
 
 ENV NODE_ENV=production
 EXPOSE 3000
