@@ -34,11 +34,8 @@ const Home = () => {
   const [machines, setMachines] = useState<Machine[]>([]);
 
   useEffect(() => {
-    const fetchMachinesData = async () => {
-      const data = await loadMachines();
-      setMachines(data);
-    };
-    fetchMachinesData();
+    // Carrega do localStorage (controller) com fallback vazio
+    setMachines(loadMachines([]));
   }, []);
 
   const metrics = useMemo(() => {
