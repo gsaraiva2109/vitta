@@ -1,12 +1,3 @@
-// const Relatorios = () => {
-//   return (
-//     <div className="h-screen bg-[#F4EEEE] w-full overflow-hidden flex">
-//       <Sidebar currentPage="relatorios" />
-//     </div>
-//   );
-// };
-// export default Relatorios;
-
 import Sidebar from "../../components/Sidebar";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
@@ -60,11 +51,11 @@ const Relatorios = () => {
     { label: 'Bloco B - Sala 202', value: 'Bloco B - Sala 202' },
   ];
 
-  const handleReportSelect = async (reportId: string) => {
+  const handleReportSelect = (reportId: string) => {
     setSelectedReport(reportId);
     setShowFilters(true);
     // Gera relatório imediatamente
-    const result = await generateReport(reportId, filters);
+    const result = generateReport(reportId, filters);
     setReportData(result.data);
     setSummary(result.summary);
   };
@@ -76,14 +67,14 @@ const Relatorios = () => {
     return `${d}/${m}/${y}`;
   };
 
-  const handleFilterChange = async () => {
+  const handleFilterChange = () => {
     if (selectedReport) {
       const updatedFilters = {
         ...filters,
         dataInicio: isoToBR(dateInicio),
         dataFim: isoToBR(dateFim),
       };
-      const result = await generateReport(selectedReport, updatedFilters);
+      const result = generateReport(selectedReport, updatedFilters);
       setReportData(result.data);
       setSummary(result.summary);
     }
