@@ -5,10 +5,10 @@ ENV VITE_API_URL=${VITE_API_URL}
 
 WORKDIR /app
 
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-COPY frontend/. .
+COPY . .
 RUN npm run build
 
 RUN ls -la /app/dist
