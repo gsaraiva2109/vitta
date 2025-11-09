@@ -306,10 +306,10 @@ const Maquinas = () => {
                     <div className="flex flex-col items-end mr-8">
                       <div
                         className={`w-36 h-7 mr-3 flex items-center justify-center truncate text-sm rounded-full ${badgeForStatus(m.status)} shadow-[0_6px_18px_rgba(0,0,0,0.08)]`}
-                        title={m.status}
+                        title={`Raw: ${m.status || 'N/A'} | Norm: ${normalizeStatus(m.status)}`}
                         style={{ whiteSpace: "nowrap" }}
                       >
-                        {(normalizeStatus(m.status) || 'N/A')}
+                        {`Raw: ${(m.status || 'N/A')} | Norm: ${normalizeStatus(m.status)}`}
                       </div>
 
                       <div className="mt-2 flex items-center">
