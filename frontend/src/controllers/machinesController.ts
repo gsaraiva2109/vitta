@@ -39,7 +39,7 @@ const prepareMachineForAPI = (frontendMachine: Partial<Machine>): any => {
   const apiMachine: any = {
     nome: frontendMachine.name,
     patrimonio: frontendMachine.patrimony,
-    status: frontendMachine.status,
+    status: frontendMachine.status?.toLowerCase(),
     funcao: frontendMachine.funcao,
     fabricante: frontendMachine.fabricante,
     dataAquisicao: frontendMachine.acquisitionDate ? brToISO(frontendMachine.acquisitionDate) : null,
