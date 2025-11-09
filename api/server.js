@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
+// This is a test comment for Coolify GitHub App auto-deploy
 // Rota raiz
 app.get('/', (req, res) => {
     res.send('API do Sistema de Agendamentos Online');
