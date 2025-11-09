@@ -60,11 +60,11 @@ const Relatorios = () => {
     { label: 'Bloco B - Sala 202', value: 'Bloco B - Sala 202' },
   ];
 
-  const handleReportSelect = (reportId: string) => {
+  const handleReportSelect = async (reportId: string) => {
     setSelectedReport(reportId);
     setShowFilters(true);
     // Gera relatório imediatamente
-    const result = generateReport(reportId, filters);
+    const result = await generateReport(reportId, filters);
     setReportData(result.data);
     setSummary(result.summary);
   };
@@ -76,14 +76,14 @@ const Relatorios = () => {
     return `${d}/${m}/${y}`;
   };
 
-  const handleFilterChange = () => {
+  const handleFilterChange = async () => {
     if (selectedReport) {
       const updatedFilters = {
         ...filters,
         dataInicio: isoToBR(dateInicio),
         dataFim: isoToBR(dateFim),
       };
-      const result = generateReport(selectedReport, updatedFilters);
+      const result = await generateReport(selectedReport, updatedFilters);
       setReportData(result.data);
       setSummary(result.summary);
     }
