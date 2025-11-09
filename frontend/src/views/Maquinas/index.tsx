@@ -16,95 +16,16 @@ import {
 } from "../../controllers/machinesController";
 import ViewMachine from "./ViewMachine";
 
-const initialMachines = [
-  {
-    id: "M-001",
-    name: "Máquina A",
-    patrimony: "P-1001",
-    status: "Ativo",
-    funcao: "Ventilador",
-    fabricante: "Acme Medical",
-    acquisitionDate: "15/06/2022",
-    location: "Bloco A - Sala 101",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12345",
-    modelo: "Model X",
-    rcOc: "RC-67890",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-002",
-    name: "Máquina B",
-    patrimony: "P-1002",
-    status: "Manutenção",
-    funcao: "Monit. Cardíaco",
-    fabricante: "HealthTech",
-    acquisitionDate: "02/11/2021",
-    location: "Bloco B - Sala 203",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12346",
-    modelo: "Model Y",
-    rcOc: "RC-67891",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-003",
-    name: "Máquina C",
-    patrimony: "P-1003",
-    status: "Pendente",
-    funcao: "Bomba de Infusão",
-    fabricante: "InfuseCo",
-    acquisitionDate: "20/02/2020",
-    location: "Bloco C - Enfermaria",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12347",
-    modelo: "Model Z",
-    rcOc: "RC-67892",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-004",
-    name: "Máquina D",
-    patrimony: "P-1004",
-    status: "Ativo",
-    funcao: "Ultrassom",
-    fabricante: "SonoLabs",
-    acquisitionDate: "10/01/2023",
-    location: "Centro de Imagem",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12348",
-    modelo: "Model W",
-    rcOc: "RC-67893",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-005",
-    name: "Máquina E",
-    patrimony: "P-1005",
-    status: "Inativo",
-    funcao: "Eletrocardiógrafo",
-    fabricante: "CardioCorp",
-    acquisitionDate: "30/08/2019",
-    location: "Bloco A - Sala 103",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12349",
-    modelo: "Model V",
-    rcOc: "RC-67894",
-    observacoes: "Nenhuma observação.",
-  },
-];
+
 
 const Maquinas = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("");
   const [search, setSearch] = useState<string>("");
-  const [machines, setMachines] = useState<Machine[]>(
-    initialMachines as unknown as Machine[],
-  );
+  const [machines, setMachines] = useState<Machine[]>([]);
+  const fetchMachines = async () => {
+    const data = await loadMachines();
+    setMachines(data);
+  };
   const [showCreate, setShowCreate] = useState(false);
   const [editTarget, setEditTarget] = useState<Machine | null>(null);
   const [viewTarget, setViewTarget] = useState<Machine | null>(null);
@@ -113,27 +34,45 @@ const Maquinas = () => {
   const [machineToDelete, setMachineToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    setMachines(loadMachines(initialMachines as unknown as Machine[]));
+    fetchMachines();
   }, []);
 
-  const handleCreate = (payload: Omit<Machine, "id">) => {
-    setMachines((prev) => ctrlAdd(prev, payload));
-    setShowCreate(false);
-    toast.current?.show({
-      severity: "success",
-      summary: "Máquina adicionada",
-      detail: "Registro criado com sucesso.",
-    });
+  const handleCreate = async (payload: Omit<Machine, "id">) => {
+    const newMachine = await ctrlAdd(payload);
+    if (newMachine) {
+      fetchMachines(); // Reload all machines from API
+      setShowCreate(false);
+      toast.current?.show({
+        severity: "success",
+        summary: "Máquina adicionada",
+        detail: "Registro criado com sucesso.",
+      });
+    } else {
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Falha ao adicionar máquina.",
+      });
+    }
   };
 
-  const handleUpdate = (updated: Machine) => {
-    setMachines((prev) => ctrlUpdate(prev, updated));
-    setEditTarget(null);
-    toast.current?.show({
-      severity: "success",
-      summary: "Máquina atualizada",
-      detail: "Alterações salvas.",
-    });
+  const handleUpdate = async (updated: Machine) => {
+    const result = await ctrlUpdate(updated);
+    if (result) {
+      fetchMachines(); // Reload all machines from API
+      setEditTarget(null);
+      toast.current?.show({
+        severity: "success",
+        summary: "Máquina atualizada",
+        detail: "Alterações salvas.",
+      });
+    } else {
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Falha ao atualizar máquina.",
+      });
+    }
   };
 
   const normalizeStatus = (status: string) => {
@@ -182,19 +121,33 @@ const Maquinas = () => {
     setConfirmVisible(true);
   };
 
-  const acceptDelete = () => {
+  const acceptDelete = async () => {
     if (machineToDelete) {
-      setMachines((prev) => ctrlRemove(prev, machineToDelete!));
-      toast.current?.show({
-        closable: false,
-        severity: 'error',
-        summary: 'Máquina removida',
-        style: { minWidth: '20rem' },
-        icon() {
-          return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
-        },
-        detail: 'A máquina foi excluída e não poderá ser recuperada.',
-      });
+      const success = await ctrlRemove(machineToDelete);
+      if (success) {
+        fetchMachines(); // Reload all machines from API
+        toast.current?.show({
+          closable: false,
+          severity: 'error',
+          summary: 'Máquina removida',
+          style: { minWidth: '20rem' },
+          icon() {
+            return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
+          },
+          detail: 'A máquina foi excluída e não poderá ser recuperada.',
+        });
+      } else {
+        toast.current?.show({
+          closable: false,
+          severity: 'error',
+          summary: 'Erro',
+          style: { minWidth: '20rem' },
+          icon() {
+            return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
+          },
+          detail: 'Falha ao remover máquina.',
+        });
+      }
     }
     setMachineToDelete(null);
     setConfirmVisible(false);
