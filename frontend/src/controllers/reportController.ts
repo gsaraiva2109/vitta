@@ -23,12 +23,12 @@ const isDateInRange = (dateStr: string, startStr: string, endStr: string): boole
   return true;
 };
 
-export const generateReport = (
+export const generateReport = async (
   type: string,
   filters: ReportFilters
-): { data: ReportData[]; summary: ReportSummary } => {
-  const machines = loadMachines([]);
-  const maintenances = loadMaintenances([]);
+): Promise<{ data: ReportData[]; summary: ReportSummary }> => {
+  const machines = await loadMachines();
+  const maintenances = await loadMaintenances();
 
   let filteredData: ReportData[] = [];
   
