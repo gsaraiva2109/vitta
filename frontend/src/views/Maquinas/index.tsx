@@ -75,8 +75,8 @@ const Maquinas = () => {
     }
   };
 
-  const normalizeStatus = (status: string) => {
-    const s = (status || "").toLowerCase();
+  const normalizeStatus = (status: string | null | undefined) => {
+    const s = (status || "").trim().toLowerCase();
     if (s.includes("manuten") || s.includes("manutenção")) return "manutencao";
     if (s.includes("inativ")) return "inativo";
     if (s.includes("ativ") && !s.includes("inativ")) return "ativo";
@@ -309,7 +309,7 @@ const Maquinas = () => {
                         title={m.status}
                         style={{ whiteSpace: "nowrap" }}
                       >
-                        {(m.status || 'N/A')}
+                        {(normalizeStatus(m.status) || 'N/A')}
                       </div>
 
                       <div className="mt-2 flex items-center">
