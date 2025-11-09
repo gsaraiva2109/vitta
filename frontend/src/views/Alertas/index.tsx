@@ -30,8 +30,11 @@ const Alertas = () => {
   const [urgencyFilter, setUrgencyFilter] = useState<string>('');
 
   useEffect(() => {
-    const machines = loadMachines([]);
-    setAlerts(generateAlerts(machines));
+    const fetchAlerts = async () => {
+      const machines = await loadMachines();
+      setAlerts(generateAlerts(machines));
+    };
+    fetchAlerts();
   }, []);
 
   const urgencyOptions = [
