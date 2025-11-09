@@ -92,12 +92,12 @@ const Maquinas = () => {
   ];
 
   const badgeForStatus = (status: string | null | undefined) => {
-    const s = (status || "").toLowerCase();
-    if (s.includes("manutenção") || s.includes("manutenc"))
+    const normalized = normalizeStatus(status || "");
+    if (normalized === "manutencao")
       return "bg-[#DBD83B] text-gray-800";
-    if (s.includes("inativo")) return "bg-[#D2D1D1] text-gray-800";
-    if (s.includes("ativo")) return "bg-[#8AE67E] text-gray-800";
-    if (s.includes("pendente")) return "bg-[#D95555] text-gray-800";
+    if (normalized === "inativo") return "bg-[#D2D1D1] text-gray-800";
+    if (normalized === "ativo") return "bg-[#8AE67E] text-gray-800";
+    if (normalized === "pendente") return "bg-[#D95555] text-gray-800";
     return "bg-gray-100 text-gray-700";
   };
 
@@ -309,7 +309,7 @@ const Maquinas = () => {
                         title={m.status}
                         style={{ whiteSpace: "nowrap" }}
                       >
-                        {m.status}
+                        {(m.status || 'N/A')}
                       </div>
 
                       <div className="mt-2 flex items-center">
