@@ -1,0 +1,19 @@
+
+{
+  "machines": [
+    {
+      "nome": "Torno CNC K6",
+      "patrimonio": "K6-12345",
+      "status": "active",
+      "horimetro": 1500,
+      "descricao": "Máquina de teste para performance com K6"
+    },
+    {
+      "nome": "Fresadora K6",
+      "patrimonio": "K6-67890",
+      "status": "inactive",
+      "horimetro": 2500,
+      "descricao": "Fresadora de teste para performance com K6"
+    }
+  ]
+}
