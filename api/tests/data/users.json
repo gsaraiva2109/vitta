@@ -1,0 +1,17 @@
+
+{
+  "users": [
+    {
+      "nome": "Usuario K6 Teste 1",
+      "matricula": "k6user001",
+      "senha": "password123",
+      "role": "user"
+    },
+    {
+      "nome": "Usuario K6 Teste 2",
+      "matricula": "k6user002",
+      "senha": "password123",
+      "role": "admin"
+    }
+  ]
+}
