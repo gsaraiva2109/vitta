@@ -12,7 +12,7 @@ import './models/index.js';
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
-import manutencaoRoutes from './routes/manutencaoRoutes.js';
+// import manutencaoRoutes from './routes/manutencaoRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 app.use('/usuarios', usuarioRoutes);
 app.use('/auth', authRoutes);
 app.use('/maquinas', maquinaRoutes);
-app.use('/manutencoes', manutencaoRoutes);
+// app.use('/manutencoes', manutencaoRoutes);
 
 
 // Rota coringa: deve ser a **última**
