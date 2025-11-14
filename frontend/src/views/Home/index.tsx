@@ -1,7 +1,7 @@
 import Sidebar from '../../components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
 import type { Machine } from '../../models/Machine';
-import { loadMachines } from '../../controllers/machinesController';
+import { authenticatedFetch } from '../../services/apiService';
 
 // Helpers (reaproveitando padrões da página Máquinas)
 const normalizeStatus = (status: string) => {
@@ -34,8 +34,17 @@ const Home = () => {
   const [machines, setMachines] = useState<Machine[]>([]);
 
   useEffect(() => {
-    // Carrega do localStorage (controller) com fallback vazio
-    setMachines(loadMachines([]));
+    // Carrega máquinas do backend
+    const fetchMachines = async () => {
+      try {
+        const data = await authenticatedFetch<Machine[]>('/maquinas');
+        setMachines(data || []);
+      } catch (err) {
+        console.error('Erro ao carregar máquinas:', err);
+        setMachines([]);
+      }
+    };
+    fetchMachines();
   }, []);
 
   const metrics = useMemo(() => {
