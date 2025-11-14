@@ -44,16 +44,7 @@ export async function authenticatedFetch<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const rawApiUrl = import.meta.env.VITE_API_URL;
-  if (!rawApiUrl) {
-    throw new Error('VITE_API_URL não está definido. Defina em .env.local');
-  }
-
-  // Remove barras finais da URL base e garante que o path comece com '/'
-  const apiUrl = String(rawApiUrl).replace(/\/+$/g, '');
-  const endpoint = path.startsWith('/') ? path : `/${path}`;
-
-  const res = await fetch(`${apiUrl}${endpoint}`, {
+  const res = await fetch(`/api${path}`, {
     ...options,
     // Passamos o objeto de headers atualizado
     headers: headers,

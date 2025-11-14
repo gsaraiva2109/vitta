@@ -1,7 +1,7 @@
 import Sidebar from '../../components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
 import type { Machine } from '../../models/Machine';
-import { authenticatedFetch } from '../../services/apiService';
+import { loadMachines } from '../../controllers/machinesController';
 
 // Helpers (reaproveitando padrões da página Máquinas)
 const normalizeStatus = (status: string) => {
@@ -35,16 +35,7 @@ const Home = () => {
 
   useEffect(() => {
     // Carrega máquinas do backend
-    const fetchMachines = async () => {
-      try {
-        const data = await authenticatedFetch<Machine[]>('/maquinas');
-        setMachines(data || []);
-      } catch (err) {
-        console.error('Erro ao carregar máquinas:', err);
-        setMachines([]);
-      }
-    };
-    fetchMachines();
+    setMachines(loadMachines([]));
   }, []);
 
   const metrics = useMemo(() => {
