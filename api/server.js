@@ -25,9 +25,9 @@ app.get('/', (req, res) => {
 
 
   // Usar as rotas
-app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/maquinas', maquinaRoutes);
+app.use('/usuarios', usuarioRoutes);
+app.use('/auth', authRoutes);
+app.use('/maquinas', maquinaRoutes);
 
 
 // Rota coringa: deve ser a **última**

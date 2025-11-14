@@ -45,7 +45,7 @@ export async function authenticatedFetch<T>(
   }
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  const res = await fetch(`${apiUrl}/api${path}`, {
+  const res = await fetch(`${apiUrl}${path}`, {
     ...options,
     // Passamos o objeto de headers atualizado
     headers: headers,
