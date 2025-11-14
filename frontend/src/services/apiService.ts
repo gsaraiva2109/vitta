@@ -5,6 +5,17 @@ import { getToken } from "./authService";
 // ----------------------------------------------------------------
 // Wrapper personalizado para requisições fetch com autenticação JWT
 // ----------------------------------------------------------------
+
+// Determinar a URL base da API
+const getApiBaseUrl = (): string => {
+  // Em desenvolvimento com proxy, usar /api
+  if (import.meta.env.DEV) {
+    return '/api';
+  }
+  // Em produção, usar a variável de ambiente ou padrão
+  return import.meta.env.VITE_API_URL || '/api';
+};
+
 export async function authenticatedFetch<T>(
   path: string,
   options?: RequestInit
@@ -37,14 +48,18 @@ export async function authenticatedFetch<T>(
   }
 
   // ----------------------------------------------------------------
-  // 3. CORREÇÃO DA LINHA 23: Adiciona o cabeçalho Authorization
+  // 3. Adiciona o cabeçalho Authorization com JWT
   // ----------------------------------------------------------------
   if (token) {
     // Agora o TypeScript sabe que 'headers' é um Record<string, string> e permite a chave
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`/api${path}`, {
+  // Construir URL completa
+  const baseUrl = getApiBaseUrl();
+  const fullUrl = path.startsWith('/') ? `${baseUrl}${path}` : `${baseUrl}/${path}`;
+
+  const res = await fetch(fullUrl, {
     ...options,
     // Passamos o objeto de headers atualizado
     headers: headers,

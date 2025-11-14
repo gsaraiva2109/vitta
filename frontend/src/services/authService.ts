@@ -1,7 +1,18 @@
 import type { LoginRequest, LoginResponse } from '../models/User';
 
+// Determinar a URL base da API
+const getApiBaseUrl = (): string => {
+  if (import.meta.env.DEV) {
+    return '/api';
+  }
+  return import.meta.env.VITE_API_URL || '/api';
+};
+
 export async function login(payload: LoginRequest): Promise<LoginResponse> {
-  const res = await fetch(`/api/auth/login`, {
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}/auth/login`;
+  
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
