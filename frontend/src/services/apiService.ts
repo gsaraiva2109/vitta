@@ -44,7 +44,8 @@ export async function authenticatedFetch<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`/api${path}`, {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const res = await fetch(`${apiUrl}/api${path}`, {
     ...options,
     // Passamos o objeto de headers atualizado
     headers: headers,
