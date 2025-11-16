@@ -1,31 +1,28 @@
-name: Deploy Backend
-
+name: Deploy Backend to Coolify
 on:
   push:
-    paths:
-      - 'api/**' # Dispara apenas quando arquivos na pasta `api` são alterados.
+    paths: 
+      - "api/**" # Dispara o workflow apenas para alterações na pasta 'api'
 
 jobs:
-  deploy:
-    name: Trigger Backend Deploy via Webhook
+  backend_deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Trigger Backend Deploy
-        env:
-          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
-          BACKEND_WEBHOOK_URL: ${{ secrets.COOLIFY_BACKEND_WEBHOOK_URL }}
-        run: |
-          echo "🚀 Triggering Backend Deploy Webhook..."
-          
-          RESPONSE=$(curl -X POST -s -o response.txt -w "%{http_code}" \
-            -H "Authorization: Bearer $COOLIFY_TOKEN" \
-            "$BACKEND_WEBHOOK_URL" -d "{}")
-          
-          if [ $RESPONSE -eq 200 ]; then
-            echo "✅ Backend Deploy Triggered Successfully!"
-          else
-            echo "❌ Error Triggering Backend Deploy!"
-            cat response.txt
-            exit 1
-          fi
+      - name: Check Out Code
+        uses: actions/checkout@v3
+
+      - name: Build Backend Image and Push to ghcr.io
+        uses: docker/build-push-action@v4
+        with:
+          context: ./api
+          file: api/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/${{ github.actor }}/backend:latest
+
+      - name: Trigger Backend Deploy in Coolify
+        run: | 
+          echo "🚀 Triggering Backend Deploy via Coolify Webhook..."
+          curl --request GET '${{ secrets.BACKEND_COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'

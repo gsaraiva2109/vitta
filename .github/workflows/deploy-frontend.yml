@@ -1,31 +1,28 @@
-name: Deploy Frontend
-
+name: Deploy Frontend to Coolify
 on:
   push:
-    paths:
-      - 'frontend/**' # Dispara apenas quando arquivos na pasta `frontend` são alterados.
+    paths: 
+      - "frontend/**" # Dispara o workflow apenas para alterações na pasta 'frontend'
 
 jobs:
-  deploy:
-    name: Trigger Frontend Deploy via Webhook
+  frontend_deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Trigger Frontend Deploy
-        env:
-          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }} # Token de autenticação
-          FRONTEND_WEBHOOK_URL: ${{ secrets.COOLIFY_FRONTEND_WEBHOOK_URL }} # URL do webhook para frontend
-        run: |
-          echo "🚀 Triggering Frontend Deploy Webhook..."
-          
-          RESPONSE=$(curl -X POST -s -o response.txt -w "%{http_code}" \
-            -H "Authorization: Bearer $COOLIFY_TOKEN" \
-            "$FRONTEND_WEBHOOK_URL" -d "{}")
-          
-          if [ $RESPONSE -eq 200 ]; then
-            echo "✅ Frontend Deploy Triggered Successfully!"
-          else
-            echo "❌ Error Triggering Frontend Deploy!"
-            cat response.txt
-            exit 1
-          fi
+      - name: Check Out Code
+        uses: actions/checkout@v3
+
+      - name: Build Frontend Image and Push to ghcr.io
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          file: frontend/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/${{ github.actor }}/frontend:latest
+
+      - name: Trigger Frontend Deploy in Coolify
+        run: | 
+          echo "🚀 Triggering Frontend Deploy via Coolify Webhook..."
+          curl --request GET '${{ secrets.FRONTEND_COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
