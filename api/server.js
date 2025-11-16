@@ -2,11 +2,19 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
- 
+
 import { connectDB} from './config/database.js';
 
+import './models/index.js';
+
+import usuarioRoutes from './routes/usuarioRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import maquinaRoutes from './routes/maquinaRoutes.js';
+import authMiddleware from './middleware/authMiddleware.js';
+
+dotenv.config();
 console.log('Environment variables loaded.');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
