@@ -1,0 +1,21 @@
+name: Deploy Backend
+
+on:
+  push:
+    paths:
+      - 'api/**' # Dispara apenas quando arquivos dentro da pasta 'api' são alterados
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v3
+
+      - name: Deploy Backend with Coolify
+        uses: ChristopheCVB/coolify-deploy-action@v2.2.0
+        with:
+          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_APP_ID: ${{ secrets.BACKEND_APP_ID }}
+          COOLIFY_BRANCH: 'main'
