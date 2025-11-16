@@ -67,6 +67,7 @@ export async function authenticatedFetch<T>(
 
   // ... (restante do código: tratamento de erros)
   if (!res.ok) {
+    // Tenta ler JSON do corpo de erro, com fallback caso não seja JSON
     const errorData = await res
       .json()
       .catch(() => ({ message: "Erro na requisição." }));
@@ -76,6 +77,24 @@ export async function authenticatedFetch<T>(
     throw new Error(errorData.message || `Erro do servidor: ${res.status}`);
   }
 
-  // Retorna os dados tipados
+  // Se não houver conteúdo (204 No Content) retornamos undefined
+  if (res.status === 204) {
+    return undefined as unknown as T;
+  }
+
+  // Só chamar res.json() quando houver um body JSON para evitar
+  // 'Unexpected end of JSON input' em respostas vazias
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    // Tentar ler como texto e retornar texto vazio ou convertido
+    const text = await res.text().catch(() => '');
+    try {
+      return (text ? JSON.parse(text) : ({} as T)) as T;
+    } catch {
+      return (text as unknown) as T;
+    }
+  }
+
+  // Retorna os dados tipados como JSON
   return res.json() as Promise<T>;
 }
