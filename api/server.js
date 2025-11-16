@@ -12,7 +12,7 @@ import './models/index.js';
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
-// import manutencaoRoutes from './routes/manutencaoRoutes.js';
+import authMiddleware from './middleware/authMiddleware.js';
 
 dotenv.config();
 const app = express();
@@ -26,11 +26,12 @@ app.get('/', (req, res) => {
 
 
   // Usar as rotas
-app.use('/usuarios', usuarioRoutes);
+// rota de auth (login) fica pública
 app.use('/auth', authRoutes);
-app.use('/maquinas', maquinaRoutes);
-// app.use('/manutencoes', manutencaoRoutes);
 
+// rotas protegidas por JWT
+app.use('/usuarios', authMiddleware, usuarioRoutes);
+app.use('/maquinas', authMiddleware, maquinaRoutes);
 
 // Rota coringa: deve ser a **última**
 app.use((req, res) => {
