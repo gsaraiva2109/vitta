@@ -2,19 +2,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+dotenv.config();
  
 import { connectDB} from './config/database.js';
 
-// carregar modelos e associações
-import './models/index.js';
-
-// Importando Rotas
-import usuarioRoutes from './routes/usuarioRoutes.js';
-import authRoutes from './routes/authRoutes.js';
-import maquinaRoutes from './routes/maquinaRoutes.js';
-import authMiddleware from './middleware/authMiddleware.js';
-
-dotenv.config();
+console.log('Environment variables loaded.');
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -41,7 +33,11 @@ app.use((req, res) => {
   });
 });
   
-connectDB();
+connectDB().then(() => {
+  console.log('Database connected successfully.');
+}).catch(err => {
+  console.error('Database connection failed:', err.message, err.stack);
+});
 
 const PORT = process.env.PORT || 3000;
 
