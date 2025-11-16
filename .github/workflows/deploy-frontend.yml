@@ -1,0 +1,21 @@
+name: Deploy Frontend
+
+on:
+  push:
+    paths:
+      - 'frontend/**' # Dispara apenas quando arquivos dentro da pasta 'frontend' são alterados
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v3
+
+      - name: Deploy Frontend with Coolify
+        uses: ChristopheCVB/coolify-deploy-action@v2.2.0
+        with:
+          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_APP_ID: ${{ secrets.FRONTEND_APP_ID }}
+          COOLIFY_BRANCH: 'main'
