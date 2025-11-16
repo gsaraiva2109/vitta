@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy Frontend with Coolify
-        uses: ChristopheCVB/coolify-deploy-action@v2.2.0
+        uses: ChristopheCVB/coolify-deploy-action@v3.1.0
         with:
           COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
           COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
