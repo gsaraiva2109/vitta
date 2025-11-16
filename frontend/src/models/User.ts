@@ -6,6 +6,7 @@ export interface LoginRequest {
 export interface User {
   id: number;
   matricula: string;
+  tipo: 'user' | 'manager';
 }
 
 export interface LoginResponse {
