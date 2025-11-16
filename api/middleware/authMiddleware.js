@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 
-// Middleware simples para validar JWT no header Authorization: Bearer <token>
+//Middleware simples para validar JWT no header Authorization: Bearer <token>
 export default function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization || req.headers.Authorization || req.get('Authorization');
   if (!authHeader) {
