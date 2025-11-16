@@ -3,18 +3,29 @@ name: Deploy Backend
 on:
   push:
     paths:
-      - 'api/**' # Dispara apenas quando arquivos dentro da pasta 'api' são alterados
+      - 'api/**' # Dispara apenas quando arquivos na pasta `api` são alterados.
 
 jobs:
-  deploy-backend:
+  deploy:
+    name: Trigger Backend Deploy via Webhook
     runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v3
 
-      - name: Deploy Backend with Coolify
-        uses: ChristopheCVB/coolify-deploy-action@v3.1.0
-        with:
-          domain: ${{ secrets.COOLIFY_URL }}
-          token: ${{ secrets.COOLIFY_TOKEN }}
-          uuid: ${{ secrets.BACKEND_APP_ID }}
+    steps:
+      - name: Trigger Backend Deploy
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          BACKEND_WEBHOOK_URL: ${{ secrets.COOLIFY_BACKEND_WEBHOOK_URL }}
+        run: |
+          echo "🚀 Triggering Backend Deploy Webhook..."
+          
+          RESPONSE=$(curl -X POST -s -o response.txt -w "%{http_code}" \
+            -H "Authorization: Bearer $COOLIFY_TOKEN" \
+            "$BACKEND_WEBHOOK_URL" -d "{}")
+          
+          if [ $RESPONSE -eq 200 ]; then
+            echo "✅ Backend Deploy Triggered Successfully!"
+          else
+            echo "❌ Error Triggering Backend Deploy!"
+            cat response.txt
+            exit 1
+          fi
