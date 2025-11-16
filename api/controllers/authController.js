@@ -15,26 +15,38 @@ export async function login(req, res) {
     const stored = usuario.senha || '';
     let passwordMatches = false;
 
-    // Primeiro tente comparar com hash (bcrypt). Se a senha no BD for plain text, também tente comparação direta.
+    console.log('Attempting password comparison...');
+
     try {
       passwordMatches = await bcrypt.compare(senha, stored);
+      console.log('Bcrypt comparison result:', passwordMatches);
     } catch (err) {
-      // ignore
+      console.error('Bcrypt comparison error (ignored for fallback):', err.message);
     }
+
     if (!passwordMatches) {
-      // fallback plain comparison
-      if (senha === stored) passwordMatches = true;
+      if (senha === stored) {
+        passwordMatches = true;
+        console.log('Plain text comparison successful.');
+      } else {
+        console.log('Plain text comparison failed.');
+      }
     }
 
     if (!passwordMatches) return res.status(401).json({ message: 'Credenciais inválidas' });
 
-    // Assinar token JWT simples
-    const payload = { id: usuario.idUsuario, matricula: usuario.matricula };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
+    console.log('Password matches. Generating token...');
 
-    res.json({ token, user: { id: usuario.idUsuario, matricula: usuario.matricula } });
+    // Assinar token JWT simples
+    const payload = { id: usuario.idUsuario, matricula: usuario.matricula, tipo: usuario.tipo }; // Adicionado tipo ao payload
+    console.log('JWT Payload:', payload);
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
+    console.log('JWT Token generated.');
+
+    res.json({ token, user: { id: usuario.idUsuario, matricula: usuario.matricula, tipo: usuario.tipo } }); // Adicionado tipo ao retorno
   } catch (error) {
-    console.error('Erro login:', error);
+    console.error('Erro login:', error.message, error.stack);
+    console.log({ matricula, senha: '[REDACTED]' }); // Log input but redact sensitive info
     res.status(500).json({ message: 'Erro interno' });
   }
 }
