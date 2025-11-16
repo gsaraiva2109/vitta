@@ -19,8 +19,7 @@ if ((process.env.DB_URL && process.env.DB_URL.includes('render.com')) || process
 }
 
 const sequelize = process.env.DB_URL
-  ? new Sequelize(process.env.DB_URL, commonOptions)
-  : new Sequelize({
+  ? new Sequelize(process.env.DB_URL, commonOptions) : new Sequelize({
       ...commonOptions,
       host: process.env.DB_HOST || 'localhost',
       username: process.env.DB_USER,
