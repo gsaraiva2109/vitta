@@ -111,8 +111,8 @@ const Maquinas = () => {
     { label: "Em Manutenção", value: "manutencao" }
   ];
 
-  const badgeForStatus = (status: string) => {
-    const s = status?.toLowerCase();
+  const badgeForStatus = (status: string | undefined) => {
+    const s = (status || "").toLowerCase();
     if (s.includes("manutenção") || s.includes("manutenc"))
       return "bg-[#DBD83B] text-gray-800";
     if (s.includes("inativo")) return "bg-[#D2D1D1] text-gray-800";
@@ -130,8 +130,8 @@ const Maquinas = () => {
       }
       if (!q) return true;
       return (
-        machine.name.toLowerCase().includes(q) ||
-        machine.patrimony.toLowerCase().includes(q)
+        (machine.name ?? "").toLowerCase().includes(q) ||
+        (machine.patrimony ?? "").toLowerCase().includes(q)
       );
     });
   }, [search, selectedFilter, machines]);
