@@ -15,7 +15,6 @@ jobs:
       - name: Deploy Frontend with Coolify
         uses: ChristopheCVB/coolify-deploy-action@v3.1.0
         with:
-          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
-          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
-          COOLIFY_APP_ID: ${{ secrets.FRONTEND_APP_ID }}
-          COOLIFY_BRANCH: 'main'
+          domain: ${{ secrets.COOLIFY_URL }}
+          token: ${{ secrets.COOLIFY_TOKEN }}
+          uuid: ${{ secrets.FRONTEND_APP_ID }}
