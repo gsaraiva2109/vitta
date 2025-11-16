@@ -48,13 +48,14 @@ export async function create(req, res) {
 
 export async function update(req, res) {
   try {
-    const [updated] = await Maquina.update(req.body, {
-      where: { id: req.params.id }
-    });
-    if (!updated) {
+    // Encontrar a instância pela PK (idMaquina) e aplicar mudanças via instance.save()
+    const maquina = await Maquina.findByPk(req.params.id);
+    if (!maquina) {
       return res.status(404).json({ message: 'Máquina não encontrada' });
     }
-    const maquina = await Maquina.findByPk(req.params.id);
+
+    // Atualiza somente os campos recebidos
+    await maquina.update(req.body);
     res.json(maquina);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -63,12 +64,12 @@ export async function update(req, res) {
 
 export async function remove(req, res) {
   try {
-    const deleted = await Maquina.destroy({
-      where: { id: req.params.id }
-    });
-    if (!deleted) {
+    // Buscar por PK e destruir a instância para evitar usar campo incorreto
+    const maquina = await Maquina.findByPk(req.params.id);
+    if (!maquina) {
       return res.status(404).json({ message: 'Máquina não encontrada' });
     }
+    await maquina.destroy();
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
