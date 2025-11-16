@@ -19,11 +19,8 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
   });
   if (!res.ok) throw new Error((await res.json()).message || 'Erro no login');
   const data = await res.json();
-  // store token and user data
-  if (data.token) {
-    localStorage.setItem('vitta_token', data.token);
-    localStorage.setItem('vitta_user', JSON.stringify(data.user));
-  }
+  // store token
+  if (data.token) localStorage.setItem('vitta_token', data.token);
   return data as LoginResponse;
 }
 

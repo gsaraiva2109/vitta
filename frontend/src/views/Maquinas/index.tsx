@@ -108,7 +108,7 @@ const Maquinas = () => {
     { label: "Todos os status", value: "" },
     { label: "Ativos", value: "ativo" },
     { label: "Inativos", value: "inativo" },
-    { label: "Em Manutenção", value: "manutencao" },
+    { label: "Em Manutenção", value: "manutencao" }
   ];
 
   const badgeForStatus = (status: string) => {
