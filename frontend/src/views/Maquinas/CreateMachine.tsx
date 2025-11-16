@@ -4,7 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
 import type { Machine } from '../../models/Machine';
-import { isoToBR } from '../../controllers/machinesController';
+import { isoToBR } from '../../controllers/machinesApiController';
 
 type CreatePayload = Omit<Machine, 'id'>;
 

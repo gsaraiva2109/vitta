@@ -9,131 +9,90 @@ import CreateMachine from "./CreateMachine";
 import EditMachine from "./EditMachine";
 import type { Machine } from "../../models/Machine";
 import {
-  loadMachines,
-  addMachine as ctrlAdd,
-  updateMachine as ctrlUpdate,
-  removeMachine as ctrlRemove,
-} from "../../controllers/machinesController";
+  loadMachinesFromAPI,
+  createMachineAPI,
+  updateMachineAPI,
+  deleteMachineAPI,
+} from "../../controllers/machinesApiController";
 import ViewMachine from "./ViewMachine";
-
-const initialMachines = [
-  {
-    id: "M-001",
-    name: "Máquina A",
-    patrimony: "P-1001",
-    status: "Ativo",
-    funcao: "Ventilador",
-    fabricante: "Acme Medical",
-    acquisitionDate: "15/06/2022",
-    location: "Bloco A - Sala 101",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12345",
-    modelo: "Model X",
-    rcOc: "RC-67890",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-002",
-    name: "Máquina B",
-    patrimony: "P-1002",
-    status: "Manutenção",
-    funcao: "Monit. Cardíaco",
-    fabricante: "HealthTech",
-    acquisitionDate: "02/11/2021",
-    location: "Bloco B - Sala 203",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12346",
-    modelo: "Model Y",
-    rcOc: "RC-67891",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-003",
-    name: "Máquina C",
-    patrimony: "P-1003",
-    status: "Pendente",
-    funcao: "Bomba de Infusão",
-    fabricante: "InfuseCo",
-    acquisitionDate: "20/02/2020",
-    location: "Bloco C - Enfermaria",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12347",
-    modelo: "Model Z",
-    rcOc: "RC-67892",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-004",
-    name: "Máquina D",
-    patrimony: "P-1004",
-    status: "Ativo",
-    funcao: "Ultrassom",
-    fabricante: "SonoLabs",
-    acquisitionDate: "10/01/2023",
-    location: "Centro de Imagem",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12348",
-    modelo: "Model W",
-    rcOc: "RC-67893",
-    observacoes: "Nenhuma observação.",
-  },
-  {
-    id: "M-005",
-    name: "Máquina E",
-    patrimony: "P-1005",
-    status: "Inativo",
-    funcao: "Eletrocardiógrafo",
-    fabricante: "CardioCorp",
-    acquisitionDate: "30/08/2019",
-    location: "Bloco A - Sala 103",
-    maintenanceInterval: "6",
-    calibrationInterval: "12",
-    serialNumber: "SN-12349",
-    modelo: "Model V",
-    rcOc: "RC-67894",
-    observacoes: "Nenhuma observação.",
-  },
-];
 
 const Maquinas = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("");
   const [search, setSearch] = useState<string>("");
-  const [machines, setMachines] = useState<Machine[]>(
-    initialMachines as unknown as Machine[],
-  );
+  const [machines, setMachines] = useState<Machine[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [editTarget, setEditTarget] = useState<Machine | null>(null);
   const [viewTarget, setViewTarget] = useState<Machine | null>(null);
   const toast = useRef<Toast | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [machineToDelete, setMachineToDelete] = useState<string | null>(null);
+  const [machineToDelete, setMachineToDelete] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Carrega máquinas da API ao montar o componente
   useEffect(() => {
-    setMachines(loadMachines(initialMachines as unknown as Machine[]));
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await loadMachinesFromAPI();
+        setMachines(data);
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Erro ao carregar máquinas';
+        setError(errorMsg);
+        toast.current?.show({
+          severity: "error",
+          summary: "Erro ao carregar",
+          detail: errorMsg,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
-  const handleCreate = (payload: Omit<Machine, "id">) => {
-    setMachines((prev) => ctrlAdd(prev, payload));
-    setShowCreate(false);
-    toast.current?.show({
-      severity: "success",
-      summary: "Máquina adicionada",
-      detail: "Registro criado com sucesso.",
-    });
+  const handleCreate = async (payload: Omit<Machine, "id">) => {
+    try {
+      const newMachine = await createMachineAPI(payload);
+      setMachines((prev) => [...prev, newMachine]);
+      setShowCreate(false);
+      toast.current?.show({
+        severity: "success",
+        summary: "Máquina adicionada",
+        detail: "Registro criado com sucesso.",
+      });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Erro ao criar máquina';
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: errorMsg,
+      });
+    }
   };
 
-  const handleUpdate = (updated: Machine) => {
-    setMachines((prev) => ctrlUpdate(prev, updated));
-    setEditTarget(null);
-    toast.current?.show({
-      severity: "success",
-      summary: "Máquina atualizada",
-      detail: "Alterações salvas.",
-    });
+  const handleUpdate = async (updated: Machine) => {
+    try {
+      const machineId = typeof updated.id === 'string' ? parseInt(updated.id) : updated.id;
+      await updateMachineAPI(machineId, updated);
+      setMachines((prev) =>
+        prev.map((m) => (m.id === updated.id ? updated : m))
+      );
+      setEditTarget(null);
+      toast.current?.show({
+        severity: "success",
+        summary: "Máquina atualizada",
+        detail: "Alterações salvas.",
+      });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Erro ao atualizar máquina';
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: errorMsg,
+      });
+    }
   };
 
   const normalizeStatus = (status: string) => {
@@ -177,24 +136,38 @@ const Maquinas = () => {
     });
   }, [search, selectedFilter, machines]);
 
-  const handleDeleteRequest = (machineId: string) => {
-    setMachineToDelete(machineId);
+  const handleDeleteRequest = (machineId: string | number) => {
+    const numId = typeof machineId === 'string' ? parseInt(machineId) : machineId;
+    setMachineToDelete(numId);
     setConfirmVisible(true);
   };
 
-  const acceptDelete = () => {
+  const acceptDelete = async () => {
     if (machineToDelete) {
-      setMachines((prev) => ctrlRemove(prev, machineToDelete!));
-      toast.current?.show({
-        closable: false,
-        severity: 'error',
-        summary: 'Máquina removida',
-        style: { minWidth: '20rem' },
-        icon() {
-          return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
-        },
-        detail: 'A máquina foi excluída e não poderá ser recuperada.',
-      });
+      try {
+        await deleteMachineAPI(machineToDelete);
+        setMachines((prev) => prev.filter((m) => {
+          const mId = typeof m.id === 'string' ? parseInt(m.id) : m.id;
+          return mId !== machineToDelete;
+        }));
+        toast.current?.show({
+          closable: false,
+          severity: 'error',
+          summary: 'Máquina removida',
+          style: { minWidth: '20rem' },
+          icon() {
+            return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
+          },
+          detail: 'A máquina foi excluída e não poderá ser recuperada.',
+        });
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Erro ao deletar máquina';
+        toast.current?.show({
+          severity: "error",
+          summary: "Erro",
+          detail: errorMsg,
+        });
+      }
     }
     setMachineToDelete(null);
     setConfirmVisible(false);
@@ -336,7 +309,11 @@ const Maquinas = () => {
         {/* Lista vertical de cards: ocupa o resto da altura e é scrollable */}
         <div className="px-8 pb-8 pt-0 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-6">
-            {filteredMachines.length === 0 ? (
+            {loading ? (
+              <div className="text-center text-gray-500 py-12">Carregando máquinas...</div>
+            ) : error ? (
+              <div className="text-center text-red-500 py-12">Erro: {error}</div>
+            ) : filteredMachines.length === 0 ? (
               <div className="text-center text-gray-500 py-12">Nenhuma máquina encontrada.</div>
             ) : filteredMachines.map((m) => (
                <div key={m.id} className="w-full bg-white rounded-xl shadow-sm p-4 flex flex-col justify-between">
