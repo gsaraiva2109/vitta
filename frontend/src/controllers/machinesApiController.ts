@@ -62,8 +62,9 @@ export const loadMachineById = async (id: number): Promise<Machine> => {
  */
 export const createMachineAPI = async (data: Omit<Machine, 'id'>): Promise<Machine> => {
   try {
-    const res = await api.createMachine(data as any);
-    return mapApiToMachine(res);
+      const payload = mapMachineToApi(data as Partial<Machine>);
+      const res = await api.createMachine(payload);
+      return mapApiToMachine(res);
   } catch (error) {
     console.error('Erro ao criar máquina:', error);
     throw error;
@@ -78,7 +79,8 @@ export const updateMachineAPI = async (
   data: Partial<Machine>
 ): Promise<Machine> => {
   try {
-    const res = await api.updateMachine(id, data as any);
+    const payload = mapMachineToApi(data as Partial<Machine>);
+    const res = await api.updateMachine(id, payload);
     return mapApiToMachine(res);
   } catch (error) {
     console.error('Erro ao atualizar máquina:', error);
@@ -109,4 +111,29 @@ export const brToISO = (br: string) => {
   if (!br) return '';
   const [d, m, y] = br.split('/');
   return `${y}-${m}-${d}`;
+};
+
+// Mapear payload do frontend para o formato esperado pela API/DB
+const mapMachineToApi = (m: Partial<Machine>): any => {
+  const obj: any = {};
+  if (m.name !== undefined) obj.nome = m.name;
+  if (m.patrimony !== undefined) obj.patrimonio = m.patrimony;
+  if (m.funcao !== undefined) obj.funcao = m.funcao;
+  if (m.fabricante !== undefined) obj.fabricante = m.fabricante;
+  if (m.modelo !== undefined) obj.modelo = m.modelo;
+  if (m.rcOc !== undefined) obj.rcOc = m.rcOc;
+  if (m.location !== undefined) obj.localizacao = m.location;
+  if (m.observacoes !== undefined) obj.observacao = m.observacoes;
+  if (m.justificativaInativo !== undefined) obj.justificativa = m.justificativaInativo;
+  if (m.serialNumber !== undefined) obj.numeroSerie = m.serialNumber;
+  if (m.maintenanceInterval !== undefined) obj.intervaloManutencao = m.maintenanceInterval;
+  if (m.calibrationInterval !== undefined) obj.intervaloCalibracao = m.calibrationInterval;
+  if (m.acquisitionDate !== undefined && m.acquisitionDate !== '') {
+    // front-end stores acquisitionDate in BR format (dd/mm/yyyy) after isoToBR call
+    // convert back to ISO for API (YYYY-MM-DD)
+    const iso = brToISO(m.acquisitionDate as string);
+    obj.dataAquisicao = iso;
+  }
+  if (m.status !== undefined) obj.status = m.status;
+  return obj;
 };
