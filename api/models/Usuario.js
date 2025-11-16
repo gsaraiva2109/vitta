@@ -15,6 +15,11 @@ const Usuario = sequelize.define('Usuario', {
   senha: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  tipo: {
+    type: DataTypes.ENUM('user', 'manager'),
+    allowNull: false,
+    defaultValue: 'user'
   }
 }, {
   tableName: 'usuarios',
