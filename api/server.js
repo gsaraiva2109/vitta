@@ -7,9 +7,10 @@ import { connectDB} from './config/database.js';
 
 import './models/index.js';
 
-import usuarioRoutes from './routes/usuarioRoutes.js';
+import { publicUserRouter, protectedUserRouter } from './routes/usuarioRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
+import manutencaoRoutes from './routes/manutencaoRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
 
 dotenv.config();
@@ -29,9 +30,13 @@ app.get('/', (req, res) => {
 // rota de auth (login) fica pública
 app.use('/auth', authRoutes);
 
+// Rotas públicas de usuário
+app.use('/usuarios', publicUserRouter);
+
 // rotas protegidas por JWT
-app.use('/usuarios', authMiddleware, usuarioRoutes);
+app.use('/usuarios', authMiddleware, protectedUserRouter); // Rotas de usuário protegidas
 app.use('/maquinas', authMiddleware, maquinaRoutes);
+app.use('/manutencoes', authMiddleware, manutencaoRoutes);
 
 // Rota coringa: deve ser a **última**
 app.use((req, res) => {

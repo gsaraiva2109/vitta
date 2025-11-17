@@ -1,8 +1,8 @@
-import { Maquina } from '../models/index.js';
+import { maquinaService } from '../services/maquinaService.js';
 
 export async function getAll(req, res) {
   try {
-    const maquinas = await Maquina.findAll();
+    const maquinas = await maquinaService.getAllMaquinas();
     res.json(maquinas);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,35 +11,25 @@ export async function getAll(req, res) {
 
 export async function getById(req, res) {
   try {
-    const maquina = await Maquina.findByPk(req.params.id);
-    if (!maquina) {
-      return res.status(404).json({ message: 'Máquina não encontrada' });
-    }
+    const maquina = await maquinaService.getMaquinaById(req.params.id);
     res.json(maquina);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 }
 
 export async function getByPatrimonio(req, res) {
   try {
-    const maquina = await Maquina.findOne({
-      where: { patrimonio: req.params.patrimonio }
-    });
-    
-    if (!maquina) {
-      return res.status(404).json({ message: 'Máquina não encontrada' });
-    }
-    
+    const maquina = await maquinaService.getMaquinaByPatrimonio(req.params.patrimonio);
     res.json(maquina);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 }
 
 export async function create(req, res) {
   try {
-    const maquina = await Maquina.create(req.body);
+    const maquina = await maquinaService.createMaquina(req.body);
     res.status(201).json(maquina);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -48,14 +38,7 @@ export async function create(req, res) {
 
 export async function update(req, res) {
   try {
-    // Encontrar a instância pela PK (idMaquina) e aplicar mudanças via instance.save()
-    const maquina = await Maquina.findByPk(req.params.id);
-    if (!maquina) {
-      return res.status(404).json({ message: 'Máquina não encontrada' });
-    }
-
-    // Atualiza somente os campos recebidos
-    await maquina.update(req.body);
+    const maquina = await maquinaService.updateMaquina(req.params.id, req.body);
     res.json(maquina);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -64,12 +47,7 @@ export async function update(req, res) {
 
 export async function remove(req, res) {
   try {
-    // Buscar por PK e destruir a instância para evitar usar campo incorreto
-    const maquina = await Maquina.findByPk(req.params.id);
-    if (!maquina) {
-      return res.status(404).json({ message: 'Máquina não encontrada' });
-    }
-    await maquina.destroy();
+    await maquinaService.deleteMaquina(req.params.id);
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });

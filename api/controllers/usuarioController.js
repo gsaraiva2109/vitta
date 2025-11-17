@@ -1,8 +1,8 @@
-import { Usuario } from '../models/index.js';
+import { usuarioService } from '../services/usuarioService.js';
 
 export async function getAll(req, res) {
   try {
-    const usuarios = await Usuario.findAll();
+    const usuarios = await usuarioService.getAllUsuarios();
     res.json(usuarios);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,41 +11,25 @@ export async function getAll(req, res) {
 
 export async function getById(req, res) {
   try {
-    const usuario = await Usuario.findByPk(req.params.id);
-    if (!usuario) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
+    const usuario = await usuarioService.getUsuarioById(req.params.id);
     res.json(usuario);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 }
 
 export async function getByMatricula(req, res) {
   try {
-    const usuario = await Usuario.findOne({
-      where: { matricula: req.params.matricula }
-    });
-    
-    if (!usuario) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-    
+    const usuario = await usuarioService.getUsuarioByMatricula(req.params.matricula);
     res.json(usuario);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 }
 
 export async function create(req, res) {
   try {
-    // Hash senha before storing (if provided)
-    const payload = { ...req.body };
-    if (payload.senha) {
-      const bcrypt = await import('bcryptjs');
-      payload.senha = await bcrypt.hash(payload.senha, 10);
-    }
-    const usuario = await Usuario.create(payload);
+    const usuario = await usuarioService.createUsuario(req.body);
     res.status(201).json(usuario);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -54,13 +38,7 @@ export async function create(req, res) {
 
 export async function update(req, res) {
   try {
-    const [updated] = await Usuario.update(req.body, {
-      where: { id: req.params.id }
-    });
-    if (!updated) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-    const usuario = await Usuario.findByPk(req.params.id);
+    const usuario = await usuarioService.updateUsuario(req.params.id, req.body);
     res.json(usuario);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -69,12 +47,7 @@ export async function update(req, res) {
 
 export async function remove(req, res) {
   try {
-    const deleted = await Usuario.destroy({
-      where: { id: req.params.id }
-    });
-    if (!deleted) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
+    await usuarioService.deleteUsuario(req.params.id);
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
