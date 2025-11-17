@@ -1,13 +1,17 @@
 import express from 'express';
 import { getAll, getById, getByMatricula, create, update, remove } from '../controllers/usuarioController.js';
 
-const router = express.Router();
+const publicUserRouter = express.Router();
+const protectedUserRouter = express.Router();
 
-router.get('/', getAll);
-router.get('/matricula/:matricula', getByMatricula); 
-router.get('/:id', getById);
-router.post('/', create);
-router.put('/:id', update);
-router.delete('/:id', remove);
+// Rotas Públicas
+publicUserRouter.get('/', getAll); // GET /usuarios
+publicUserRouter.post('/', create); // POST /usuarios
 
-export default router;
+// Rotas Protegidas
+protectedUserRouter.get('/matricula/:matricula', getByMatricula);
+protectedUserRouter.get('/:id', getById);
+protectedUserRouter.put('/:id', update);
+protectedUserRouter.delete('/:id', remove);
+
+export { publicUserRouter, protectedUserRouter };
