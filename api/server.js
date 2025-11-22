@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import logger from './config/logger.js';
 
 import { connectDB} from './config/database.js';
 import { seedUsers } from './config/seed.js';
@@ -20,7 +21,7 @@ import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger.js';
 
 dotenv.config();
-console.log('Environment variables loaded.');
+logger.info('Environment variables loaded.');
 
 const app = express();
 
@@ -63,14 +64,14 @@ app.use((req, res) => {
 });
   
 connectDB().then(async () => {
-  console.log('Database connected successfully.');
+  logger.info('Database connected successfully.');
   await seedUsers();
 }).catch(err => {
-  console.error('Database connection failed:', err.message, err.stack);
+  logger.error(`Database connection failed: ${err.message}`, err);
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  logger.info(`Servidor rodando na porta ${PORT}`);
 });
