@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { InputText } from 'primereact/inputtext';
 import type { Machine } from '../../models/Machine';
-import { brToISO } from '../../controllers/machinesController';
+import { brToISO } from '../../utils/date';
 
 interface Props {
   machine: Machine;

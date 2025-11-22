@@ -33,10 +33,10 @@ async function loginUser(matricula, senha) {
     throw error;
   }
 
-  const payload = { id: usuario.idUsuario, matricula: usuario.matricula };
+  const payload = { id: usuario.idUsuario, matricula: usuario.matricula, tipo: usuario.tipo };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
 
-  return { token, user: { id: usuario.idUsuario, matricula: usuario.matricula } };
+  return { token, user: { id: usuario.idUsuario, matricula: usuario.matricula, tipo: usuario.tipo } };
 }
 
 export const authService = {

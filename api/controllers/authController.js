@@ -2,6 +2,8 @@ import { authService } from '../services/authService.js';
 
 export async function login(req, res) {
   const { matricula, senha } = req.body;
+  
+  console.log('Login attempt:', { matricula, body: req.body }); // Debug log
 
   try {
     const result = await authService.loginUser(matricula, senha);
