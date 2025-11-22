@@ -23,7 +23,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Backend Image and Push to Registry
         uses: docker/build-push-action@v4
@@ -35,6 +35,10 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Trigger Backend Deploy in Coolify
-        run: | 
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_WEBHOOK: ${{ secrets.BACKEND_COOLIFY_WEBHOOK }}
+        run: |
           echo "🚀 Triggering Backend Deploy via Coolify Webhook..."
-          curl --request GET '${{ secrets.BACKEND_COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
+          # use env vars (safe context) and fail noisy on error
+          curl --fail --show-error --request GET "$COOLIFY_WEBHOOK" --header "Authorization: Bearer $COOLIFY_TOKEN"
