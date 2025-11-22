@@ -1,6 +1,8 @@
 import type { ReportData, ReportFilters, ReportSummary } from '../models/report';
-import { loadMachines } from './machinesController';
-import { loadMaintenances } from './maintenancesController';
+import { loadMachinesFromAPI } from './machinesApiController';
+import { loadMaintenancesFromAPI } from './maintenancesApiController';
+import type { Machine } from '../models/Machine';
+import type { Maintenance } from '../models/Maintenance';
 
 // Converte dd/mm/yyyy para objeto Date
 const parseBRDate = (br: string): Date | null => {
@@ -23,19 +25,19 @@ const isDateInRange = (dateStr: string, startStr: string, endStr: string): boole
   return true;
 };
 
-export const generateReport = (
+export const generateReport = async (
   type: string,
   filters: ReportFilters
-): { data: ReportData[]; summary: ReportSummary } => {
-  const machines = loadMachines([]);
-  const maintenances = loadMaintenances([]);
+): Promise<{ data: ReportData[]; summary: ReportSummary }> => {
+  const machines = await loadMachinesFromAPI();
+  const maintenances = await loadMaintenancesFromAPI();
 
   let filteredData: ReportData[] = [];
   
   // Aplica filtros baseados no tipo de relatório
   switch (type) {
     case 'geral':
-      filteredData = machines.map(m => ({
+      filteredData = machines.map((m: Machine) => ({
         name: m.name,
         patrimonio: m.patrimony,
         funcao: m.funcao,
@@ -47,8 +49,8 @@ export const generateReport = (
       
     case 'por-fabricante':
       filteredData = machines
-        .filter(m => !filters.fabricante || m.fabricante === filters.fabricante)
-        .map(m => ({
+        .filter((m: Machine) => !filters.fabricante || m.fabricante === filters.fabricante)
+        .map((m: Machine) => ({
           name: m.name,
           patrimonio: m.patrimony,
           funcao: m.funcao,
@@ -60,8 +62,8 @@ export const generateReport = (
       
     case 'historico-manutencao':
       // Combina dados de máquinas e manutenções
-      filteredData = maintenances.map(maint => {
-        const machine = machines.find(m => m.name === maint.machineName);
+      filteredData = maintenances.map((maint: Maintenance) => {
+        const machine = machines.find((m: Machine) => m.name === maint.machineName);
         return {
           name: maint.machineName,
           patrimonio: machine?.patrimony || 'N/A',
@@ -75,8 +77,8 @@ export const generateReport = (
       
     case 'inativas-descartadas':
       filteredData = machines
-        .filter(m => m.status === 'Inativo')
-        .map(m => ({
+        .filter((m: Machine) => m.status === 'Inativo')
+        .map((m: Machine) => ({
           name: m.name,
           patrimonio: m.patrimony,
           funcao: m.funcao,
@@ -88,8 +90,8 @@ export const generateReport = (
       
     case 'maquinas-em-manutencao':
       filteredData = machines
-        .filter(m => m.status === 'Manutenção')
-        .map(m => ({
+        .filter((m: Machine) => m.status === 'Manutenção')
+        .map((m: Machine) => ({
           name: m.name,
           patrimonio: m.patrimony,
           funcao: m.funcao,

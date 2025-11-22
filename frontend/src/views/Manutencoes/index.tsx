@@ -6,52 +6,16 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import 'primeicons/primeicons.css';
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Maintenance } from "../../models/Maintenance";
-import { loadMaintenances, removeMaintenance, addMaintenance, updateMaintenance } from "../../controllers/maintenancesController";
+import { 
+    loadMaintenancesFromAPI, 
+    createMaintenanceAPI, 
+    updateMaintenanceAPI, 
+    deleteMaintenanceAPI 
+} from "../../controllers/maintenancesApiController";
+import { getUser } from "../../services/authService";
 import CreateMaintenance from "./CreateMaintenance";
 import EditMaintenance from "./EditMaintenance";
 import ViewMaintenance from "./ViewMaintenance";
-
-const initialMaintenances: Maintenance[] = [
-  {
-    id: "MT-001",
-    machineName: "Aparelho",
-    type: "Corretiva",
-    responsible: "Responsável",
-    company: "xxxxxxxx",
-    cost: 0,
-    performedDate: "01/01/2024",
-    nextDate: "01/04/2024",
-    status: "Concluida",
-    rcOc: "",
-    observacoes: "",
-  },
-  {
-    id: "MT-002",
-    machineName: "Aparelho",
-    type: "Corretiva",
-    responsible: "Responsável",
-    company: "xxxxxxxx",
-    cost: 0,
-    performedDate: "10/02/2024",
-    nextDate: "10/05/2024",
-    status: "Em Andamento",
-    rcOc: "",
-    observacoes: "",
-  },
-  {
-    id: "MT-003",
-    machineName: "Aparelho",
-    type: "Corretiva",
-    responsible: "Responsável",
-    company: "xxxxxxxx",
-    cost: 0,
-    performedDate: "12/02/2024",
-    nextDate: "12/05/2024",
-    status: "Cancelada",
-    rcOc: "",
-    observacoes: "",
-  },
-];
 
 const normalizeMaintStatus = (s: string) => {
   const v = (s || "").toLowerCase();
@@ -78,13 +42,36 @@ const Manutencoes = () => {
   const [statusFilter, setStatusFilter] = useState<string>(""); // Todos os status
   const [typeFilter, setTypeFilter] = useState<string>(""); // Todos os tipos
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [toDelete, setToDelete] = useState<string | null>(null);
+  const [toDelete, setToDelete] = useState<number | null>(null);
   const [viewTarget, setViewTarget] = useState<Maintenance | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [editTarget, setEditTarget] = useState<Maintenance | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const user = getUser();
+  const isManager = user?.tipo === 'manager';
 
   useEffect(() => {
-    setList(loadMaintenances(initialMaintenances));
+    const loadData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await loadMaintenancesFromAPI();
+            setList(data);
+        } catch (err) {
+            const errorMsg = err instanceof Error ? err.message : 'Erro ao carregar manutenções';
+            setError(errorMsg);
+            toast.current?.show({
+                severity: "error",
+                summary: "Erro ao carregar",
+                detail: errorMsg,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+    loadData();
   }, []);
 
   const statusOptions = [
@@ -120,23 +107,31 @@ const Manutencoes = () => {
     });
   }, [list, search, statusFilter, typeFilter]);
 
-  const handleDeleteRequest = (id: string) => {
-    setToDelete(id);
+  const handleDeleteRequest = (id: string | number) => {
+    const numId = typeof id === 'string' ? parseInt(id, 10) : id;
+    setToDelete(numId);
     setConfirmVisible(true);
   };
 
-  const acceptDelete = () => {
+  const acceptDelete = async () => {
     if (toDelete) {
-      setList(prev => removeMaintenance(prev, toDelete));
-      toast.current?.show({
-        closable: false,
-        severity: 'error',
-        icon() {
-          return <i className="pi pi-info-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
-        },
-        summary: 'Manutenção removida',
-        detail: 'O registro foi excluído.',
-      });
+        try {
+            await deleteMaintenanceAPI(toDelete);
+            setList(prev => prev.filter(m => m.id != toDelete.toString()));
+            toast.current?.show({
+              closable: false,
+              severity: 'error',
+              summary: 'Manutenção removida',
+              detail: 'O registro foi excluído.',
+            });
+        } catch (err) {
+            const errorMsg = err instanceof Error ? err.message : 'Erro ao deletar manutenção';
+            toast.current?.show({
+              severity: "error",
+              summary: "Erro",
+              detail: errorMsg,
+            });
+        }
     }
     setToDelete(null);
     setConfirmVisible(false);
@@ -156,27 +151,29 @@ const Manutencoes = () => {
     setConfirmVisible(false);
   };
 
-  const handleCreate = (data: Omit<Maintenance, 'id'> & { rcOc?: string; observacoes?: string }) => {
-    setList(prev => addMaintenance(prev, {
-      machineName: data.machineName,
-      cost: data.cost ?? 0,
-      type: data.type,
-      responsible: data.responsible,
-      company: data.company ?? '',
-      performedDate: data.performedDate,
-      nextDate: data.nextDate ?? '',
-      status: data.status,
-      rcOc: data.rcOc ?? '',
-      observacoes: data.observacoes ?? '',
-    }));
-    setShowCreate(false);
-    toast.current?.show({ severity: 'success', summary: 'Manutenção adicionada', detail: 'Registro criado com sucesso.', closable: false });
+  const handleCreate = async (data: Omit<Maintenance, 'id'>) => {
+    try {
+        const newMaintenance = await createMaintenanceAPI(data);
+        setList(prev => [...prev, newMaintenance]);
+        setShowCreate(false);
+        toast.current?.show({ severity: 'success', summary: 'Manutenção adicionada', detail: 'Registro criado com sucesso.' });
+    } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Erro ao criar manutenção';
+        toast.current?.show({ severity: 'error', summary: 'Erro', detail: errorMsg });
+    }
   };
 
-  const handleUpdate = (data: Maintenance) => {
-    setList(prev => updateMaintenance(prev, data));
-    setEditTarget(null);
-    toast.current?.show({ severity: 'success', summary: 'Manutenção atualizada', detail: 'Alterações salvas.' });
+  const handleUpdate = async (data: Maintenance) => {
+    try {
+        const maintenanceId = typeof data.id === 'string' ? parseInt(data.id) : data.id;
+        const updated = await updateMaintenanceAPI(maintenanceId, data);
+        setList(prev => prev.map(m => (m.id === data.id ? updated : m)));
+        setEditTarget(null);
+        toast.current?.show({ severity: 'success', summary: 'Manutenção atualizada', detail: 'Alterações salvas.' });
+    } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Erro ao atualizar manutenção';
+        toast.current?.show({ severity: 'error', summary: 'Erro', detail: errorMsg });
+    }
   };
 
   return (
@@ -216,9 +213,11 @@ const Manutencoes = () => {
 
             {/* Botão Nova Manutenção */}
             <button
-              className="bg-[#0084FF] hover:bg-[#0073E6] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform shadow-[0_12px_30px_rgba(0,132,255,0.18)] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2"
+              disabled={!isManager}
+              className={`bg-[#0084FF] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform shadow-[0_12px_30px_rgba(0,132,255,0.18)] 
+                         ${isManager ? 'hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2' : 'opacity-50 cursor-not-allowed'}`}
               style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
-              onClick={() => setShowCreate(true)}
+              onClick={() => isManager && setShowCreate(true)}
             >
               <i className="pi pi-plus" style={{ fontSize: '1.5rem' }} />
               <span className="text-base">Nova Manutenção</span>
@@ -280,7 +279,11 @@ const Manutencoes = () => {
         {/* Lista de cards */}
         <div className="px-8 pb-8 pt-0 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-6">
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="text-center text-gray-500 py-12">Carregando...</div>
+            ) : error ? (
+                <div className="text-center text-red-500 py-12">Erro: {error}</div>
+            ) : filtered.length === 0 ? (
               <div className="text-center text-gray-500 py-12">Nenhuma manutenção encontrada.</div>
             ) : filtered.map((m) => (
               <div key={m.id} className="w-full bg-white rounded-xl shadow-sm px-5 py-4">
@@ -335,20 +338,20 @@ const Manutencoes = () => {
                         <i className="pi pi-eye"></i>
                       </button>
                       <button
-                        className="p-button-text p-button-plain"
+                        className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
                         style={{ color: 'blue', background: 'transparent', border: 'none' }}
-                        onClick={() => setEditTarget(m)}
+                        disabled={!isManager}
+                        onClick={() => isManager && setEditTarget(m)}
                         aria-label={`Editar ${m.machineName}`}
                         title="Editar"
                       >
                         <i className="pi pi-pen-to-square"></i>
                       </button>
                       <button
-                        className="p-button-text p-button-plain"
+                        className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
                         style={{ color: 'red', background: 'transparent', border: 'none' }}
-                        onClick={() => handleDeleteRequest(m.id)}
-                        aria-label={`Remover ${m.machineName}`}
-                        title="Remover"
+                        disabled={!isManager}
+                        onClick={() => isManager && handleDeleteRequest(m.id)}
                       >
                         <i className="pi pi-trash"></i>
                       </button>

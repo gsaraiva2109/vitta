@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { useEffect, useMemo, useState } from 'react';
 import type { Alert } from '../../models/Alert';
 import { generateAlerts } from '../../controllers/alertsController';
-import { loadMachines } from '../../controllers/machinesController';
+import { loadMachinesFromAPI } from '../../controllers/machinesApiController';
 
 const badgeForUrgency = (urgency: string) => {
   const u = urgency.toLowerCase();
@@ -28,10 +28,24 @@ const Alertas = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [search, setSearch] = useState<string>('');
   const [urgencyFilter, setUrgencyFilter] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const machines = loadMachines([]);
-    setAlerts(generateAlerts(machines));
+    const fetchAlerts = async () => {
+      try {
+        setLoading(true);
+        const machines = await loadMachinesFromAPI();
+        setAlerts(generateAlerts(machines));
+        setError(null);
+      } catch (err) {
+        setError('Falha ao carregar alertas.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAlerts();
   }, []);
 
   const urgencyOptions = [
@@ -190,7 +204,15 @@ const Alertas = () => {
 
           {/* Lista de alertas */}
           <div className="flex-1 overflow-hidden bg-white rounded-[10px] p-6">
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                Carregando alertas...
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-full text-red-500">
+                {error}
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <svg className="w-24 h-24 text-gray-300 mb-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>

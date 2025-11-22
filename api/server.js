@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import { connectDB} from './config/database.js';
+import { seedUsers } from './config/seed.js';
 
 import './models/index.js';
 
@@ -46,8 +47,9 @@ app.use((req, res) => {
   });
 });
   
-connectDB().then(() => {
+connectDB().then(async () => {
   console.log('Database connected successfully.');
+  await seedUsers();
 }).catch(err => {
   console.error('Database connection failed:', err.message, err.stack);
 });
