@@ -2,6 +2,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 import { connectDB} from './config/database.js';
 import { seedUsers } from './config/seed.js';
@@ -21,6 +23,18 @@ dotenv.config();
 console.log('Environment variables loaded.');
 
 const app = express();
+
+// Security Middleware
+app.use(helmet());
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Muitas requisições deste IP, tente novamente mais tarde.'
+});
+app.use(limiter);
+
 app.use(cors());
 app.use(express.json());
 
