@@ -1,0 +1,474 @@
+{
+	"info": {
+		"_postman_id": "a8a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5",
+		"name": "Vitta API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"matricula\": \"admin\",\n    \"senha\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Public Usuarios",
+			"item": [
+				{
+					"name": "Get All Usuarios (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Usuario (Public)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"matricula\": \"publicuser01\",\n    \"senha\": \"publicpass123\",\n    \"tipo\": \"user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/usuarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Protected Usuarios",
+			"item": [
+				{
+					"name": "Get Usuario By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUsuario By Matricula",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuarios/matricula/user01",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuarios",
+								"matricula",
+								"user01"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUsuario",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo\": \"manager\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUsuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": []
+		},
+		{
+			"name": "Maquinas",
+			"item": [
+				{
+					"name": "Get All Maquinas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maquinas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"maquinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Maquina By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maquinas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"maquinas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Maquina By Patrimonio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maquinas/patrimonio/MT-001",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"maquinas",
+								"patrimonio",
+								"MT-001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Maquina",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Torno CNC\",\n    \"patrimonio\": \"NC-12345\",\n    \"dataAquisicao\": \"2023-01-10T00:00:00.000Z\",\n    \"funcao\": \"Usinagem de Peças\",\n    \"localizacao\": \"Setor B\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/maquinas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"maquinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Maquina",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"localizacao\": \"Setor C\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/maquinas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"maquinas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Maquina",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/maquinas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"maquinas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": []
+		},
+		{
+			"name": "Manutencoes",
+			"item": [
+				{
+					"name": "Get All Manutencoes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/manutencoes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"manutencoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manutencao By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/manutencoes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"manutencoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Manutencao",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idMaquina\": 1,\n    \"valor\": 1500.50,\n    \"status\": \"Concluída\",\n    \"responsavel\": \"João Silva\",\n    \"dataManutencao\": \"2023-10-26T00:00:00.000Z\",\n    \"observacao\": \"Troca de óleo e filtros.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/manutencoes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"manutencoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Manutencao",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Finalizada com Pendência\",\n    \"observacao\": \"Troca de óleo e filtros. Filtro de ar pendente.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/manutencoes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"manutencoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Manutencao",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/manutencoes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"manutencoes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
