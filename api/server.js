@@ -14,6 +14,9 @@ import maquinaRoutes from './routes/maquinaRoutes.js';
 import manutencaoRoutes from './routes/manutencaoRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
 
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger.js';
+
 dotenv.config();
 console.log('Environment variables loaded.');
 
@@ -21,13 +24,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rota raiz
-app.get('/', (req, res) => {
-    res.send('API do Sistema de Agendamentos Online');
-  });
+// Swagger UI documentation at root (mapped to /api/ public via proxy)
+app.use('/', swaggerUi.serve);
+app.get('/', swaggerUi.setup(specs));
 
-
-  // Usar as rotas
+// Usar as rotas
 // rota de auth (login) fica pública
 app.use('/auth', authRoutes);
 
