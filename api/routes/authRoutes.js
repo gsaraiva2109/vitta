@@ -25,17 +25,17 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - email
+ *               - matricula
  *               - senha
  *             properties:
- *               email:
+ *               matricula:
  *                 type: string
- *                 description: Email do usuário
+ *                 description: Matrícula do usuário
  *               senha:
  *                 type: string
  *                 description: Senha do usuário
  *             example:
- *               email: "usuario@exemplo.com"
+ *               matricula: "123456"
  *               senha: "123"
  *     responses:
  *       200:
