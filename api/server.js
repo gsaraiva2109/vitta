@@ -16,6 +16,7 @@ import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
 import manutencaoRoutes from './routes/manutencaoRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
+import errorMiddleware from './middleware/errorMiddleware.js';
 
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger.js';
@@ -56,13 +57,15 @@ app.use('/maquinas', authMiddleware, maquinaRoutes);
 app.use('/manutencoes', authMiddleware, manutencaoRoutes);
 
 // Rota coringa: deve ser a **última**
-app.use((req, res) => {
+app.use((req, res, next) => {
   res.status(404).json({
     erro: 'Rota não encontrada',
     caminho: req.originalUrl
   });
 });
-  
+
+app.use(errorMiddleware);
+
 connectDB().then(async () => {
   logger.info('Database connected successfully.');
   await seedUsers();
