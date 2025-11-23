@@ -3,6 +3,7 @@ export type MaintenanceType = 'Corretiva' | 'Preventiva' | 'Calibracao' | 'Calib
 
 export interface Maintenance {
   id: string;
+  idMaquina: string;
   machineName: string;
   type: MaintenanceType;
   responsible: string;

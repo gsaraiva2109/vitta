@@ -8,32 +8,33 @@ const mapApiToMaintenance = (m: any): Maintenance => {
   
   return {
     id: id ? String(id) : '',
+    idMaquina: m.maquina?.idMaquina ?? '',
     machineName: m.maquina?.nome ?? '', // Assumes machine name is nested
     type: m.tipoManutencao ?? 'N/A',
     responsible: m.responsavel ?? 'N/A',
-    company: m.empresa ?? '',
-    cost: m.custo ?? 0,
-    performedDate: m.dataRealizada ? isoToBR(m.dataRealizada.split('T')[0]) : '',
+    company: m.empresaResponsavel ?? '',
+    cost: m.valor ?? 0,
+    performedDate: m.dataManutencao ? isoToBR(m.dataManutencao.split('T')[0]) : '',
     nextDate: m.dataProxima ? isoToBR(m.dataProxima.split('T')[0]) : '',
-    status: m.statusManutencao ?? 'Pendente',
+    status: m.status ?? 'Pendente',
     rcOc: m.rcOc ?? '',
-    observacoes: m.observacoes ?? '',
+    observacoes: m.observacao ?? '',
   };
 };
 
 // Maps a frontend Maintenance model to an API payload
 const mapMaintenanceToApi = (m: Partial<Maintenance>): any => {
     const payload: any = {};
-    if (m.machineName) payload.idMaquina = m.machineName; // Assuming we send machine ID
+    if (m.idMaquina) payload.idMaquina = m.idMaquina; // Assuming we send machine ID
     if (m.type) payload.tipoManutencao = m.type;
     if (m.responsible) payload.responsavel = m.responsible;
-    if (m.company) payload.empresa = m.company;
-    if (m.cost) payload.custo = m.cost;
-    if (m.performedDate) payload.dataRealizada = brToISO(m.performedDate);
+    if (m.company) payload.empresaResponsavel = m.company;
+    if (m.cost) payload.valor = m.cost;
+    if (m.performedDate) payload.dataManutencao = brToISO(m.performedDate);
     if (m.nextDate) payload.dataProxima = brToISO(m.nextDate);
-    if (m.status) payload.statusManutencao = m.status;
+    if (m.status) payload.status = m.status;
     if (m.rcOc) payload.rcOc = m.rcOc;
-    if (m.observacoes) payload.observacoes = m.observacoes;
+    if (m.observacoes) payload.observacao = m.observacoes;
     return payload;
 };
 

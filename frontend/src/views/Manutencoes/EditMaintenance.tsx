@@ -70,6 +70,7 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
     }
     const payload: Maintenance = {
       id: form.id,
+      idMaquina: maintenance.idMaquina,
       machineName: form.machineName,
       cost: parseBRLToNumber(form.cost),
       type: form.type as Maintenance['type'],
@@ -99,7 +100,7 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Máquina *</label>
-            <InputText value={form.machineName} onChange={(e) => handle('machineName', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+            <InputText value={form.machineName} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Valor *</label>

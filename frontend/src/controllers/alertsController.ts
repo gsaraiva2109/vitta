@@ -47,7 +47,7 @@ export const generateAlerts = (machines: Machine[]): Alert[] => {
 
         alerts.push({
           id: `${m.id}-maint`,
-          machineName: m.name,
+          machineName: m.nome,
           type: 'Manutenção Preventiva',
           dueDate: `${String(nextMaint.getDate()).padStart(2, '0')}/${String(nextMaint.getMonth() + 1).padStart(2, '0')}/${nextMaint.getFullYear()}`,
           urgency,
@@ -84,7 +84,7 @@ export const generateAlerts = (machines: Machine[]): Alert[] => {
 
         alerts.push({
           id: `${m.id}-calib`,
-          machineName: m.name,
+          machineName: m.nome,
           type: 'Calibração',
           dueDate: `${String(nextCal.getDate()).padStart(2, '0')}/${String(nextCal.getMonth() + 1).padStart(2, '0')}/${nextCal.getFullYear()}`,
           urgency,
