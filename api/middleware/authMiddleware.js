@@ -20,7 +20,7 @@ export default function authMiddleware(req, res, next) {
     // popular req.user para uso nos controllers
     req.user = payload;
     return next();
-  } catch (err) {
+  } catch (_err) {
     return res.status(401).json({ message: 'Token inválido ou expirado' });
   }
 }
