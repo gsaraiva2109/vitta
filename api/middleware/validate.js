@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import Joi from 'joi';
 
 export const validate = (schema) => {

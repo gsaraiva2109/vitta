@@ -58,7 +58,7 @@ app.use('/maquinas', authMiddleware, maquinaRoutes);
 app.use('/manutencoes', authMiddleware, manutencaoRoutes);
 
 // Rota coringa: deve ser a **última**
-app.use((req, res, next) => {
+app.use((req, res, _next) => {
   res.status(404).json({
     erro: 'Rota não encontrada',
     caminho: req.originalUrl
