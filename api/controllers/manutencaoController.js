@@ -1,11 +1,16 @@
 import { manutencaoService } from '../services/manutencaoService.js';
+import logger from '../config/logger.js';
 
 export async function getAll(req, res) {
   try {
     const manutencoes = await manutencaoService.getAllManutencoes();
     res.json(manutencoes);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Failed to get manutencoes', { error });
+    res.status(500).json({
+      message: 'Erro no servidor ao buscar manutenções.',
+      error: error.message,
+    });
   }
 }
 
