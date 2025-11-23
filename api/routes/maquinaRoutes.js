@@ -179,7 +179,6 @@ router.post('/:idMaquina/manutencoes', createManutencao);
  *       200:
  *         description: Detalhes da máquina
  *         content:
-.
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Maquina'
