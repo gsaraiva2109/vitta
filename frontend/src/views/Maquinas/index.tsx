@@ -134,7 +134,7 @@ const Maquinas = () => {
       }
       if (!q) return true;
       return (
-        (machine.name ?? "").toLowerCase().includes(q) ||
+        (machine.nome ?? "").toLowerCase().includes(q) ||
         (machine.patrimony ?? "").toLowerCase().includes(q)
       );
     });
@@ -325,7 +325,7 @@ const Maquinas = () => {
                 <div className="flex items-start justify-between gap-3">
                   {/* Left: título e patrimônio */}
                   <div className="flex-1">
-                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins, sans-serif'}}>{m.name}</h3>
+                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins, sans-serif'}}>{m.nome}</h3>
                     <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                       Patrimônio: <span className="text-gray-500 font-medium">{m.patrimony}</span>
                     </div>
@@ -350,7 +350,7 @@ const Maquinas = () => {
                             border: "none",
                           }}
                           onClick={() => setViewTarget(m)}
-                          aria-label={`Visualizar ${m.name}`}
+                          aria-label={`Visualizar ${m.nome}`}
                           title="Visualizar"
                         >
                           <i className="pi pi-eye"></i>
@@ -364,7 +364,7 @@ const Maquinas = () => {
                           }}
                           disabled={!isManager}
                           onClick={() => isManager && setEditTarget(m)}
-                          aria-label={`Editar ${m.name}`}
+                          aria-label={`Editar ${m.nome}`}
                         >
                           <i className="pi pi-pen-to-square"></i>
                         </button>
@@ -377,7 +377,7 @@ const Maquinas = () => {
                           }}
                           disabled={!isManager}
                           onClick={() => isManager && handleDeleteRequest(m.id)}
-                          aria-label={`Remover ${m.name}`}
+                          aria-label={`Remover ${m.nome}`}
                         >
                           <i className="pi pi-trash"></i>
                         </button>

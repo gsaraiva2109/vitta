@@ -9,6 +9,7 @@ const Manutencao = sequelize.define('Manutencao', {
   },
   valor: DataTypes.DECIMAL(10,2),
   status: DataTypes.STRING,
+  tipoManutencao: DataTypes.STRING,
   responsavel: DataTypes.STRING,
   dataManutencao: DataTypes.DATE,
   empresaResponsavel: DataTypes.STRING,

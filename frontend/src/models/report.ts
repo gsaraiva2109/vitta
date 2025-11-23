@@ -16,7 +16,7 @@ export interface ReportFilters {
 }
 
 export interface ReportData {
-  name: string;
+  nome: string;
   patrimonio: string;
   funcao: string;
   status: string;

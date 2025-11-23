@@ -320,7 +320,7 @@ const Relatorios = () => {
                     {reportData.slice(0, 5).map((item, index) => (
                       <tr key={index} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-sm text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                          {item.name}
+                          {item.nome}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
                           {item.patrimonio}
