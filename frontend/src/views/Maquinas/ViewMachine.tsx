@@ -23,7 +23,7 @@ const ViewMachine = ({ machine, onCancel }: Props) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Nome da Máquina *</label>
-              <InputText value={machine.name} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
+              <InputText value={machine.nome} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Patrimônio *</label>

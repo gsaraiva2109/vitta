@@ -2,66 +2,39 @@ import type { Maintenance } from '../models/Maintenance';
 import * as api from '../services/manutencaoService';
 import { isoToBR, brToISO } from './machinesApiController'; // Re-use date helpers
 
-type ApiMaintenance = {
-  idManutencao?: number | string;
-  id?: number | string;
-  maquina?: { nome?: string };
-  tipoManutencao?: Maintenance['type'];
-  responsavel?: string;
-  empresa?: string;
-  custo?: number;
-  dataRealizada?: string;
-  dataProxima?: string;
-  statusManutencao?: Maintenance['status'];
-  rcOc?: string;
-  observacoes?: string;
-};
-
 // Maps an API record to the frontend Maintenance model
-const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
+const mapApiToMaintenance = (m: any): Maintenance => {
   const id = m.idManutencao ?? m.id;
   
   return {
     id: id ? String(id) : '',
+    idMaquina: m.maquina?.idMaquina ?? '',
     machineName: m.maquina?.nome ?? '', // Assumes machine name is nested
     type: m.tipoManutencao ?? 'N/A',
     responsible: m.responsavel ?? 'N/A',
-    company: m.empresa ?? '',
-    cost: m.custo ?? 0,
-    performedDate: m.dataRealizada ? isoToBR(m.dataRealizada.split('T')[0]) : '',
+    company: m.empresaResponsavel ?? '',
+    cost: m.valor ?? 0,
+    performedDate: m.dataManutencao ? isoToBR(m.dataManutencao.split('T')[0]) : '',
     nextDate: m.dataProxima ? isoToBR(m.dataProxima.split('T')[0]) : '',
-    status: m.statusManutencao ?? 'Pendente',
+    status: m.status ?? 'Pendente',
     rcOc: m.rcOc ?? '',
-    observacoes: m.observacoes ?? '',
+    observacoes: m.observacao ?? '',
   };
 };
 
 // Maps a frontend Maintenance model to an API payload
-type ApiMaintenancePayload = {
-  idMaquina?: string;
-  tipoManutencao?: Maintenance['type'];
-  responsavel?: string;
-  empresa?: string;
-  custo?: number;
-  dataRealizada?: string;
-  dataProxima?: string;
-  statusManutencao?: Maintenance['status'];
-  rcOc?: string;
-  observacoes?: string;
-};
-
-const mapMaintenanceToApi = (m: Partial<Maintenance>): ApiMaintenancePayload => {
-    const payload: ApiMaintenancePayload = {};
-    if (m.machineName) payload.idMaquina = m.machineName; // Assuming we send machine ID
+const mapMaintenanceToApi = (m: Partial<Maintenance>): any => {
+    const payload: any = {};
+    if (m.idMaquina) payload.idMaquina = m.idMaquina;
     if (m.type) payload.tipoManutencao = m.type;
     if (m.responsible) payload.responsavel = m.responsible;
-    if (m.company) payload.empresa = m.company;
-    if (m.cost) payload.custo = m.cost;
-    if (m.performedDate) payload.dataRealizada = brToISO(m.performedDate);
+    if (m.company) payload.empresaResponsavel = m.company;
+    if (m.cost) payload.valor = m.cost;
+    if (m.performedDate) payload.dataManutencao = brToISO(m.performedDate);
     if (m.nextDate) payload.dataProxima = brToISO(m.nextDate);
-    if (m.status) payload.statusManutencao = m.status;
+    if (m.status) payload.status = m.status;
     if (m.rcOc) payload.rcOc = m.rcOc;
-    if (m.observacoes) payload.observacoes = m.observacoes;
+    if (m.observacoes) payload.observacao = m.observacoes;
     return payload;
 };
 

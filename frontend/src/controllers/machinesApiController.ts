@@ -42,7 +42,7 @@ const mapApiToMachine = (m: ApiMachine): Machine => {
 
   return {
     id: id ? String(id) : '',
-    name: m.nome ?? m.name ?? '',
+    nome: m.nome ?? '',
     patrimony: m.patrimonio ?? m.patrimony ?? '',
     status: m.status ?? m.statusMaquina ?? 'Ativo',
     funcao: m.funcao ?? m.funcao ?? '',
@@ -162,7 +162,7 @@ type ApiMachinePayload = {
 
 const mapMachineToApi = (m: Partial<Machine>): ApiMachinePayload => {
   const obj: ApiMachinePayload = {};
-  if (m.name !== undefined) obj.nome = m.name;
+  if (m.nome !== undefined) obj.nome = m.nome;
   if (m.patrimony !== undefined) obj.patrimonio = m.patrimony;
   if (m.funcao !== undefined) obj.funcao = m.funcao;
   if (m.fabricante !== undefined) obj.fabricante = m.fabricante;
