@@ -4,14 +4,14 @@ export type MaintenanceType = 'Corretiva' | 'Preventiva' | 'Calibracao' | 'Calib
 export interface Maintenance {
   id: string;
   idMaquina: string;
-  machineName: string;
-  type: MaintenanceType;
-  responsible: string;
-  company: string;
-  cost: number;                // custo em BRL
-  performedDate: string;       // dd/mm/aaaa
-  nextDate?: string;           // dd/mm/aaaa
+  machineName?: string;
+  tipoManutencao: MaintenanceType;
+  responsavel: string;
+  empresaResponsavel: string;
+  valor: number;
+  dataManutencao: string;
+  dataProxima?: string;
   status: MaintenanceStatus;
   rcOc?: string;
-  observacoes?: string;
+  observacao?: string;
 }
