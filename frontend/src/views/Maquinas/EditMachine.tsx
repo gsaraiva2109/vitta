@@ -2,8 +2,8 @@ import { useState, useMemo, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import Toast from '../../components/CustomToast';
-import { showToast, ToastMessages } from '../../components/CustomToast/toastUtils';
+import { Toast } from 'primereact/toast';
+import { showToast, ToastMessages } from '../../components/CustomToast';
 import type { Machine } from '../../models/Machine';
 import { brToISO, isoToBR } from '../../controllers/machinesApiController';
 
