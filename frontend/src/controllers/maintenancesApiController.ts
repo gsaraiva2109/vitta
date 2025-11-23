@@ -10,8 +10,8 @@ interface ApiMaintenance {
     status?: MaintenanceStatus;
     tipoManutencao?: MaintenanceType;
     responsavel?: string;
-    dataManutencao?: string; // ISO date
-    dataProxima?: string; // ISO date
+    dataManutencao?: string | null; // ISO date
+    dataProxima?: string | null; // ISO date
     empresaResponsavel?: string;
     rcOc?: string;
     modelo?: string;
@@ -45,20 +45,19 @@ const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
 
 // Maps a frontend Maintenance model to an API payload
 const mapMaintenanceToApi = (m: Partial<Maintenance>): Partial<ApiMaintenance> => {
-    const payload: Partial<ApiMaintenance> = {};
-    if (m.id) payload.id = Number(m.id);
-    if (m.idMaquina) payload.idMaquina = m.idMaquina;
-    if (m.tipoManutencao) payload.tipoManutencao = m.tipoManutencao;
-    if (m.responsavel) payload.responsavel = m.responsavel;
-    if (m.empresaResponsavel) payload.empresaResponsavel = m.empresaResponsavel;
-    if (m.valor) payload.valor = String(m.valor);
-    if (m.dataManutencao) payload.dataManutencao = brToISO(m.dataManutencao);
-    if (m.dataProxima) payload.dataProxima = brToISO(m.dataProxima);
-    if (m.status) payload.status = m.status;
-    if (m.rcOc) payload.rcOc = m.rcOc;
-    if (m.observacao) payload.observacao = m.observacao;
-    
-    return payload;
+    return {
+        id: m.id ? Number(m.id) : undefined,
+        idMaquina: m.idMaquina,
+        tipoManutencao: m.tipoManutencao,
+        responsavel: m.responsavel,
+        empresaResponsavel: m.empresaResponsavel,
+        valor: m.valor ? String(m.valor) : undefined,
+        dataManutencao: m.dataManutencao?.includes('/') ? brToISO(m.dataManutencao) : m.dataManutencao,
+        dataProxima: m.dataProxima?.includes('/') ? brToISO(m.dataProxima) : m.dataProxima,
+        status: m.status,
+        rcOc: m.rcOc,
+        observacao: m.observacao,
+    };
 };
 
 export const loadMaintenancesFromAPI = async (): Promise<Maintenance[]> => {

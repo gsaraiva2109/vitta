@@ -13,15 +13,13 @@ interface Props {
 
 const statusOptions = [
   { label: 'Concluída', value: 'Concluida' },
-  { label: 'Em Andamento', value: 'Em Andamento' },
-  { label: 'Cancelada', value: 'Cancelada' },
   { label: 'Pendente', value: 'Pendente' },
 ];
 
 const typeOptions = [
   { label: 'Corretiva', value: 'Corretiva' },
   { label: 'Preventiva', value: 'Preventiva' },
-  { label: 'Calibração', value: 'Calibração' },
+  { label: 'Preditiva', value: 'Preditiva' },
 ];
 
 const brToISO = (br: string) => {
@@ -83,8 +81,8 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
       rcOc: form.rcOc,
       observacao: form.observacao,
     };
-    showToast(toast, ToastMessages.manutencao.updated);
     onSubmit(payload);
+    showToast(toast, ToastMessages.manutencao.updated);
   };
 
   return (

@@ -16,15 +16,13 @@ interface Props {
 
 const statusOptions = [
   { label: 'Concluída', value: 'Concluida' },
-  { label: 'Em Andamento', value: 'Em Andamento' },
-  { label: 'Cancelada', value: 'Cancelada' },
   { label: 'Pendente', value: 'Pendente' },
 ];
 
 const typeOptions = [
   { label: 'Corretiva', value: 'Corretiva' },
   { label: 'Preventiva', value: 'Preventiva' },
-  { label: 'Calibração', value: 'Calibração' },
+  { label: 'Calibração', value: 'Calibracao' },
 ];
 
 
@@ -42,7 +40,7 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
     idMaquina: '',
     valor: 'R$ ',
     tipoManutencao: 'Preventiva',
-    status: 'Em Andamento',
+    status: 'Pendente',
     responsavel: '',
     dataManutencao: '',
     empresaResponsavel: '',
@@ -101,7 +99,6 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
       rcOc: form.rcOc,
       observacao: form.observacao,
     };
-    showToast(toast, ToastMessages.manutencao.created);
     onSubmit(payload);
   };
 

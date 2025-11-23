@@ -4,9 +4,11 @@ import { authenticatedFetch } from "./apiService";
 import type { Maintenance } from "../models/Maintenance";
 
 // Define um tipo `ApiMaintenance` que possa ser usado internamente no serviço
-type ApiMaintenance = Omit<Maintenance, 'id' | 'valor'> & { 
+type ApiMaintenance = Omit<Maintenance, 'id' | 'valor' | 'dataManutencao' | 'dataProxima'> & { 
   id?: number; 
   valor?: string; 
+  dataManutencao?: string | null;
+  dataProxima?: string | null;
 };
 
 const BASE_PATH = "/manutencoes";
@@ -32,16 +34,14 @@ export function getManutencaoById(id: number): Promise<ApiMaintenance> {
  */
 
 export function createManutencao(manutencaoData: Partial<ApiMaintenance>): Promise<ApiMaintenance> {
-  const { idMaquina, ...rest } = manutencaoData;
+  const { idMaquina } = manutencaoData;
   if (!idMaquina) {
     throw new Error("idMaquina é obrigatório para criar uma manutenção");
   }
   
-  const payload = { ...rest };
-  
   return authenticatedFetch<ApiMaintenance>(`/maquinas/${idMaquina}/manutencoes`, {
     method: "POST",
-    body: JSON.stringify(payload),
+    body: JSON.stringify(manutencaoData),
   });
 }
 

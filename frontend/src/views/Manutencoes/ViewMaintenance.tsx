@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import type { Maintenance } from '../../models/Maintenance';
@@ -21,17 +20,12 @@ const typeOptions = [
   { label: 'Calibração', value: 'Calibração' },
 ];
 
-const brToISO = (br: string) => {
-  if (!br) return '';
-  const [d, m, y] = br.split('/');
-  return `${y}-${m}-${d}`;
-};
+
 
 const formatBRL = (v: number) =>
   `R$ ${v.toFixed(2).replace('.', ',')}`;
 
 const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
-  const dataManutencaoISO = useMemo(() => brToISO(maintenance.dataManutencao || ''), [maintenance.dataManutencao]);
   const formattedValor = formatBRL(maintenance.valor);
 
   return (
@@ -66,7 +60,11 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Data da Manutenção</label>
-              <input type="date" value={dataManutencaoISO} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
+              <InputText value={maintenance.dataManutencao || ''} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700 mb-1">Próxima Manutenção</label>
+              <InputText value={maintenance.dataProxima || ''} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Empresa responsável</label>
