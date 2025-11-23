@@ -1,10 +1,12 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
 import type { Maintenance } from '../../models/Maintenance';
+import { getAllMaquinas } from '../../services/maquinaService';
+import type { Machine } from '../../models/Machine';
 
-type CreatePayload = Omit<Maintenance, 'id'> & { rcOc?: string; observacoes?: string };
+type CreatePayload = Omit<Maintenance, 'id'>;
 
 interface Props {
   onCancel: () => void;
@@ -39,8 +41,9 @@ const parseBRLToNumber = (v: string) => {
 
 const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
   const toast = useRef<Toast>(null);
+  const [machines, setMachines] = useState<Machine[]>([]);
   const [form, setForm] = useState({
-    machineName: '',
+    idMaquina: '',
     cost: 'R$ ',
     type: 'Preventiva',
     status: 'Em Andamento',
@@ -51,18 +54,37 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
     observacoes: '',
   });
 
+  useEffect(() => {
+    getAllMaquinas()
+      .then(data => {
+        setMachines(data);
+      })
+      .catch(() => showToast(toast, ToastMessages.generic.error));
+  }, []);
+
   const handle = (k: keyof typeof form, v: string) =>
     setForm(prev => ({ ...prev, [k]: v }));
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const required: (keyof typeof form)[] = ['machineName', 'cost', 'type', 'status', 'responsible', 'rcOc'];
+    const required: (keyof typeof form)[] = ['idMaquina', 'cost', 'type', 'status', 'responsible', 'rcOc'];
     if (required.some(f => !String(form[f]).trim())) {
       showToast(toast, ToastMessages.validation.requiredFields);
       return;
     }
+    const selectedMachine = machines.find(m => m.id === form.idMaquina);
+    if (!selectedMachine) {
+        showToast(toast, {
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Máquina selecionada não encontrada.',
+        });
+        return;
+    }
+
     const payload: CreatePayload = {
-      machineName: form.machineName,
+      idMaquina: form.idMaquina,
+      machineName: selectedMachine.nome,
       cost: parseBRLToNumber(form.cost),
       type: form.type as Maintenance['type'],
       responsible: form.responsible,
@@ -76,6 +98,8 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
     showToast(toast, ToastMessages.manutencao.created);
     onSubmit(payload);
   };
+
+  const machineOptions = machines.map(m => ({ label: m.nome, value: m.id }));
 
   return (
     <>
@@ -91,7 +115,7 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Máquina *</label>
-            <InputText value={form.machineName} onChange={(e) => handle('machineName', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+            <Dropdown value={form.idMaquina} onChange={(e) => handle('idMaquina', e.value)} options={machineOptions} optionLabel="label" optionValue="value" placeholder="Selecione uma máquina" className="w-full h-11 rounded-md border border-gray-300 shadow-sm" panelClassName="rounded-xl" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Valor *</label>

@@ -20,6 +20,13 @@ export const showToast = (toastRef: RefObject<Toast | null>, message: ToastMessa
 };
 
 export const ToastMessages = {
+  generic: {
+    error: {
+      severity: 'error' as const,
+      summary: 'Erro',
+      detail: 'Ocorreu um erro inesperado. Tente novamente.',
+    },
+  },
   justificativa: {
     saved: {
       severity: 'success' as const,

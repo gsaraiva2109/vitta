@@ -38,7 +38,7 @@ export const generateReport = async (
   switch (type) {
     case 'geral':
       filteredData = machines.map((m: Machine) => ({
-        name: m.name,
+        nome: m.nome,
         patrimonio: m.patrimony,
         funcao: m.funcao,
         status: m.status,
@@ -51,7 +51,7 @@ export const generateReport = async (
       filteredData = machines
         .filter((m: Machine) => !filters.fabricante || m.fabricante === filters.fabricante)
         .map((m: Machine) => ({
-          name: m.name,
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -63,9 +63,9 @@ export const generateReport = async (
     case 'historico-manutencao':
       // Combina dados de máquinas e manutenções
       filteredData = maintenances.map((maint: Maintenance) => {
-        const machine = machines.find((m: Machine) => m.name === maint.machineName);
+        const machine = machines.find((m: Machine) => m.nome === maint.machineName);
         return {
-          name: maint.machineName,
+          nome: maint.machineName,
           patrimonio: machine?.patrimony || 'N/A',
           funcao: machine?.funcao || 'N/A',
           status: maint.status,
@@ -79,7 +79,7 @@ export const generateReport = async (
       filteredData = machines
         .filter((m: Machine) => m.status === 'Inativo')
         .map((m: Machine) => ({
-          name: m.name,
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -92,7 +92,7 @@ export const generateReport = async (
       filteredData = machines
         .filter((m: Machine) => m.status === 'Manutenção')
         .map((m: Machine) => ({
-          name: m.name,
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
