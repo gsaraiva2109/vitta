@@ -35,7 +35,7 @@ export const connectDB = async () => {
 
     if (process.env.NODE_ENV !== 'production') {
       // Se estiver rodando no container de teste, força a recriação das tabelas
-      const syncOptions = process.env.DB_HOST === 'vitta-db-test' ? { force: true } : { alter: true };
+      const syncOptions = process.env.DB_HOST === 'vitta-db-test' ? { alter: true } : { alter: true };
       await sequelize.sync(syncOptions);
       console.log(`Modelos sincronizados (sequelize.sync: ${JSON.stringify(syncOptions)})`);
     }
