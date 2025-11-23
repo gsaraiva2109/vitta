@@ -31,8 +31,8 @@ const formatBRL = (v: number) =>
   `R$ ${v.toFixed(2).replace('.', ',')}`;
 
 const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
-  const performedDateISO = useMemo(() => brToISO(maintenance.performedDate || ''), [maintenance.performedDate]);
-  const formattedCost = formatBRL(maintenance.cost);
+  const dataManutencaoISO = useMemo(() => brToISO(maintenance.dataManutencao || ''), [maintenance.dataManutencao]);
+  const formattedValor = formatBRL(maintenance.valor);
 
   return (
     <form className="flex flex-col">
@@ -50,11 +50,11 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Valor *</label>
-              <InputText value={formattedCost} readOnly placeholder="R$ xxxx,xx" className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+              <InputText value={formattedValor} readOnly placeholder="R$ xxxx,xx" className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Tipo *</label>
-              <Dropdown value={maintenance.type} options={typeOptions} optionLabel="label" optionValue="value" disabled className="w-full h-11 rounded-md border border-gray-300 shadow-sm" panelClassName="rounded-xl" />
+              <Dropdown value={maintenance.tipoManutencao} options={typeOptions} optionLabel="label" optionValue="value" disabled className="w-full h-11 rounded-md border border-gray-300 shadow-sm" panelClassName="rounded-xl" />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Status *</label>
@@ -62,15 +62,15 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Responsável *</label>
-              <InputText value={maintenance.responsible} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+              <InputText value={maintenance.responsavel} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Data da Manutenção</label>
-              <input type="date" value={performedDateISO} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
+              <input type="date" value={dataManutencaoISO} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Empresa responsável</label>
-              <InputText value={maintenance.company} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+              <InputText value={maintenance.empresaResponsavel} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">RC/OC *</label>
@@ -78,7 +78,7 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
             </div>
             <div className="md:col-span-2 flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Observações</label>
-              <textarea value={maintenance.observacoes || ''} readOnly className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none" />
+              <textarea value={maintenance.observacao || ''} readOnly className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none" />
             </div>
           </div>
       </div>

@@ -11,6 +11,7 @@ interface ApiMaintenance {
     tipoManutencao?: MaintenanceType;
     responsavel?: string;
     dataManutencao?: string; // ISO date
+    dataProxima?: string; // ISO date
     empresaResponsavel?: string;
     rcOc?: string;
     modelo?: string;
@@ -35,7 +36,7 @@ const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
     empresaResponsavel: m.empresaResponsavel ?? '',
     valor: parseFloat(m.valor || '') || 0,
     dataManutencao: m.dataManutencao ? isoToBr(m.dataManutencao) : '',
-    dataProxima: (m as any).dataProxima ? isoToBr((m as any).dataProxima) : '', // Backend model needs dataProxima
+    dataProxima: m.dataProxima ? isoToBr(m.dataProxima) : '',
     status: m.status ?? 'Pendente',
     rcOc: m.rcOc ?? '',
     observacao: m.observacao ?? '',
@@ -45,13 +46,14 @@ const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
 // Maps a frontend Maintenance model to an API payload
 const mapMaintenanceToApi = (m: Partial<Maintenance>): Partial<ApiMaintenance> => {
     const payload: Partial<ApiMaintenance> = {};
+    if (m.id) payload.id = Number(m.id);
     if (m.idMaquina) payload.idMaquina = m.idMaquina;
     if (m.tipoManutencao) payload.tipoManutencao = m.tipoManutencao;
     if (m.responsavel) payload.responsavel = m.responsavel;
     if (m.empresaResponsavel) payload.empresaResponsavel = m.empresaResponsavel;
     if (m.valor) payload.valor = String(m.valor);
     if (m.dataManutencao) payload.dataManutencao = brToISO(m.dataManutencao);
-    if (m.dataProxima) (payload as any).dataProxima = brToISO(m.dataProxima); // Backend model needs dataProxima
+    if (m.dataProxima) payload.dataProxima = brToISO(m.dataProxima);
     if (m.status) payload.status = m.status;
     if (m.rcOc) payload.rcOc = m.rcOc;
     if (m.observacao) payload.observacao = m.observacao;
@@ -61,7 +63,7 @@ const mapMaintenanceToApi = (m: Partial<Maintenance>): Partial<ApiMaintenance> =
 
 export const loadMaintenancesFromAPI = async (): Promise<Maintenance[]> => {
   try {
-    const res = await api.getAllManutencoes();
+    const res: ApiMaintenance[] = await api.getAllManutencoes();
     return Array.isArray(res) ? res.map(mapApiToMaintenance) : [];
   } catch (error) {
     console.error('Error loading maintenances:', error);

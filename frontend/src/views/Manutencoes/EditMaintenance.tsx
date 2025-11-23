@@ -49,14 +49,14 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
   const [form, setForm] = useState({
     id: maintenance.id,
     machineName: maintenance.machineName,
-    cost: formatBRL(maintenance.cost),
-    type: maintenance.type,
+    valor: formatBRL(maintenance.valor),
+    tipoManutencao: maintenance.tipoManutencao,
     status: maintenance.status,
-    responsible: maintenance.responsible,
-    performedDateISO: useMemo(() => brToISO(maintenance.performedDate || ''), [maintenance.performedDate]),
-    company: maintenance.company,
+    responsavel: maintenance.responsavel,
+    dataManutencaoISO: useMemo(() => brToISO(maintenance.dataManutencao || ''), [maintenance.dataManutencao]),
+    empresaResponsavel: maintenance.empresaResponsavel,
     rcOc: maintenance.rcOc || '',
-    observacoes: maintenance.observacoes || '',
+    observacao: maintenance.observacao || '',
   });
 
   const handle = (k: keyof typeof form, v: string) =>
@@ -64,7 +64,7 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const required: (keyof typeof form)[] = ['machineName', 'cost', 'type', 'status', 'responsible', 'rcOc'];
+    const required: (keyof typeof form)[] = ['machineName', 'valor', 'tipoManutencao', 'status', 'responsavel', 'rcOc'];
     if (required.some(f => !String(form[f]).trim())) {
       showToast(toast, ToastMessages.validation.requiredFields);
       return;
@@ -73,15 +73,15 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
       id: form.id,
       idMaquina: maintenance.idMaquina,
       machineName: form.machineName,
-      cost: parseBRLToNumber(form.cost),
-      type: form.type as Maintenance['type'],
-      responsible: form.responsible,
-      company: form.company,
-      performedDate: isoToBR(form.performedDateISO),
-      nextDate: maintenance.nextDate || '',
+      valor: parseBRLToNumber(form.valor),
+      tipoManutencao: form.tipoManutencao as Maintenance['tipoManutencao'],
+      responsavel: form.responsavel,
+      empresaResponsavel: form.empresaResponsavel,
+      dataManutencao: isoToBR(form.dataManutencaoISO),
+      dataProxima: maintenance.dataProxima || '',
       status: form.status as Maintenance['status'],
       rcOc: form.rcOc,
-      observacoes: form.observacoes,
+      observacao: form.observacao,
     };
     showToast(toast, ToastMessages.manutencao.updated);
     onSubmit(payload);
@@ -105,11 +105,11 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Valor *</label>
-            <InputText value={form.cost} onChange={(e) => handle('cost', e.target.value)} placeholder="R$ xxxx,xx" className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+            <InputText value={form.valor} onChange={(e) => handle('valor', e.target.value)} placeholder="R$ xxxx,xx" className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Tipo *</label>
-            <Dropdown value={form.type} onChange={(e) => handle('type', e.value)} options={typeOptions} optionLabel="label" optionValue="value" className="w-full h-11 rounded-md border border-gray-300 shadow-sm" panelClassName="rounded-xl" />
+            <Dropdown value={form.tipoManutencao} onChange={(e) => handle('tipoManutencao', e.value)} options={typeOptions} optionLabel="label" optionValue="value" className="w-full h-11 rounded-md border border-gray-300 shadow-sm" panelClassName="rounded-xl" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Status *</label>
@@ -117,15 +117,15 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Responsável *</label>
-            <InputText value={form.responsible} onChange={(e) => handle('responsible', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+            <InputText value={form.responsavel} onChange={(e) => handle('responsavel', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Data da Manutenção</label>
-            <input type="date" value={form.performedDateISO} onChange={(e) => handle('performedDateISO', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
+            <input type="date" value={form.dataManutencaoISO} onChange={(e) => handle('dataManutencaoISO', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Empresa responsável</label>
-            <InputText value={form.company} onChange={(e) => handle('company', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+            <InputText value={form.empresaResponsavel} onChange={(e) => handle('empresaResponsavel', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">RC/OC *</label>
@@ -133,11 +133,11 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
           </div>
           <div className="md:col-span-2 flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Observações</label>
-            <textarea value={form.observacoes} onChange={(e) => handle('observacoes', e.target.value)} className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
+            <textarea value={form.observacao} onChange={(e) => handle('observacao', e.target.value)} className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
         </div>
       </div>
-
+			
       <footer className="flex justify-end gap-4 border-t border-gray-200 px-8 py-5">
         <button type="button" onClick={onCancel} className="h-11 rounded-xl bg-[#F4F4F4] px-6 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-[#0084FF33]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
           Cancelar

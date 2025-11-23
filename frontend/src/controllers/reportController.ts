@@ -63,13 +63,13 @@ export const generateReport = async (
     case 'historico-manutencao':
       // Combina dados de máquinas e manutenções
       filteredData = maintenances.map((maint: Maintenance) => {
-        const machine = machines.find((m: Machine) => m.nome === maint.machineName);
+        const machine = machines.find((m: Machine) => m.id === maint.idMaquina);
         return {
-          nome: maint.machineName,
+          nome: maint.machineName || 'N/A',
           patrimonio: machine?.patrimony || 'N/A',
           funcao: machine?.funcao || 'N/A',
           status: maint.status,
-          dataAquisicao: maint.performedDate,
+          dataAquisicao: maint.dataManutencao,
           localizacao: machine?.location || 'N/A',
         };
       });
