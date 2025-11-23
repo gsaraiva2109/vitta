@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
+import Toast from '../../components/CustomToast';
+import { showToast, ToastMessages } from '../../components/CustomToast/toastUtils';
 import type { Maintenance } from '../../models/Maintenance';
 
 type CreatePayload = Omit<Maintenance, 'id'> & { rcOc?: string; observacoes?: string };

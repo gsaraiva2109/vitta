@@ -74,11 +74,11 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">RC/OC *</label>
-              <InputText value={(maintenance as any).rcOc || ''} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+              <InputText value={maintenance.rcOc || ''} readOnly className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
             </div>
             <div className="md:col-span-2 flex flex-col">
               <label className="text-sm font-medium text-gray-700 mb-1">Observações</label>
-              <textarea value={(maintenance as any).observacoes || ''} readOnly className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none" />
+              <textarea value={maintenance.observacoes || ''} readOnly className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none" />
             </div>
           </div>
       </div>
