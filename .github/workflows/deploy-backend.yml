@@ -103,4 +103,4 @@ jobs:
       - name: Trigger Backend Deploy in Coolify
         run: |
           echo "🚀 Triggering Backend Deploy via Coolify Webhook..."
-          curl -X POST "${{ secrets.COOLIFY_BACKEND_WEBHOOK_URL }}"
+          curl -X POST "${{ secrets.COOLIFY_BACKEND_WEBHOOK_URL }}" --header "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
