@@ -3,6 +3,9 @@ import pluginJs from "@eslint/js";
 import pluginJest from "eslint-plugin-jest";
 
 export default [
+  {
+    ignores: ["tests/k6/**"],
+  },
   pluginJs.configs.recommended,
   {
     languageOptions: {
