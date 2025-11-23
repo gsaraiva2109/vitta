@@ -22,8 +22,9 @@ const Login = () => {
             const payload: LoginRequest = { matricula, senha };
             await loginService(payload);
             navigate('/');
-        } catch (err: any) {
-            setError(err.message || 'Erro no login');
+        } catch (err) {
+            const error = err as Error;
+            setError(error.message || 'Erro no login');
         } finally {
             setLoading(false);
         }
@@ -68,7 +69,7 @@ const Login = () => {
                                             <div className="flex-1">
                                                 <Password
                                                     value={senha}
-                                                    onChange={(e: any) => setSenha(e.target.value)}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
                                                     toggleMask
                                                     placeholder="Sua senha"
                                                     feedback={false}
