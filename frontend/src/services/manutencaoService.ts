@@ -25,7 +25,7 @@ export function getManutencaoById(id: number): Promise<Maintenance> {
  * Função de Criação (CREATE)
  */
 
-export function createManutencao(manutencaoData: any): Promise<Maintenance> {
+export function createManutencao(manutencaoData: Partial<Maintenance>): Promise<Maintenance> {
   const { idMaquina, ...rest } = manutencaoData;
   if (!idMaquina) {
     throw new Error("idMaquina é obrigatório para criar uma manutenção");
