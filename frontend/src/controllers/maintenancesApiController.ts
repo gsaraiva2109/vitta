@@ -2,23 +2,8 @@ import type { Maintenance } from '../models/Maintenance';
 import * as api from '../services/manutencaoService';
 import { isoToBR, brToISO } from './machinesApiController'; // Re-use date helpers
 
-type ApiMaintenance = {
-  idManutencao?: number | string;
-  id?: number | string;
-  maquina?: { nome?: string };
-  tipoManutencao?: Maintenance['type'];
-  responsavel?: string;
-  empresa?: string;
-  custo?: number;
-  dataRealizada?: string;
-  dataProxima?: string;
-  statusManutencao?: Maintenance['status'];
-  rcOc?: string;
-  observacoes?: string;
-};
-
 // Maps an API record to the frontend Maintenance model
-const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
+const mapApiToMaintenance = (m: any): Maintenance => {
   const id = m.idManutencao ?? m.id;
   
   return {
@@ -38,22 +23,9 @@ const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
 };
 
 // Maps a frontend Maintenance model to an API payload
-type ApiMaintenancePayload = {
-  idMaquina?: string;
-  tipoManutencao?: Maintenance['type'];
-  responsavel?: string;
-  empresa?: string;
-  custo?: number;
-  dataRealizada?: string;
-  dataProxima?: string;
-  statusManutencao?: Maintenance['status'];
-  rcOc?: string;
-  observacoes?: string;
-};
-
-const mapMaintenanceToApi = (m: Partial<Maintenance>): ApiMaintenancePayload => {
-    const payload: ApiMaintenancePayload = {};
-    if (m.machineName) payload.idMaquina = m.machineName; // Assuming we send machine ID
+const mapMaintenanceToApi = (m: Partial<Maintenance>): any => {
+    const payload: any = {};
+    if (m.idMaquina) payload.idMaquina = m.idMaquina;
     if (m.type) payload.tipoManutencao = m.type;
     if (m.responsible) payload.responsavel = m.responsible;
     if (m.company) payload.empresaResponsavel = m.company;

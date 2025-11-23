@@ -1,8 +1,8 @@
 import { useMemo, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import Toast from '../../components/CustomToast';
-import { showToast, ToastMessages } from '../../components/CustomToast/toastUtils';
+import { Toast } from 'primereact/toast';
+import { showToast, ToastMessages } from '../../components/CustomToast';
 import type { Maintenance } from '../../models/Maintenance';
 
 interface Props {
