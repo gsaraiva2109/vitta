@@ -1,5 +1,3 @@
-// Test comment to trigger CI/CD
-// server/server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -36,7 +34,7 @@ const limiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
   message: 'Muitas requisições deste IP, tente novamente mais tarde.'
 });
-// app.use(limiter);
+app.use(limiter);
 
 app.use(cors());
 app.use(express.json());
