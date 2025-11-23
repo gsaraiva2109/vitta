@@ -53,6 +53,7 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
     company: '',
     rcOc: '',
     observacoes: '',
+    nextDate: '',
   });
 
   useEffect(() => {
@@ -68,6 +69,16 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.idMaquina) {
+      showToast(toast, {
+        severity: 'error',
+        summary: 'Erro de Validação',
+        detail: 'Por favor, selecione uma máquina.',
+      });
+      return;
+    }
+
     const required: (keyof typeof form)[] = ['idMaquina', 'cost', 'type', 'status', 'responsible', 'rcOc'];
     if (required.some(f => !String(form[f]).trim())) {
       showToast(toast, ToastMessages.validation.requiredFields);
@@ -91,7 +102,7 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
       responsible: form.responsible,
       company: form.company,
       performedDate: toBRDate(form.performedDate),
-      nextDate: '',
+      nextDate: toBRDate(form.nextDate),
       status: form.status as Maintenance['status'],
       rcOc: form.rcOc,
       observacoes: form.observacoes,
@@ -137,6 +148,10 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Data da Manutenção</label>
             <input type="date" value={form.performedDate} onChange={(e) => handle('performedDate', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700 mb-1">Próxima Manutenção</label>
+            <input type="date" value={form.nextDate} onChange={(e) => handle('nextDate', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700" style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }} />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Empresa responsável</label>
