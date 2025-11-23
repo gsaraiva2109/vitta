@@ -1,5 +1,6 @@
 import express from 'express';
 import { getAll, getById, getByPatrimonio, create, update, remove } from '../controllers/maquinaController.js';
+import { create as createManutencao } from '../controllers/manutencaoController.js';
 
 const router = express.Router();
 
@@ -136,6 +137,33 @@ router.get('/patrimonio/:patrimonio', getByPatrimonio);
 
 /**
  * @swagger
+ * /maquinas/{idMaquina}/manutencoes:
+ *   post:
+ *     summary: Cria uma nova manutenção para uma máquina
+ *     tags: [Maquinas]
+ *     parameters:
+ *       - in: path
+ *         name: idMaquina
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID da máquina
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Manutencao'
+ *     responses:
+ *       201:
+ *         description: Manutenção criada com sucesso
+ *       500:
+ *         description: Erro interno do servidor
+ */
+router.post('/:idMaquina/manutencoes', createManutencao);
+
+/**
+ * @swagger
  * /maquinas/{id}:
  *   get:
  *     summary: Busca máquina pelo ID
@@ -151,6 +179,7 @@ router.get('/patrimonio/:patrimonio', getByPatrimonio);
  *       200:
  *         description: Detalhes da máquina
  *         content:
+.
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Maquina'

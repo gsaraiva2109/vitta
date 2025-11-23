@@ -15,7 +15,8 @@ const Manutencao = sequelize.define('Manutencao', {
   empresaResponsavel: DataTypes.STRING,
   rcOc: DataTypes.STRING,
   modelo: DataTypes.STRING,
-  observacao: DataTypes.TEXT
+  observacao: DataTypes.TEXT,
+  dataProxima: DataTypes.DATE
   // adicionaremos a FK de maquina na index de modelos
 }, {
   tableName: 'manutencoes',

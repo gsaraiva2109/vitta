@@ -1,6 +1,6 @@
 import type { Maintenance } from '../models/Maintenance';
 import * as api from '../services/manutencaoService';
-import { isoToBR, brToISO } from './machinesApiController'; // Re-use date helpers
+import { isoToBr, brToISO } from '../utils/date'; // Re-use date helpers
 
 // Maps an API record to the frontend Maintenance model
 const mapApiToMaintenance = (m: any): Maintenance => {
@@ -13,9 +13,9 @@ const mapApiToMaintenance = (m: any): Maintenance => {
     type: m.tipoManutencao ?? 'N/A',
     responsible: m.responsavel ?? 'N/A',
     company: m.empresaResponsavel ?? '',
-    cost: m.valor ?? 0,
-    performedDate: m.dataManutencao ? isoToBR(m.dataManutencao.split('T')[0]) : '',
-    nextDate: m.dataProxima ? isoToBR(m.dataProxima.split('T')[0]) : '',
+    cost: parseFloat(m.valor) || 0,
+    performedDate: m.dataManutencao ? isoToBr(m.dataManutencao) : '',
+    nextDate: m.dataProxima ? isoToBr(m.dataProxima) : '',
     status: m.status ?? 'Pendente',
     rcOc: m.rcOc ?? '',
     observacoes: m.observacao ?? '',
@@ -25,7 +25,7 @@ const mapApiToMaintenance = (m: any): Maintenance => {
 // Maps a frontend Maintenance model to an API payload
 const mapMaintenanceToApi = (m: Partial<Maintenance>): any => {
     const payload: any = {};
-    if (m.idMaquina) payload.idMaquina = m.idMaquina;
+    payload.idMaquina = m.idMaquina;
     if (m.type) payload.tipoManutencao = m.type;
     if (m.responsible) payload.responsavel = m.responsible;
     if (m.company) payload.empresaResponsavel = m.company;
@@ -35,6 +35,7 @@ const mapMaintenanceToApi = (m: Partial<Maintenance>): any => {
     if (m.status) payload.status = m.status;
     if (m.rcOc) payload.rcOc = m.rcOc;
     if (m.observacoes) payload.observacao = m.observacoes;
+    
     return payload;
 };
 
