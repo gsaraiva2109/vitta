@@ -6,7 +6,7 @@ export async function getAll(req, res) {
     const manutencoes = await manutencaoService.getAllManutencoes();
     res.json(manutencoes);
   } catch (error) {
-    logger.error('Failed to get manutencoes', { error: error.message, stack: error.stack });
+    logger.error('Failed to get manutencoes', { error });
     res.status(500).json({
       message: 'Erro no servidor ao buscar manutenções.',
       error: error.message,
