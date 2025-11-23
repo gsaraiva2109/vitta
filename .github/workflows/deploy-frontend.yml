@@ -100,4 +100,4 @@ jobs:
       - name: Trigger Frontend Deploy in Coolify
         run: |
           echo "🚀 Triggering Frontend Deploy via Coolify Webhook..."
-          curl -X POST "${{ secrets.COOLIFY_FRONTEND_WEBHOOK_URL }}"
+          curl -X POST "${{ secrets.COOLIFY_FRONTEND_WEBHOOK_URL }}" --header "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
