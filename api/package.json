@@ -9,7 +9,7 @@
     "dev": "nodemon server.js",
     "k6:test": "k6 run tests/k6/*.test.js",
     "lint": "eslint . --fix",
-    "db:migrate": "npx sequelize-cli db:migrate"
+    "db:migrate": "npx sequelize-cli db:migrate --debug"
   },
   "keywords": [],
   "author": "",
