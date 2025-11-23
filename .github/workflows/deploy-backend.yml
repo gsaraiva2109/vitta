@@ -6,11 +6,17 @@ on:
       - main
     paths:
       - "api/**"
+      - ".github/workflows/deploy-backend.yml"
   pull_request:
     branches:
       - main
     paths:
       - "api/**"
+      - ".github/workflows/deploy-backend.yml"
+
+permissions:
+  contents: read
+  packages: write
 
 env:
   REGISTRY: ghcr.io
