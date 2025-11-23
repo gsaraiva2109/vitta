@@ -102,9 +102,6 @@ jobs:
           cache-to: type=gha,scope=backend,mode=max
 
       - name: Trigger Backend Deploy in Coolify
-        env:
-          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
-          COOLIFY_WEBHOOK: ${{ secrets.BACKEND_COOLIFY_WEBHOOK }}
         run: |
           echo "🚀 Triggering Backend Deploy via Coolify Webhook..."
-          curl --fail --show-error --request GET "$COOLIFY_WEBHOOK" --header "Authorization: Bearer $COOLIFY_TOKEN"
+          curl -X POST "${{ secrets.COOLIFY_BACKEND_WEBHOOK_URL }}"
