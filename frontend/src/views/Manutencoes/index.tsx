@@ -98,7 +98,7 @@ const Manutencoes = () => {
       }
       // tipo
       if (typeFilter) {
-        const t = (m.type || "").toLowerCase();
+        const t = (m.tipoManutencao || "").toLowerCase();
         if (!t.includes(typeFilter)) return false;
       }
       // busca por nome da máquina
@@ -294,25 +294,25 @@ const Manutencoes = () => {
                       {m.machineName}
                     </h3>
                     <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                      {m.type} - {m.responsible}
+                      {m.tipoManutencao} - {m.responsavel}
                     </div>
                     {/* Linhas info */}
                     <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                       <div>
                         <div className="text-base font-medium text-gray-700">Custo</div>
-                        <div className="text-gray-500 font-xs mb-0.5">R$ {m.cost.toFixed(2)}</div>
+                        <div className="text-gray-500 font-xs mb-0.5">R$ {m.valor.toFixed(2)}</div>
                       </div>
                       <div>
                         <div className="text-base font-medium text-gray-700">Data realizada</div>
-                        <div className="text-gray-500 font-xs mb-0.5">{m.performedDate || 'dd/mm/aaaa'}</div>
+                        <div className="text-gray-500 font-xs mb-0.5">{m.dataManutencao || 'dd/mm/aaaa'}</div>
                       </div>
                       <div>
                         <div className="text-base font-medium text-gray-700">Empresa</div>
-                        <div className="text-gray-500 font-xs mb-0.5">{m.company}</div>
+                        <div className="text-gray-500 font-xs mb-0.5">{m.empresaResponsavel}</div>
                       </div>
                       <div>
                         <div className="text-base font-medium text-gray-700">Próxima manutenção</div>
-                        <div className="text-gray-500 font-xs mb-0.5">{m.nextDate || 'dd/mm/aaaa'}</div>
+                        <div className="text-gray-500 font-xs mb-0.5">{m.dataProxima || 'dd/mm/aaaa'}</div>
                       </div>
                     </div>
                   </div>

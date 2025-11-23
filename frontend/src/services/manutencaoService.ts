@@ -3,20 +3,26 @@
 import { authenticatedFetch } from "./apiService";
 import type { Maintenance } from "../models/Maintenance";
 
+// Define um tipo `ApiMaintenance` que possa ser usado internamente no serviço
+type ApiMaintenance = Omit<Maintenance, 'id' | 'valor'> & { 
+  id?: number; 
+  valor?: string; 
+};
+
 const BASE_PATH = "/manutencoes";
 
 /**
  * Funções de Leitura (READ)
  */
 
-export function getAllManutencoes(): Promise<Maintenance[]> {
-  return authenticatedFetch<Maintenance[]>(BASE_PATH, {
+export function getAllManutencoes(): Promise<ApiMaintenance[]> {
+  return authenticatedFetch<ApiMaintenance[]>(BASE_PATH, {
     method: "GET",
   });
 }
 
-export function getManutencaoById(id: number): Promise<Maintenance> {
-  return authenticatedFetch<Maintenance>(`${BASE_PATH}/${id}`, {
+export function getManutencaoById(id: number): Promise<ApiMaintenance> {
+  return authenticatedFetch<ApiMaintenance>(`${BASE_PATH}/${id}`, {
     method: "GET",
   });
 }
@@ -25,7 +31,7 @@ export function getManutencaoById(id: number): Promise<Maintenance> {
  * Função de Criação (CREATE)
  */
 
-export function createManutencao(manutencaoData: Partial<Maintenance>): Promise<Maintenance> {
+export function createManutencao(manutencaoData: Partial<ApiMaintenance>): Promise<ApiMaintenance> {
   const { idMaquina, ...rest } = manutencaoData;
   if (!idMaquina) {
     throw new Error("idMaquina é obrigatório para criar uma manutenção");
@@ -33,7 +39,7 @@ export function createManutencao(manutencaoData: Partial<Maintenance>): Promise<
   
   const payload = { ...rest };
   
-  return authenticatedFetch<Maintenance>(`/maquinas/${idMaquina}/manutencoes`, {
+  return authenticatedFetch<ApiMaintenance>(`/maquinas/${idMaquina}/manutencoes`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -45,9 +51,9 @@ export function createManutencao(manutencaoData: Partial<Maintenance>): Promise<
 
 export function updateManutencao(
   id: number,
-  manutencaoData: Partial<Maintenance>
-): Promise<Maintenance> {
-  return authenticatedFetch<Maintenance>(`${BASE_PATH}/${id}`, {
+  manutencaoData: Partial<ApiMaintenance>
+): Promise<ApiMaintenance> {
+  return authenticatedFetch<ApiMaintenance>(`${BASE_PATH}/${id}`, {
     method: "PUT",
     body: JSON.stringify(manutencaoData),
   });
