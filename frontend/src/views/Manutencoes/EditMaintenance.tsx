@@ -1,7 +1,8 @@
 import { useMemo, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
+import Toast from '../../components/CustomToast';
+import { showToast, ToastMessages } from '../../components/CustomToast/toastUtils';
 import type { Maintenance } from '../../models/Maintenance';
 
 interface Props {
@@ -54,8 +55,8 @@ const EditMaintenance = ({ maintenance, onCancel, onSubmit }: Props) => {
     responsible: maintenance.responsible,
     performedDateISO: useMemo(() => brToISO(maintenance.performedDate || ''), [maintenance.performedDate]),
     company: maintenance.company,
-    rcOc: (maintenance as any).rcOc || '',
-    observacoes: (maintenance as any).observacoes || '',
+    rcOc: maintenance.rcOc || '',
+    observacoes: maintenance.observacoes || '',
   });
 
   const handle = (k: keyof typeof form, v: string) =>
