@@ -6,11 +6,17 @@ on:
       - main
     paths:
       - "frontend/**"
+      - ".github/workflows/deploy-frontend.yml"
   pull_request:
     branches:
       - main
     paths:
       - "frontend/**"
+      - ".github/workflows/deploy-frontend.yml"
+
+permissions:
+  contents: read
+  packages: write
 
 env:
   REGISTRY: ghcr.io
