@@ -23,7 +23,7 @@ async function loginUser(matricula, senha) {
 
   try {
     passwordMatches = await bcrypt.compare(senha, storedSenha);
-  } catch (err) {
+  } catch {
     // Ignora erros do bcrypt e tenta a comparação de texto plano
   }
 
