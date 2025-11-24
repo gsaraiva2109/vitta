@@ -9,7 +9,7 @@ const getApiBaseUrl = (): string => {
 
 export async function authenticatedFetch<T>(
   path: string,
-  options?: RequestInit
+  options?: RequestInit & { responseType?: 'json' | 'blob' }
 ): Promise<T> {
   const token = getToken();
 
@@ -54,6 +54,10 @@ export async function authenticatedFetch<T>(
       logout();
     }
     throw new Error(errorData.message || `Erro do servidor: ${res.status}`);
+  }
+
+  if (options?.responseType === 'blob') {
+    return res.blob() as Promise<T>;
   }
 
   if (res.status === 204) {

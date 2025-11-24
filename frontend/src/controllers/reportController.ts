@@ -154,20 +154,27 @@ export const generateReport = async (
   return { data: filteredData, summary };
 };
 
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-export const exportToExcel = (data: ReportData[], reportType: string) => {
-  const worksheet = XLSX.utils.json_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+export const exportToExcel = async (data: ReportData[], reportType: string) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Relatório");
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
+  if (data.length > 0) {
+    // Cabeçalho
+    const headers = Object.keys(data[0]);
+    worksheet.addRow(headers);
 
-  const file = new Blob([excelBuffer], {
+    // Dados
+    data.forEach((item) => {
+      const row = headers.map(header => item[header as keyof ReportData]);
+      worksheet.addRow(row);
+    });
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const file = new Blob([buffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
 
