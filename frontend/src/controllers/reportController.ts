@@ -1,17 +1,27 @@
-import type { ReportData, ReportFilters, ReportSummary } from '../models/report';
-import { loadMachines } from './machinesController';
-import { loadMaintenances } from './maintenancesController';
+import type {
+  ReportData,
+  ReportFilters,
+  ReportSummary,
+} from "../models/report";
+import { loadMachinesFromAPI } from "./machinesApiController";
+import { loadMaintenancesFromAPI } from "./maintenancesApiController";
+import type { Machine } from "../models/Machine";
+import type { Maintenance } from "../models/Maintenance";
 
 // Converte dd/mm/yyyy para objeto Date
 const parseBRDate = (br: string): Date | null => {
   if (!br) return null;
-  const [d, m, y] = br.split('/');
+  const [d, m, y] = br.split("/");
   if (!d || !m || !y) return null;
   return new Date(+y, +m - 1, +d);
 };
 
 // Verifica se uma data está dentro do intervalo (inclusivo)
-const isDateInRange = (dateStr: string, startStr: string, endStr: string): boolean => {
+const isDateInRange = (
+  dateStr: string,
+  startStr: string,
+  endStr: string
+): boolean => {
   const date = parseBRDate(dateStr);
   if (!date) return false;
 
@@ -23,20 +33,20 @@ const isDateInRange = (dateStr: string, startStr: string, endStr: string): boole
   return true;
 };
 
-export const generateReport = (
+export const generateReport = async (
   type: string,
   filters: ReportFilters
-): { data: ReportData[]; summary: ReportSummary } => {
-  const machines = loadMachines([]);
-  const maintenances = loadMaintenances([]);
+): Promise<{ data: ReportData[]; summary: ReportSummary }> => {
+  const machines = await loadMachinesFromAPI();
+  const maintenances = await loadMaintenancesFromAPI();
 
   let filteredData: ReportData[] = [];
-  
+
   // Aplica filtros baseados no tipo de relatório
   switch (type) {
-    case 'geral':
-      filteredData = machines.map(m => ({
-        name: m.name,
+    case "geral":
+      filteredData = machines.map((m: Machine) => ({
+        nome: m.nome,
         patrimonio: m.patrimony,
         funcao: m.funcao,
         status: m.status,
@@ -44,12 +54,15 @@ export const generateReport = (
         localizacao: m.location,
       }));
       break;
-      
-    case 'por-fabricante':
+
+    case "por-fabricante":
       filteredData = machines
-        .filter(m => !filters.fabricante || m.fabricante === filters.fabricante)
-        .map(m => ({
-          name: m.name,
+        .filter(
+          (m: Machine) =>
+            !filters.fabricante || m.fabricante === filters.fabricante
+        )
+        .map((m: Machine) => ({
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -57,27 +70,27 @@ export const generateReport = (
           localizacao: m.location,
         }));
       break;
-      
-    case 'historico-manutencao':
+
+    case "historico-manutencao":
       // Combina dados de máquinas e manutenções
-      filteredData = maintenances.map(maint => {
-        const machine = machines.find(m => m.name === maint.machineName);
+      filteredData = maintenances.map((maint: Maintenance) => {
+        const machine = machines.find((m: Machine) => m.id === maint.idMaquina);
         return {
-          name: maint.machineName,
-          patrimonio: machine?.patrimony || 'N/A',
-          funcao: machine?.funcao || 'N/A',
+          nome: maint.machineName || "N/A",
+          patrimonio: machine?.patrimony || "N/A",
+          funcao: machine?.funcao || "N/A",
           status: maint.status,
-          dataAquisicao: maint.performedDate,
-          localizacao: machine?.location || 'N/A',
+          dataAquisicao: maint.dataManutencao,
+          localizacao: machine?.location || "N/A",
         };
       });
       break;
-      
-    case 'inativas-descartadas':
+
+    case "inativas-descartadas":
       filteredData = machines
-        .filter(m => m.status === 'Inativo')
-        .map(m => ({
-          name: m.name,
+        .filter((m: Machine) => m.status === "Inativo")
+        .map((m: Machine) => ({
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -85,12 +98,12 @@ export const generateReport = (
           localizacao: m.location,
         }));
       break;
-      
-    case 'maquinas-em-manutencao':
+
+    case "maquinas-em-manutencao":
       filteredData = machines
-        .filter(m => m.status === 'Manutenção')
-        .map(m => ({
-          name: m.name,
+        .filter((m: Machine) => m.status === "Manutenção")
+        .map((m: Machine) => ({
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -98,17 +111,23 @@ export const generateReport = (
           localizacao: m.location,
         }));
       break;
-      
+
     default:
       filteredData = [];
   }
-  
+
   // Aplica filtros de data e localização
   if (filters.dataInicio || filters.dataFim || filters.localizacao) {
-    filteredData = filteredData.filter(item => {
+    filteredData = filteredData.filter((item) => {
       // Filtro por data de aquisição
       if (filters.dataInicio || filters.dataFim) {
-        if (!isDateInRange(item.dataAquisicao, filters.dataInicio, filters.dataFim)) {
+        if (
+          !isDateInRange(
+            item.dataAquisicao,
+            filters.dataInicio,
+            filters.dataFim
+          )
+        ) {
           return false;
         }
       }
@@ -121,21 +140,38 @@ export const generateReport = (
       return true;
     });
   }
-  
+
   // Calcula resumo
   const summary: ReportSummary = {
     total: filteredData.length,
-    ativos: filteredData.filter(d => d.status === 'Ativo').length,
-    manutencao: filteredData.filter(d => d.status.includes('manutenção') || d.status.includes('Manutenção')).length,
-    descartados: filteredData.filter(d => d.status === 'Inativo').length,
+    ativos: filteredData.filter((d) => d.status === "Ativo").length,
+    manutencao: filteredData.filter(
+      (d) => d.status.includes("manutenção") || d.status.includes("Manutenção")
+    ).length,
+    descartados: filteredData.filter((d) => d.status === "Inativo").length,
   };
-  
+
   return { data: filteredData, summary };
 };
 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 export const exportToExcel = (data: ReportData[], reportType: string) => {
-  console.log(`Exportando ${data.length} registros para Excel - ${reportType}`);
-  // Implementação futura com biblioteca como xlsx
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const file = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  saveAs(file, `relatorio-${reportType}.xlsx`);
 };
 
 export const exportToPDF = (data: ReportData[], reportType: string) => {

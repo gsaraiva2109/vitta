@@ -1,6 +1,6 @@
 export interface Machine {
   id: string;
-  name: string;
+  nome: string;
   patrimony: string;
   status: 'Ativo' | 'Manutenção' | 'Pendente' | 'Inativo' | string;
   funcao: string;

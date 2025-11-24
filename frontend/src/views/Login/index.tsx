@@ -1,29 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import { Toast } from 'primereact/toast';
 import { login as loginService } from '../../services/authService';
 import type { LoginRequest } from '../../models/User';
 import { useNavigate } from 'react-router-dom';
+import { showToast } from '../../components/CustomToast/toastUtils';
 
 const Login = () => {
+    const toast = useRef<Toast>(null);
     const [matricula, setMatricula] = useState('');
     const [senha, setSenha] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const onSubmit = async (e?: React.FormEvent) => {
         e?.preventDefault();
-        setError(null);
         setLoading(true);
         try {
             const payload: LoginRequest = { matricula, senha };
             await loginService(payload);
             navigate('/');
-        } catch (err: any) {
-            setError(err.message || 'Erro no login');
+        } catch (err) {
+            const error = err as Error;
+            showToast(toast, {
+                severity: 'error',
+                summary: 'Erro',
+                detail: error.message || 'Erro no login',
+            });
         } finally {
             setLoading(false);
         }
@@ -31,6 +37,7 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#D4EAD7]">
+            <Toast ref={toast} />
             <Card className="w-[560px] h-[400px] rounded-lg shadow-md">
                 <div className="flex flex-col items-center gap-4 py-10">
                     <div className="flex items-center gap-4">
@@ -68,7 +75,7 @@ const Login = () => {
                                             <div className="flex-1">
                                                 <Password
                                                     value={senha}
-                                                    onChange={(e: any) => setSenha(e.target.value)}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
                                                     toggleMask
                                                     placeholder="Sua senha"
                                                     feedback={false}
@@ -77,8 +84,6 @@ const Login = () => {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {error && <div className="text-sm text-red-600 mb-4">{error}</div>}
 
                                     <div className="flex justify-center">
                                         <Button

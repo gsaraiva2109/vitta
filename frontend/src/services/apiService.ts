@@ -1,6 +1,9 @@
 // frontend/src/services/apiService.ts
 
-import { getToken } from "./authService";
+// As declarações de tipo para import.meta.env já são fornecidas pelo Vite/TypeScript.
+// Não é necessário redeclarar ImportMetaEnv ou ImportMeta.
+
+import { getToken, logout } from "./authService";
 
 // ----------------------------------------------------------------
 // Wrapper personalizado para requisições fetch com autenticação JWT
@@ -10,10 +13,10 @@ import { getToken } from "./authService";
 const getApiBaseUrl = (): string => {
   // Em desenvolvimento com proxy, usar /api
   if (import.meta.env.DEV) {
-    return '/api';
+    return "/api";
   }
   // Em produção, usar a variável de ambiente ou padrão
-  return import.meta.env.VITE_API_URL || '/api';
+  return import.meta.env.VITE_API_URL || "/api";
 };
 
 export async function authenticatedFetch<T>(
@@ -57,7 +60,9 @@ export async function authenticatedFetch<T>(
 
   // Construir URL completa
   const baseUrl = getApiBaseUrl();
-  const fullUrl = path.startsWith('/') ? `${baseUrl}${path}` : `${baseUrl}/${path}`;
+  const fullUrl = path.startsWith("/")
+    ? `${baseUrl}${path}`
+    : `${baseUrl}/${path}`;
 
   const res = await fetch(fullUrl, {
     ...options,
@@ -73,6 +78,7 @@ export async function authenticatedFetch<T>(
       .catch(() => ({ message: "Erro na requisição." }));
     if (res.status === 401 || res.status === 403) {
       console.error("Sessão expirada ou não autorizada. Limpando token.");
+      logout();
     }
     throw new Error(errorData.message || `Erro do servidor: ${res.status}`);
   }
@@ -84,14 +90,14 @@ export async function authenticatedFetch<T>(
 
   // Só chamar res.json() quando houver um body JSON para evitar
   // 'Unexpected end of JSON input' em respostas vazias
-  const contentType = res.headers.get('content-type') || '';
-  if (!contentType.includes('application/json')) {
+  const contentType = res.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
     // Tentar ler como texto e retornar texto vazio ou convertido
-    const text = await res.text().catch(() => '');
+    const text = await res.text().catch(() => "");
     try {
       return (text ? JSON.parse(text) : ({} as T)) as T;
     } catch {
-      return (text as unknown) as T;
+      return text as unknown as T;
     }
   }
 

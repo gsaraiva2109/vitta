@@ -1,11 +1,16 @@
 import { manutencaoService } from '../services/manutencaoService.js';
+import logger from '../config/logger.js';
 
 export async function getAll(req, res) {
   try {
     const manutencoes = await manutencaoService.getAllManutencoes();
     res.json(manutencoes);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Failed to get manutencoes', { error });
+    res.status(500).json({
+      message: 'Erro no servidor ao buscar manutenções.',
+      error: error.message,
+    });
   }
 }
 
@@ -19,8 +24,13 @@ export async function getById(req, res) {
 }
 
 export async function create(req, res) {
+  console.log('Dados recebidos para criar manutenção:', req.body);
   try {
-    const manutencao = await manutencaoService.createManutencao(req.body);
+    const { idMaquina } = req.params;
+    const manutencao = await manutencaoService.createManutencao({ 
+      ...req.body, 
+      idMaquina: parseInt(idMaquina, 10) 
+    });
     res.status(201).json(manutencao);
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -2,7 +2,8 @@ import { useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
+import { Toast } from 'primereact/toast';
+import { showToast, ToastMessages } from '../../components/CustomToast/toastUtils';
 import type { Machine } from '../../models/Machine';
 import { isoToBR } from '../../controllers/machinesApiController';
 
@@ -16,7 +17,7 @@ interface Props {
 const CreateMachine = ({ onCancel, onSubmit }: Props) => {
   const toast = useRef<Toast>(null);
   const [form, setForm] = useState<CreatePayload>({
-    name: '',
+    nome: '',
     patrimony: '',
     funcao: '',
     maintenanceInterval: '',
@@ -66,7 +67,7 @@ const CreateMachine = ({ onCancel, onSubmit }: Props) => {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const required: (keyof CreatePayload)[] = ['name', 'patrimony', 'funcao', 'acquisitionDate', 'serialNumber'];
+    const required: (keyof CreatePayload)[] = ['nome', 'patrimony', 'funcao', 'acquisitionDate', 'serialNumber'];
     if (required.some(f => !form[f])) {
       showToast(toast, ToastMessages.validation.requiredFields);
       return;
@@ -140,7 +141,7 @@ const CreateMachine = ({ onCancel, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Nome da Máquina *</label>
-            <InputText value={form.name} onChange={(e) => handle('name', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
+            <InputText value={form.nome} onChange={(e) => handle('nome', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Patrimônio *</label>

@@ -26,6 +26,7 @@ const Relatorios = () => {
   const [summary, setSummary] = useState<ReportSummary | null>(null);
   const [dateInicio, setDateInicio] = useState<string>('');
   const [dateFim, setDateFim] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const reportTypes: ReportTypeCard[] = [
     { id: 'geral', label: 'Relatório Geral', icon: 'pi pi-file', iconColor: 'text-gray-700' },
@@ -51,13 +52,21 @@ const Relatorios = () => {
     { label: 'Bloco B - Sala 202', value: 'Bloco B - Sala 202' },
   ];
 
-  const handleReportSelect = (reportId: string) => {
+  const handleReportSelect = async (reportId: string) => {
     setSelectedReport(reportId);
     setShowFilters(true);
-    // Gera relatório imediatamente
-    const result = generateReport(reportId, filters);
-    setReportData(result.data);
-    setSummary(result.summary);
+    setLoading(true);
+    try {
+      const result = await generateReport(reportId, filters);
+      setReportData(result.data);
+      setSummary(result.summary);
+    } catch (error) {
+      console.error("Error generating report:", error);
+      setReportData([]);
+      setSummary(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Converte ISO (yyyy-mm-dd) para dd/mm/yyyy
@@ -67,16 +76,25 @@ const Relatorios = () => {
     return `${d}/${m}/${y}`;
   };
 
-  const handleFilterChange = () => {
+  const handleFilterChange = async () => {
     if (selectedReport) {
       const updatedFilters = {
         ...filters,
         dataInicio: isoToBR(dateInicio),
         dataFim: isoToBR(dateFim),
       };
-      const result = generateReport(selectedReport, updatedFilters);
-      setReportData(result.data);
-      setSummary(result.summary);
+      setLoading(true);
+      try {
+        const result = await generateReport(selectedReport, updatedFilters);
+        setReportData(result.data);
+        setSummary(result.summary);
+      } catch (error) {
+        console.error("Error generating report:", error);
+        setReportData([]);
+        setSummary(null);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -228,7 +246,10 @@ const Relatorios = () => {
           </div>
 
           {/* Preview do Relatório */}
-          {reportData.length > 0 && summary && (
+          {loading ? (
+            <div className="text-center text-gray-500 py-12">Gerando relatório...</div>
+          ) : (
+            reportData.length > 0 && summary && (
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
               <h3 className="text-lg font-medium text-[#373535] mb-4" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                 Preview do Relatório
@@ -299,7 +320,7 @@ const Relatorios = () => {
                     {reportData.slice(0, 5).map((item, index) => (
                       <tr key={index} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-sm text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                          {item.name}
+                          {item.nome}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
                           {item.patrimonio}
@@ -330,6 +351,7 @@ const Relatorios = () => {
                 </p>
               )}
             </div>
+            )
           )}
 
           {/* Exportar Relatório */}

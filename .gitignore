@@ -16,6 +16,10 @@ dist-ssr
 vite.svg
 react.svg
 CRUSH.md
+test-local.sh
+stop-local.sh
+logs-local.sh
+DOCKER-TESTING.md
 
 # Editor directories and files
 .vscode/*

@@ -14,6 +14,7 @@ import {
   updateMachineAPI,
   deleteMachineAPI,
 } from "../../controllers/machinesApiController";
+import { getUser } from "../../services/authService";
 import ViewMachine from "./ViewMachine";
 
 const Maquinas = () => {
@@ -28,6 +29,9 @@ const Maquinas = () => {
   const [machineToDelete, setMachineToDelete] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const user = getUser();
+  const isManager = user?.tipo === 'manager';
 
   // Carrega máquinas da API ao montar o componente
   useEffect(() => {
@@ -130,7 +134,7 @@ const Maquinas = () => {
       }
       if (!q) return true;
       return (
-        (machine.name ?? "").toLowerCase().includes(q) ||
+        (machine.nome ?? "").toLowerCase().includes(q) ||
         (machine.patrimony ?? "").toLowerCase().includes(q)
       );
     });
@@ -241,11 +245,12 @@ const Maquinas = () => {
 
             {/* Botão Nova Máquina */}
             <button
-              className="bg-[#0084FF] hover:bg-[#0073E6] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform
-                         shadow-[0_12px_30px_rgba(0,132,255,0.18)] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)]
-                         active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2"
+              disabled={!isManager}
+              className={`bg-[#0084FF] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform
+                         shadow-[0_12px_30px_rgba(0,132,255,0.18)]
+                         ${isManager ? 'hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2' : 'opacity-50 cursor-not-allowed'}`}
               style={{ fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
-              onClick={() => setShowCreate(true)}
+              onClick={() => isManager && setShowCreate(true)}
             >
               <i className="pi pi-plus" style={{ fontSize: "1.5rem"}}></i>
               <span className="text-lg">Nova Máquina</span>
@@ -320,7 +325,7 @@ const Maquinas = () => {
                 <div className="flex items-start justify-between gap-3">
                   {/* Left: título e patrimônio */}
                   <div className="flex-1">
-                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins, sans-serif'}}>{m.name}</h3>
+                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins, sans-serif'}}>{m.nome}</h3>
                     <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                       Patrimônio: <span className="text-gray-500 font-medium">{m.patrimony}</span>
                     </div>
@@ -345,32 +350,34 @@ const Maquinas = () => {
                             border: "none",
                           }}
                           onClick={() => setViewTarget(m)}
-                          aria-label={`Visualizar ${m.name}`}
+                          aria-label={`Visualizar ${m.nome}`}
                           title="Visualizar"
                         >
                           <i className="pi pi-eye"></i>
                         </button>
                         <button
-                          className="p-button-text p-button-plain"
+                          className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
                           style={{
                             color: "blue",
                             background: "transparent",
                             border: "none",
                           }}
-                          onClick={() => setEditTarget(m)}
-                          aria-label={`Editar ${m.name}`}
+                          disabled={!isManager}
+                          onClick={() => isManager && setEditTarget(m)}
+                          aria-label={`Editar ${m.nome}`}
                         >
                           <i className="pi pi-pen-to-square"></i>
                         </button>
                         <button
-                          className="p-button-text p-button-plain"
+                          className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
                           style={{
                             color: "red",
                             background: "transparent",
                             border: "none",
                           }}
-                          onClick={() => handleDeleteRequest(m.id)}
-                          aria-label={`Remover ${m.name}`}
+                          disabled={!isManager}
+                          onClick={() => isManager && handleDeleteRequest(m.id)}
+                          aria-label={`Remover ${m.nome}`}
                         >
                           <i className="pi pi-trash"></i>
                         </button>

@@ -1,9 +1,15 @@
 import { maquinaService } from '../services/maquinaService.js';
 
+function toFrontendMachine(maquina) {
+  if (!maquina) return null;
+  const { idMaquina, ...rest } = maquina.toJSON ? maquina.toJSON() : maquina;
+  return { id: idMaquina, ...rest };
+}
+
 export async function getAll(req, res) {
   try {
     const maquinas = await maquinaService.getAllMaquinas();
-    res.json(maquinas);
+    res.json(maquinas.map(toFrontendMachine));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -12,7 +18,7 @@ export async function getAll(req, res) {
 export async function getById(req, res) {
   try {
     const maquina = await maquinaService.getMaquinaById(req.params.id);
-    res.json(maquina);
+    res.json(toFrontendMachine(maquina));
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -21,7 +27,7 @@ export async function getById(req, res) {
 export async function getByPatrimonio(req, res) {
   try {
     const maquina = await maquinaService.getMaquinaByPatrimonio(req.params.patrimonio);
-    res.json(maquina);
+    res.json(toFrontendMachine(maquina));
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -30,7 +36,7 @@ export async function getByPatrimonio(req, res) {
 export async function create(req, res) {
   try {
     const maquina = await maquinaService.createMaquina(req.body);
-    res.status(201).json(maquina);
+    res.status(201).json(toFrontendMachine(maquina));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -39,7 +45,7 @@ export async function create(req, res) {
 export async function update(req, res) {
   try {
     const maquina = await maquinaService.updateMaquina(req.params.id, req.body);
-    res.json(maquina);
+    res.json(toFrontendMachine(maquina));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

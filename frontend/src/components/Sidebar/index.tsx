@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import 'primeicons/primeicons.css';
+import { logout } from '../../services/authService';
 
 interface MenuItem {
   name: string;
@@ -13,6 +14,13 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   const menuItems: MenuItem[] = [
     {
       name: 'Home',
@@ -99,6 +107,26 @@ const Sidebar: React.FC<SidebarProps> = () => {
             )}
           </NavLink>
         ))}
+      </div>
+      <div className="px-[29px] mb-4">
+        <button
+          onClick={handleLogout}
+          className="relative flex items-center gap-3.5 py-2.5 px-[17px] w-full rounded-lg cursor-pointer bg-transparent transition-all duration-300 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:shadow-md group overflow-hidden border-0"
+        >
+          <div className="text-[#373535] group-hover:text-red-600 transition-all duration-300 group-hover:scale-110">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </div>
+          <span
+            className="text-[15px] font-semibold text-[#373535] group-hover:text-red-600 transition-all duration-300"
+            style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
+          >
+            Sair
+          </span>
+          {/* Efeito de brilho sutil no hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-200/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 ease-in-out pointer-events-none"></div>
+        </button>
       </div>
     </div>
   );
