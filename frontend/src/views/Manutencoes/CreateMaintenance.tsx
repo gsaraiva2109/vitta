@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast, showToast, ToastMessages } from '../../components/CustomToast';
@@ -10,6 +11,8 @@ interface Props {
   onCancel: () => void;
   onSubmit: (data: CreatePayload) => void;
 }
+
+
 
 const statusOptions = [
   { label: 'Concluída', value: 'Concluida' },
@@ -39,6 +42,16 @@ const parseBRLToNumber = (v: string) => {
 
 const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
   const toast = useRef<Toast>(null);
+  const [maquinas, setMaquinas] = useState<any[]>([]);
+  const [idMaquina, setIdMaquina] = useState<number | null>(null);
+
+  useEffect(() => {
+  fetch("https://vitta.gsaraiva.com.br/maquinas") 
+    .then(res => res.json())
+    .then(data => setMaquinas(data))
+    .catch(err => console.error("Erro ao carregar máquinas:", err));
+}, []);
+
   const [form, setForm] = useState({
     machineName: '',
     cost: 'R$ ',
@@ -56,13 +69,18 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const required: (keyof typeof form)[] = ['machineName', 'cost', 'type', 'status', 'responsible', 'rcOc'];
+
+       if (!idMaquina) {
+      showToast(toast, "Selecione uma máquina.");
+      return;
+    }
+    const required: (keyof typeof form)[] = [ 'cost', 'type', 'status', 'responsible', 'rcOc'];
     if (required.some(f => !String(form[f]).trim())) {
       showToast(toast, ToastMessages.validation.requiredFields);
       return;
     }
     const payload: CreatePayload = {
-      machineName: form.machineName,
+      idMaquina: idMaquina,
       cost: parseBRLToNumber(form.cost),
       type: form.type as Maintenance['type'],
       responsible: form.responsible,
@@ -91,7 +109,17 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Máquina *</label>
-            <InputText value={form.machineName} onChange={(e) => handle('machineName', e.target.value)} className="w-full h-11 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#0084FF33]" />
+          <Dropdown
+            value={idMaquina}
+            options={maquinas.map(m => ({
+             label: m.nome,
+            value: m.idMaquina
+          }))}
+          onChange={e => setIdMaquina(e.value)}
+          placeholder="Selecione a máquina"
+          className="w-full"
+/>
+
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Valor *</label>
