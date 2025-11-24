@@ -1,8 +1,6 @@
 import type { LoginRequest, LoginResponse } from '../models/User';
 import { jwtDecode } from 'jwt-decode';
 
-
-// Determinar a URL base da API
 const getApiBaseUrl = (): string => {
   if (import.meta.env.DEV) {
     return '/api';
@@ -21,7 +19,6 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
   });
   if (!res.ok) throw new Error((await res.json()).message || 'Erro no login');
   const data = await res.json();
-  // store token
   if (data.token) localStorage.setItem('vitta_token', data.token);
   if (data.user) localStorage.setItem('vitta_user', JSON.stringify(data.user));
   return data as LoginResponse;

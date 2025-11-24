@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
-import Usuario from '../models/Usuario.js';
 
-export const seedUsers = async () => {
+export const seedUsers = async (Usuario) => {
   try {
     const count = await Usuario.count();
     if (process.env.NODE_ENV === 'production' || count > 0) {
@@ -34,3 +33,4 @@ export const seedUsers = async () => {
     console.error('Error seeding users:', error);
   }
 };
+

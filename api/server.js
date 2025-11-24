@@ -5,10 +5,10 @@ import helmet from 'helmet';
 // import rateLimit from 'express-rate-limit';
 import logger from './config/logger.js';
 
-import { connectDB} from './config/database.js';
+import { connectDB, default as sequelize } from './config/database.js';
 import { seedUsers } from './config/seed.js';
 
-import './models/index.js';
+
 
 import { publicUserRouter, protectedUserRouter } from './routes/usuarioRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -40,6 +40,14 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+// Middleware to disable caching for all API responses
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // Swagger UI documentation at root (mapped to /api/ public via proxy)
 app.use('/', swaggerUi.serve);
 app.get('/', swaggerUi.setup(specs));
@@ -68,7 +76,18 @@ app.use(errorMiddleware);
 
 connectDB().then(async () => {
   logger.info('Database connected successfully.');
-  await seedUsers();
+
+  // Importar e inicializar modelos APÓS a conexão
+  const { Usuario } = await import('./models/index.js');
+  
+  if (process.env.NODE_ENV !== 'production') {
+    const syncOptions = process.env.DB_HOST === 'vitta-db-test' ? { alter: true } : { alter: true };
+    await sequelize.sync(syncOptions);
+    logger.info(`Models synchronized (sequelize.sync: ${JSON.stringify(syncOptions)})`);
+  }
+  
+  // Passar o modelo para o seeder
+  await seedUsers(Usuario);
 }).catch(err => {
   logger.error(`Database connection failed: ${err.message}`, err);
 });

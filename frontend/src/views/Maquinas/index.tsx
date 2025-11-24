@@ -72,6 +72,9 @@ const Maquinas = () => {
         severity: "error",
         summary: "Erro",
         detail: errorMsg,
+        icon() {
+          return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
+        },
       });
     }
   };
@@ -95,6 +98,9 @@ const Maquinas = () => {
         severity: "error",
         summary: "Erro",
         detail: errorMsg,
+        icon() {
+          return <i className="pi pi-times-circle" style={{ fontSize: '2rem', marginLeft: '0.5rem', marginRight: '0.5rem', marginTop: '0.5rem' }}></i>;
+        },
       });
     }
   };
@@ -155,7 +161,6 @@ const Maquinas = () => {
           return mId !== machineToDelete;
         }));
         toast.current?.show({
-          closable: false,
           severity: 'error',
           summary: 'Máquina removida',
           style: { minWidth: '20rem' },
@@ -225,7 +230,7 @@ const Maquinas = () => {
       />
       <Sidebar currentPage="maquinas" />
       <div className="flex-1 h-full flex flex-col">
-        <div className="p-8 flex-shrink-0">
+        <div className="p-8 shrink-0">
           {/* Header com título e botão */}
           <div className="flex items-start justify-between">
             <div>
@@ -275,7 +280,7 @@ const Maquinas = () => {
                   onChange={(e) =>
                     setSearch((e.target as HTMLInputElement).value)
                   }
-                  className="w-full h-[48px] pl-12 pr-4 text-sm rounded-xl border border-gray-200 shadow-sm"
+                  className="w-full h-12 pl-12 pr-4 text-sm rounded-xl border border-gray-200 shadow-sm"
                   style={{
                     fontFamily: "Poppins, sans-serif",
                     fontWeight: 400

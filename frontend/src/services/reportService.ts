@@ -6,12 +6,9 @@ export async function exportarExcel(dados: any[]) {
     headers: {
       "Content-Type": "application/json",
     },
-    // IMPORTANTE: o backend espera JSON
     body: JSON.stringify(dados),
   });
 
-  // response já é um Blob ou um ArrayBuffer dependendo do backend,
-  // então precisamos montar manualmente.
   const blob = new Blob([response as any], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
