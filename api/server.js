@@ -22,6 +22,7 @@ import { specs } from './config/swagger.js';
 
 dotenv.config();
 logger.info('Environment variables loaded.');
+console.log("senha capturada:", process.env.DB_PASSWORD);
 
 const app = express();
 
