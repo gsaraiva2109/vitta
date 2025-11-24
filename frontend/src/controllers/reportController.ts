@@ -8,10 +8,7 @@ import { loadMaintenancesFromAPI } from "./maintenancesApiController";
 import type { Machine } from "../models/Machine";
 import type { Maintenance } from "../models/Maintenance";
 
-// ------------------------------
-// 1. Funções auxiliares
-// ------------------------------
-
+// Converte dd/mm/yyyy para objeto Date
 const parseBRDate = (br: string): Date | null => {
   if (!br) return null;
   const [d, m, y] = br.split("/");
@@ -19,6 +16,7 @@ const parseBRDate = (br: string): Date | null => {
   return new Date(+y, +m - 1, +d);
 };
 
+// Verifica se uma data está dentro do intervalo (inclusivo)
 const isDateInRange = (
   dateStr: string,
   startStr: string,
@@ -35,10 +33,6 @@ const isDateInRange = (
   return true;
 };
 
-// ------------------------------
-// 2. Geração dos dados do relatório
-// ------------------------------
-
 export const generateReport = async (
   type: string,
   filters: ReportFilters
@@ -48,6 +42,7 @@ export const generateReport = async (
 
   let filteredData: ReportData[] = [];
 
+  // Aplica filtros baseados no tipo de relatório
   switch (type) {
     case "geral":
       filteredData = machines.map((m: Machine) => ({
@@ -77,6 +72,7 @@ export const generateReport = async (
       break;
 
     case "historico-manutencao":
+      // Combina dados de máquinas e manutenções
       filteredData = maintenances.map((maint: Maintenance) => {
         const machine = machines.find((m: Machine) => m.id === maint.idMaquina);
         return {
@@ -120,9 +116,10 @@ export const generateReport = async (
       filteredData = [];
   }
 
-  // Filtros adicionais
+  // Aplica filtros de data e localização
   if (filters.dataInicio || filters.dataFim || filters.localizacao) {
     filteredData = filteredData.filter((item) => {
+      // Filtro por data de aquisição
       if (filters.dataInicio || filters.dataFim) {
         if (
           !isDateInRange(
@@ -134,65 +131,50 @@ export const generateReport = async (
           return false;
         }
       }
+
+      // Filtro por localização
       if (filters.localizacao && item.localizacao !== filters.localizacao) {
         return false;
       }
+
       return true;
     });
   }
 
+  // Calcula resumo
   const summary: ReportSummary = {
     total: filteredData.length,
     ativos: filteredData.filter((d) => d.status === "Ativo").length,
-    manutencao: filteredData.filter((d) => d.status.includes("Manutenção"))
-      .length,
+    manutencao: filteredData.filter(
+      (d) => d.status.includes("manutenção") || d.status.includes("Manutenção")
+    ).length,
     descartados: filteredData.filter((d) => d.status === "Inativo").length,
   };
 
   return { data: filteredData, summary };
 };
 
-// ------------------------------
-// 3. EXPORTAR PARA EXCEL
-// ------------------------------
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export const exportToExcel = (data: ReportData[], reportType: string) => {
-  console.log("Gerando Excel...");
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
 
-  import("xlsx").then((XLSX) => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
-
-    const fileName = `relatorio_${reportType}.xlsx`;
-    XLSX.writeFile(workbook, fileName);
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
   });
+
+  const file = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  saveAs(file, `relatorio-${reportType}.xlsx`);
 };
 
-// ------------------------------
-// 4. EXPORTAR PARA PDF
-// ------------------------------
-
 export const exportToPDF = (data: ReportData[], reportType: string) => {
-  console.log("Gerando PDF...");
-
-  import("jspdf").then(({ default: jsPDF }) => {
-    import("jspdf-autotable").then(() => {
-      const doc = new jsPDF();
-
-      doc.text(`Relatório - ${reportType}`, 14, 10);
-
-      const columns = Object.keys(data[0] || {});
-      const rows = data.map((d) => Object.values(d));
-
-      (doc as any).autoTable({
-        head: [columns],
-        body: rows,
-      });
-
-      const fileName = `relatorio_${reportType}.pdf`;
-      doc.save(fileName);
-    });
-  });
+  console.log(`Exportando ${data.length} registros para PDF - ${reportType}`);
+  // Implementação futura com biblioteca como jsPDF
 };

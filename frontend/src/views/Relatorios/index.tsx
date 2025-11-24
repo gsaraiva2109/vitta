@@ -2,18 +2,9 @@ import Sidebar from "../../components/Sidebar";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { useState } from "react";
-
-import type {
-  ReportFilters,
-  ReportData,
-  ReportSummary,
-} from "../../models/report";
-import {
-  generateReport,
-  exportToExcel,
-  exportToPDF,
-} from "../../controllers/reportController";
-import "primeicons/primeicons.css";
+import type { ReportFilters, ReportData, ReportSummary } from "../../models/report";
+import { generateReport, exportToExcel, exportToPDF } from "../../controllers/reportController";
+import 'primeicons/primeicons.css';
 
 interface ReportTypeCard {
   id: string;
@@ -23,82 +14,42 @@ interface ReportTypeCard {
 }
 
 const Relatorios = () => {
-  const [selectedReport, setSelectedReport] = useState<string>("");
+  const [selectedReport, setSelectedReport] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<ReportFilters>({
-    dataInicio: "",
-    dataFim: "",
-    fabricante: "",
-    localizacao: "",
+    dataInicio: '',
+    dataFim: '',
+    fabricante: '',
+    localizacao: '',
   });
   const [reportData, setReportData] = useState<ReportData[]>([]);
   const [summary, setSummary] = useState<ReportSummary | null>(null);
-  const [dateInicio, setDateInicio] = useState<string>("");
-  const [dateFim, setDateFim] = useState<string>("");
+  const [dateInicio, setDateInicio] = useState<string>('');
+  const [dateFim, setDateFim] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   const reportTypes: ReportTypeCard[] = [
-    {
-      id: "geral",
-      label: "Relatório Geral",
-      icon: "pi pi-file",
-      iconColor: "text-gray-700",
-    },
-    {
-      id: "por-fabricante",
-      label: "Por Fabricante",
-      icon: "pi pi-filter",
-      iconColor: "text-pink-500",
-    },
-    {
-      id: "historico-manutencao",
-      label: "Histórico de manutenção",
-      icon: "pi pi-history",
-      iconColor: "text-gray-700",
-    },
-    {
-      id: "inativas-descartadas",
-      label: "Inativas e Descartadas",
-      icon: "pi pi-exclamation-triangle",
-      iconColor: "text-red-500",
-    },
-    {
-      id: "maquinas-em-manutencao",
-      label: "Máquinas em Manutenção",
-      icon: "pi pi-cog",
-      iconColor: "text-yellow-500",
-    },
-    {
-      id: "aquisicao-por-periodo",
-      label: "Aquisição por período",
-      icon: "pi pi-calendar",
-      iconColor: "text-green-500",
-    },
-    {
-      id: "manutencoes-proximas",
-      label: "Manutenções próximas",
-      icon: "pi pi-clock",
-      iconColor: "text-blue-500",
-    },
-    {
-      id: "manutencoes-atrasadas",
-      label: "Manutenções atrasadas",
-      icon: "pi pi-times-circle",
-      iconColor: "text-red-600",
-    },
+    { id: 'geral', label: 'Relatório Geral', icon: 'pi pi-file', iconColor: 'text-gray-700' },
+    { id: 'por-fabricante', label: 'Por Fabricante', icon: 'pi pi-filter', iconColor: 'text-pink-500' },
+    { id: 'historico-manutencao', label: 'Histórico de manutenção', icon: 'pi pi-history', iconColor: 'text-gray-700' },
+    { id: 'inativas-descartadas', label: 'Inativas e Descartadas', icon: 'pi pi-exclamation-triangle', iconColor: 'text-red-500' },
+    { id: 'maquinas-em-manutencao', label: 'Máquinas em Manutenção', icon: 'pi pi-cog', iconColor: 'text-yellow-500' },
+    { id: 'aquisicao-por-periodo', label: 'Aquisição por período', icon: 'pi pi-calendar', iconColor: 'text-green-500' },
+    { id: 'manutencoes-proximas', label: 'Manutenções próximas', icon: 'pi pi-clock', iconColor: 'text-blue-500' },
+    { id: 'manutencoes-atrasadas', label: 'Manutenções atrasadas', icon: 'pi pi-times-circle', iconColor: 'text-red-600' },
   ];
 
   const fabricantes = [
-    { label: "Todos", value: "" },
-    { label: "Acme Medical", value: "Acme Medical" },
-    { label: "HealthTech", value: "HealthTech" },
-    { label: "CardioCorp", value: "CardioCorp" },
+    { label: 'Todos', value: '' },
+    { label: 'Acme Medical', value: 'Acme Medical' },
+    { label: 'HealthTech', value: 'HealthTech' },
+    { label: 'CardioCorp', value: 'CardioCorp' },
   ];
 
   const localizacoes = [
-    { label: "Todos", value: "" },
-    { label: "Bloco A - Sala 101", value: "Bloco A - Sala 101" },
-    { label: "Bloco B - Sala 202", value: "Bloco B - Sala 202" },
+    { label: 'Todos', value: '' },
+    { label: 'Bloco A - Sala 101', value: 'Bloco A - Sala 101' },
+    { label: 'Bloco B - Sala 202', value: 'Bloco B - Sala 202' },
   ];
 
   const handleReportSelect = async (reportId: string) => {
@@ -120,8 +71,8 @@ const Relatorios = () => {
 
   // Converte ISO (yyyy-mm-dd) para dd/mm/yyyy
   const isoToBR = (iso: string) => {
-    if (!iso) return "";
-    const [y, m, d] = iso.split("-");
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-');
     return `${d}/${m}/${y}`;
   };
 
@@ -157,37 +108,30 @@ const Relatorios = () => {
 
   const getStatusBadgeClass = (status: string) => {
     const s = status.toLowerCase();
-    if (s.includes("inativo")) return "bg-[#D2D1D1] text-gray-800";
-    if (s.includes("ativo")) return "bg-[#8AE67E] text-gray-800";
-    if (s.includes("manutenção") || s.includes("manutencao"))
-      return "bg-[#FFD700] text-gray-800";
-    if (s.includes("concluida")) return "bg-[#8AE67E] text-gray-800";
-    return "bg-gray-100 text-gray-700";
+    if (s.includes('inativo')) return 'bg-[#D2D1D1] text-gray-800';
+    if (s.includes('ativo')) return 'bg-[#8AE67E] text-gray-800';
+    if (s.includes('manutenção') || s.includes('manutencao')) return 'bg-[#FFD700] text-gray-800';
+    if (s.includes('concluida')) return 'bg-[#8AE67E] text-gray-800';
+    return 'bg-gray-100 text-gray-700';
   };
 
   return (
     <div className="h-screen bg-[#F4EEEE] w-full overflow-hidden flex">
       <Sidebar currentPage="relatorios" />
-
+      
       <div className="flex-1 h-full flex flex-col overflow-hidden">
         <div className="p-8 flex-1 overflow-y-auto">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h1
-                className="text-[48px] font-semibold text-black mb-2"
-                style={{ fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
-              >
+              <h1 className="text-[48px] font-semibold text-black mb-2" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
                 Relatórios
               </h1>
-              <p
-                className="text-base text-[#767575]"
-                style={{ fontFamily: "Poppins, sans-serif", fontWeight: 400 }}
-              >
+              <p className="text-base text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                 Gere relatórios detalhados em EXCEL e PDF
               </p>
             </div>
-
+            
             {showFilters && (
               <Button
                 label="Ocultar Filtros"
@@ -201,19 +145,13 @@ const Relatorios = () => {
           {/* Filtros Avançados */}
           {showFilters && (
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <h3
-                className="text-lg font-medium text-[#373535] mb-4"
-                style={{ fontFamily: "Poppins, sans-serif", fontWeight: 500 }}
-              >
+              <h3 className="text-lg font-medium text-[#373535] mb-4" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                 Filtros Avançados
               </h3>
-
+              
               <div className="grid grid-cols-4 gap-4">
                 <div className="flex flex-col gap-2">
-                  <label
-                    className="text-sm text-[#767575]"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
+                  <label className="text-sm text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     Data Início
                   </label>
                   <input
@@ -224,18 +162,12 @@ const Relatorios = () => {
                       setTimeout(handleFilterChange, 100);
                     }}
                     className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      colorScheme: "light",
-                    }}
+                    style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }}
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label
-                    className="text-sm text-[#767575]"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
+                  <label className="text-sm text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     Data Fim
                   </label>
                   <input
@@ -246,18 +178,12 @@ const Relatorios = () => {
                       setTimeout(handleFilterChange, 100);
                     }}
                     className="w-full h-11 rounded-md border border-gray-300 shadow-sm px-3 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] text-gray-700"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      colorScheme: "light",
-                    }}
+                    style={{ fontFamily: 'Poppins, sans-serif', colorScheme: 'light' }}
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label
-                    className="text-sm text-[#767575]"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
+                  <label className="text-sm text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     Fabricante
                   </label>
                   <Dropdown
@@ -273,10 +199,7 @@ const Relatorios = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label
-                    className="text-sm text-[#767575]"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
+                  <label className="text-sm text-[#767575]" style={{ fontFamily: 'Poppins, sans-serif' }}>
                     Localização
                   </label>
                   <Dropdown
@@ -296,13 +219,10 @@ const Relatorios = () => {
 
           {/* Seleção do Tipo de Relatório */}
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h3
-              className="text-lg font-medium text-[#373535] mb-4"
-              style={{ fontFamily: "Poppins, sans-serif", fontWeight: 500 }}
-            >
+            <h3 className="text-lg font-medium text-[#373535] mb-4" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
               Selecione o tipo de Relatório
             </h3>
-
+            
             <div className="grid grid-cols-3 gap-4">
               {reportTypes.map((report) => (
                 <button
@@ -310,18 +230,13 @@ const Relatorios = () => {
                   onClick={() => handleReportSelect(report.id)}
                   className={`p-4 bg-white rounded-lg border-2 transition-all text-left hover:shadow-md ${
                     selectedReport === report.id
-                      ? "border-[#0084FF] bg-[#0084FF]/5"
-                      : "border-gray-200 hover:border-gray-300"
+                      ? 'border-[#0084FF] bg-[#0084FF]/5'
+                      : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <i
-                      className={`${report.icon} text-2xl ${report.iconColor}`}
-                    ></i>
-                    <span
-                      className="text-[15px] text-[#373535] font-medium"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
+                    <i className={`${report.icon} text-2xl ${report.iconColor}`}></i>
+                    <span className="text-[15px] text-[#373535] font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>
                       {report.label}
                     </span>
                   </div>
@@ -332,185 +247,120 @@ const Relatorios = () => {
 
           {/* Preview do Relatório */}
           {loading ? (
-            <div className="text-center text-gray-500 py-12">
-              Gerando relatório...
-            </div>
+            <div className="text-center text-gray-500 py-12">Gerando relatório...</div>
           ) : (
-            reportData.length > 0 &&
-            summary && (
-              <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                <h3
-                  className="text-lg font-medium text-[#373535] mb-4"
-                  style={{ fontFamily: "Poppins, sans-serif", fontWeight: 500 }}
-                >
-                  Preview do Relatório
-                </h3>
+            reportData.length > 0 && summary && (
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+              <h3 className="text-lg font-medium text-[#373535] mb-4" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                Preview do Relatório
+              </h3>
 
-                {/* Cards de Resumo */}
-                <div className="grid grid-cols-4 gap-4 mb-6">
-                  <div className="bg-red-100 rounded-lg p-4">
-                    <div
-                      className="text-3xl font-semibold text-gray-800"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {summary.total}
-                    </div>
-                    <div
-                      className="text-sm text-gray-600 mt-1"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      Total
-                    </div>
+              {/* Cards de Resumo */}
+              <div className="grid grid-cols-4 gap-4 mb-6">
+                <div className="bg-red-100 rounded-lg p-4">
+                  <div className="text-3xl font-semibold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    {summary.total}
                   </div>
-
-                  <div className="bg-yellow-100 rounded-lg p-4">
-                    <div
-                      className="text-3xl font-semibold text-gray-800"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {summary.ativos}
-                    </div>
-                    <div
-                      className="text-sm text-gray-600 mt-1"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      Ativos
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-100 rounded-lg p-4">
-                    <div
-                      className="text-3xl font-semibold text-gray-800"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {summary.manutencao}
-                    </div>
-                    <div
-                      className="text-sm text-gray-600 mt-1"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      Manutenção
-                    </div>
-                  </div>
-
-                  <div className="bg-green-100 rounded-lg p-4">
-                    <div
-                      className="text-3xl font-semibold text-gray-800"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {summary.descartados}
-                    </div>
-                    <div
-                      className="text-sm text-gray-600 mt-1"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      Descartados
-                    </div>
+                  <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    Total
                   </div>
                 </div>
 
-                {/* Tabela de Preview */}
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                          style={{ fontFamily: "Poppins, sans-serif" }}
-                        >
-                          Nome
-                        </th>
-                        <th
-                          className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                          style={{ fontFamily: "Poppins, sans-serif" }}
-                        >
-                          Patrimônio
-                        </th>
-                        <th
-                          className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                          style={{ fontFamily: "Poppins, sans-serif" }}
-                        >
-                          Função
-                        </th>
-                        <th
-                          className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                          style={{ fontFamily: "Poppins, sans-serif" }}
-                        >
-                          Status
-                        </th>
-                        <th
-                          className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                          style={{ fontFamily: "Poppins, sans-serif" }}
-                        >
-                          Data de Aquisição
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {reportData.slice(0, 5).map((item, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td
-                            className="px-4 py-3 text-sm text-gray-800"
-                            style={{ fontFamily: "Poppins, sans-serif" }}
-                          >
-                            {item.nome}
-                          </td>
-                          <td
-                            className="px-4 py-3 text-sm text-gray-600"
-                            style={{ fontFamily: "Poppins, sans-serif" }}
-                          >
-                            {item.patrimonio}
-                          </td>
-                          <td
-                            className="px-4 py-3 text-sm text-gray-600"
-                            style={{ fontFamily: "Poppins, sans-serif" }}
-                          >
-                            {item.funcao}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(
-                                item.status
-                              )}`}
-                              style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                              {item.status}
-                            </span>
-                          </td>
-                          <td
-                            className="px-4 py-3 text-sm text-gray-600"
-                            style={{ fontFamily: "Poppins, sans-serif" }}
-                          >
-                            {item.dataAquisicao}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="bg-yellow-100 rounded-lg p-4">
+                  <div className="text-3xl font-semibold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    {summary.ativos}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    Ativos
+                  </div>
                 </div>
 
-                {reportData.length > 5 && (
-                  <p
-                    className="text-sm text-gray-500 mt-2 text-center"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
-                    Mostrando 5 de {reportData.length} registros
-                  </p>
-                )}
+                <div className="bg-blue-100 rounded-lg p-4">
+                  <div className="text-3xl font-semibold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    {summary.manutencao}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    Manutenção
+                  </div>
+                </div>
+
+                <div className="bg-green-100 rounded-lg p-4">
+                  <div className="text-3xl font-semibold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    {summary.descartados}
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    Descartados
+                  </div>
+                </div>
               </div>
+
+              {/* Tabela de Preview */}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        Nome
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        Patrimônio
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        Função
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        Status
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        Data de Aquisição
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {reportData.slice(0, 5).map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                          {item.nome}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                          {item.patrimonio}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                          {item.funcao}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(item.status)}`}
+                            style={{ fontFamily: 'Poppins, sans-serif' }}
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                          {item.dataAquisicao}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {reportData.length > 5 && (
+                <p className="text-sm text-gray-500 mt-2 text-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  Mostrando 5 de {reportData.length} registros
+                </p>
+              )}
+            </div>
             )
           )}
 
           {/* Exportar Relatório */}
           {reportData.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3
-                className="text-lg font-medium text-[#373535] mb-4"
-                style={{ fontFamily: "Poppins, sans-serif", fontWeight: 500 }}
-              >
+              <h3 className="text-lg font-medium text-[#373535] mb-4" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
                 Exportar Relatório
               </h3>
-
+              
               <div className="flex gap-4">
                 <Button
                   label="Exportar Excel"
@@ -518,7 +368,7 @@ const Relatorios = () => {
                   className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-colors"
                   onClick={handleExportExcel}
                 />
-
+                
                 <Button
                   label="Exportar PDF"
                   icon="pi pi-file-pdf"
@@ -527,10 +377,7 @@ const Relatorios = () => {
                 />
               </div>
 
-              <p
-                className="text-sm text-gray-500 mt-3"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
+              <p className="text-sm text-gray-500 mt-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
                 O relatório será baixado automaticamente após a geração.
               </p>
             </div>
