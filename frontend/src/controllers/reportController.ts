@@ -51,7 +51,7 @@ export const generateReport = async (
   switch (type) {
     case "geral":
       filteredData = machines.map((m: Machine) => ({
-        name: m.name,
+        nome: m.nome,
         patrimonio: m.patrimony,
         funcao: m.funcao,
         status: m.status,
@@ -63,10 +63,11 @@ export const generateReport = async (
     case "por-fabricante":
       filteredData = machines
         .filter(
-          (m) => !filters.fabricante || m.fabricante === filters.fabricante
+          (m: Machine) =>
+            !filters.fabricante || m.fabricante === filters.fabricante
         )
-        .map((m) => ({
-          name: m.name,
+        .map((m: Machine) => ({
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -77,13 +78,13 @@ export const generateReport = async (
 
     case "historico-manutencao":
       filteredData = maintenances.map((maint: Maintenance) => {
-        const machine = machines.find((m) => m.name === maint.machineName);
+        const machine = machines.find((m: Machine) => m.id === maint.idMaquina);
         return {
-          name: maint.machineName,
+          nome: maint.machineName || "N/A",
           patrimonio: machine?.patrimony || "N/A",
           funcao: machine?.funcao || "N/A",
           status: maint.status,
-          dataAquisicao: maint.performedDate,
+          dataAquisicao: maint.dataManutencao,
           localizacao: machine?.location || "N/A",
         };
       });
@@ -91,9 +92,9 @@ export const generateReport = async (
 
     case "inativas-descartadas":
       filteredData = machines
-        .filter((m) => m.status === "Inativo")
-        .map((m) => ({
-          name: m.name,
+        .filter((m: Machine) => m.status === "Inativo")
+        .map((m: Machine) => ({
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,
@@ -104,9 +105,9 @@ export const generateReport = async (
 
     case "maquinas-em-manutencao":
       filteredData = machines
-        .filter((m) => m.status === "Manutenção")
-        .map((m) => ({
-          name: m.name,
+        .filter((m: Machine) => m.status === "Manutenção")
+        .map((m: Machine) => ({
+          nome: m.nome,
           patrimonio: m.patrimony,
           funcao: m.funcao,
           status: m.status,

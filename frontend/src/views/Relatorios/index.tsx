@@ -453,7 +453,7 @@ const Relatorios = () => {
                             className="px-4 py-3 text-sm text-gray-800"
                             style={{ fontFamily: "Poppins, sans-serif" }}
                           >
-                            {item.name}
+                            {item.nome}
                           </td>
                           <td
                             className="px-4 py-3 text-sm text-gray-600"

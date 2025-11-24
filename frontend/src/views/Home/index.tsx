@@ -192,7 +192,7 @@ const Home = () => {
                       <div key={m.id} className="bg-[#D9D9D970] rounded-lg p-4 flex flex-col gap-1">
                         <div className="flex items-center justify-between">
                           <span className="text-black text-[14px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
-                            {m.name}
+                            {m.nome}
                           </span>
                           <StatusBadge status={m.status} />
                         </div>
@@ -224,7 +224,7 @@ const Home = () => {
                       <div key={m.id} className="bg-[#D9D9D970] rounded-lg p-4 flex flex-col gap-1">
                         <div className="flex items-center justify-between">
                           <span className="text-black text-[14px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
-                            {m.name}
+                            {m.nome}
                           </span>
                           <StatusBadge status={m.status} />
                         </div>

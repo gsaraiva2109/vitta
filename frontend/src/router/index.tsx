@@ -6,11 +6,16 @@ import Maquinas from '../views/Maquinas';
 import Manutencoes from '../views/Manutencoes';
 import Alertas from '../views/Alertas';
 import Relatorios from '../views/Relatorios';
-import { getToken } from '../services/authService';
+import { getToken, isTokenExpired } from '../services/authService';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const token = getToken();
-  return token ? (children as React.ReactElement) : <Navigate to="/login" />;
+
+  if (!token || isTokenExpired(token)) {
+    return <Navigate to="/login" />;
+  }
+
+  return children as React.ReactElement;
 };
 
 const AppRouter = () => (

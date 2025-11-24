@@ -1,3 +1,4 @@
+// Test comment to trigger CI/CD
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { PrimeReactProvider } from "primereact/api";

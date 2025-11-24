@@ -1,6 +1,6 @@
 // frontend/src/services/apiService.ts
 
-import { getToken } from "./authService";
+import { getToken, logout } from "./authService";
 
 // ----------------------------------------------------------------
 // Wrapper personalizado para requisições fetch com autenticação JWT
@@ -66,6 +66,7 @@ export async function authenticatedFetch<T>(
 
     if (res.status === 401 || res.status === 403) {
       console.error("Sessão expirada ou não autorizada. Limpando token.");
+      logout();
     }
 
     throw new Error(errorData.message || `Erro do servidor: ${res.status}`);

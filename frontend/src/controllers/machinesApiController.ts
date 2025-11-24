@@ -4,7 +4,36 @@ import * as api from '../services/maquinaService';
 // Mapeia um registro retornado pela API (que usa campos em PT-br) para o
 // formato esperado pelo frontend (`Machine`). Isso evita `undefined` em campos
 // como `name`, `patrimony` e garante formatos de data previsíveis.
-const mapApiToMachine = (m: any): Machine => {
+type ApiMachine = {
+  idMaquina?: number | string;
+  id?: number | string;
+  nome?: string;
+  name?: string;
+  patrimonio?: string;
+  patrimony?: string;
+  status?: Machine['status'];
+  statusMaquina?: Machine['status'];
+  funcao?: string;
+  fabricante?: string;
+  dataAquisicao?: string;
+  acquisitionDate?: string;
+  localizacao?: string;
+  location?: string;
+  intervaloManutencao?: string;
+  maintenanceInterval?: string;
+  intervaloCalibracao?: string;
+  calibrationInterval?: string;
+  numeroSerie?: string;
+  serialNumber?: string;
+  modelo?: string;
+  rcOc?: string;
+  observacao?: string;
+  observacoes?: string;
+  justificativa?: string;
+  justificativaInativo?: string;
+};
+
+const mapApiToMachine = (m: ApiMachine): Machine => {
   const id = m.idMaquina ?? m.id ?? (m.id && String(m.id));
   // dataAquisicao pode vir como Date/ISO string; tentamos extrair YYYY-MM-DD
   const acquisitionISO = m.dataAquisicao
@@ -13,7 +42,7 @@ const mapApiToMachine = (m: any): Machine => {
 
   return {
     id: id ? String(id) : '',
-    name: m.nome ?? m.name ?? '',
+    nome: m.nome ?? '',
     patrimony: m.patrimonio ?? m.patrimony ?? '',
     status: m.status ?? m.statusMaquina ?? 'Ativo',
     funcao: m.funcao ?? m.funcao ?? '',
@@ -114,9 +143,26 @@ export const brToISO = (br: string) => {
 };
 
 // Mapear payload do frontend para o formato esperado pela API/DB
-const mapMachineToApi = (m: Partial<Machine>): any => {
-  const obj: any = {};
-  if (m.name !== undefined) obj.nome = m.name;
+type ApiMachinePayload = {
+  nome?: string;
+  patrimonio?: string;
+  funcao?: string;
+  fabricante?: string;
+  modelo?: string;
+  rcOc?: string;
+  localizacao?: string;
+  observacao?: string;
+  justificativa?: string;
+  numeroSerie?: string;
+  intervaloManutencao?: string;
+  intervaloCalibracao?: string;
+  dataAquisicao?: string;
+  status?: Machine['status'];
+};
+
+const mapMachineToApi = (m: Partial<Machine>): ApiMachinePayload => {
+  const obj: ApiMachinePayload = {};
+  if (m.nome !== undefined) obj.nome = m.nome;
   if (m.patrimony !== undefined) obj.patrimonio = m.patrimony;
   if (m.funcao !== undefined) obj.funcao = m.funcao;
   if (m.fabricante !== undefined) obj.fabricante = m.fabricante;
