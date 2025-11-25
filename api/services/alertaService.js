@@ -18,7 +18,7 @@ const URGENCY_LEVELS = {
   PROXIMA: "Próxima",
 };
 
-const calculateUrgency = (dueDate, today) => {
+export const calculateUrgency = (dueDate, today) => {
   const diff = differenceInDays(dueDate, today);
 
   if (diff < 0) {
