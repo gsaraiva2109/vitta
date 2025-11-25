@@ -1,18 +1,21 @@
 import Maquina from "../models/Maquina.js";
 import Manutencao from "../models/Manutencao.js";
-import { generateAlerts } from "../services/alertsService.js";
+import { generateAlerts } from "../services/alertaService.js";
+
 
 export const getAlerts = async (req, res) => {
   try {
     const machines = await Maquina.findAll({
-      include: [{ model: Manutencao }],
+      include: [{ model: Manutencao, as: 'manutencoes' }],
     });
 
-    const alerts = generateAlerts(machines);
+    const alerts = generateAlerts(
+      machines.map(m => m.toJSON())
+    );
 
-    return res.json(alerts);
+    res.json(alerts);
   } catch (err) {
-    console.error("Erro ao gerar alertas:", err);
-    return res.status(500).json({ error: "Erro ao gerar alertas" });
+    console.error('Erro ao gerar alertas:', err);
+    res.status(500).json({ message: 'Erro ao carregar alertas' });
   }
 };

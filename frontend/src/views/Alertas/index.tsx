@@ -4,8 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { useEffect, useMemo, useState } from 'react';
 import type { Alert } from '../../models/Alert';
 import {getAlerts} from '../../services/alertaService';
-import { loadMachinesFromAPI } from '../../controllers/machinesApiController';
-import { set } from 'date-fns';
+
 
 const badgeForUrgency = (urgency: string) => {
   const u = urgency.toLowerCase();
