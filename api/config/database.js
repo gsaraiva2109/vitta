@@ -32,13 +32,6 @@ export const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log('Conectado ao PostgreSQL');
-
-    if (process.env.NODE_ENV !== 'production') {
-      // Se estiver rodando no container de teste, força a recriação das tabelas
-      const syncOptions = process.env.DB_HOST === 'vitta-db-test' ? { alter: true } : { alter: true };
-      await sequelize.sync(syncOptions);
-      console.log(`Modelos sincronizados (sequelize.sync: ${JSON.stringify(syncOptions)})`);
-    }
   } catch (err) {
     console.error('Erro ao conectar no PostgreSQL:', err);
     throw err; // Propaga o erro para parar o servidor se falhar

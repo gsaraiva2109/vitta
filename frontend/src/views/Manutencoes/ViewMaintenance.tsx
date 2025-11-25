@@ -110,7 +110,7 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">
-              Data da Manutenção
+              Data
             </label>
             <input
               type="date"
@@ -150,7 +150,7 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
             <textarea
               value={maintenance.observacao || ""}
               readOnly
-              className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none"
+              className="w-full min-h-24 rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33] resize-none"
             />
           </div>
         </div>

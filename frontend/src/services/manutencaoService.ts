@@ -1,9 +1,6 @@
-// frontend/src/services/manutencaoService.ts
-
 import { authenticatedFetch } from "./apiService";
 import type { Maintenance } from "../models/Maintenance";
 
-// Define um tipo `ApiMaintenance` que possa ser usado internamente no serviço
 type ApiMaintenance = Omit<Maintenance, 'id' | 'valor' | 'dataManutencao' | 'dataProxima'> & { 
   id?: number; 
   valor?: string; 
@@ -12,10 +9,6 @@ type ApiMaintenance = Omit<Maintenance, 'id' | 'valor' | 'dataManutencao' | 'dat
 };
 
 const BASE_PATH = "/manutencoes";
-
-/**
- * Funções de Leitura (READ)
- */
 
 export function getAllManutencoes(): Promise<ApiMaintenance[]> {
   return authenticatedFetch<ApiMaintenance[]>(BASE_PATH, {
@@ -29,10 +22,6 @@ export function getManutencaoById(id: number): Promise<ApiMaintenance> {
   });
 }
 
-/**
- * Função de Criação (CREATE)
- */
-
 export function createManutencao(manutencaoData: Partial<ApiMaintenance>): Promise<ApiMaintenance> {
   const { idMaquina } = manutencaoData;
   if (!idMaquina) {
@@ -45,10 +34,6 @@ export function createManutencao(manutencaoData: Partial<ApiMaintenance>): Promi
   });
 }
 
-/**
- * Função de Atualização (UPDATE)
- */
-
 export function updateManutencao(
   id: number,
   manutencaoData: Partial<ApiMaintenance>
@@ -58,10 +43,6 @@ export function updateManutencao(
     body: JSON.stringify(manutencaoData),
   });
 }
-
-/**
- * Função de Deleção (DELETE)
- */
 
 export function deleteManutencao(id: number): Promise<void> {
   return authenticatedFetch<void>(`${BASE_PATH}/${id}`, {

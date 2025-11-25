@@ -1,9 +1,7 @@
 import { Maquina } from '../models/index.js';
 
 async function getAllMaquinas() {
-  return Maquina.findAll({
-    attributes: ["idMaquina", "nome"]
-  });
+  return Maquina.findAll();
 }
 
 async function getMaquinaById(id) {

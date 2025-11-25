@@ -5,7 +5,6 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { showToast, ToastMessages } from '../../components/CustomToast/toastUtils';
 import type { Machine } from '../../models/Machine';
-import { isoToBR } from '../../controllers/machinesApiController';
 
 type CreatePayload = Omit<Machine, 'id'>;
 
@@ -81,7 +80,7 @@ const CreateMachine = ({ onCancel, onSubmit }: Props) => {
     }
     
     showToast(toast, ToastMessages.maquina.created);
-    onSubmit({ ...form, acquisitionDate: isoToBR(form.acquisitionDate) });
+    onSubmit(form);
   };
 
   return (
@@ -194,7 +193,7 @@ const CreateMachine = ({ onCancel, onSubmit }: Props) => {
           </div>
           <div className="md:col-span-2 flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">Observações</label>
-            <textarea value={form.observacoes || ''} onChange={(e) => handle('observacoes', e.target.value)} className="w-full min-h-[96px] rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
+            <textarea value={form.observacoes || ''} onChange={(e) => handle('observacoes', e.target.value)} className="w-full min-h-24 rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0084FF33]" />
           </div>
         </div>
       </div>
