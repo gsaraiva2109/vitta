@@ -110,7 +110,7 @@ const ViewMaintenance = ({ maintenance, onCancel }: Props) => {
           </div>
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-1">
-              Data da Manutenção
+              Data
             </label>
             <input
               type="date"

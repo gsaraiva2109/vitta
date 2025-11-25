@@ -303,7 +303,7 @@ const Manutencoes = () => {
                         <div className="text-gray-500 font-xs mb-0.5">R$ {m.valor.toFixed(2)}</div>
                       </div>
                       <div>
-                        <div className="text-base font-medium text-gray-700">Data realizada</div>
+                        <div className="text-base font-medium text-gray-700">Data</div>
                         <div className="text-gray-500 font-xs mb-0.5">{m.dataManutencao || 'dd/mm/aaaa'}</div>
                       </div>
                       <div>
