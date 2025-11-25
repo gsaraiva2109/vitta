@@ -286,81 +286,97 @@ const Manutencoes = () => {
             ) : filtered.length === 0 ? (
               <div className="text-center text-gray-500 py-12">Nenhuma manutenção encontrada.</div>
             ) : filtered.map((m) => (
-              <div key={m.id} className="w-full bg-white rounded-xl shadow-sm px-5 py-4">
-                <div className="flex w-full items-start gap-3">
-                  {/* Esquerda: título e subtítulo */}
+              <div key={m.id} className="w-full bg-white rounded-xl shadow-sm px-6 py-5 transition-shadow duration-300 hover:shadow-md">
+                <div className="flex w-full items-start justify-between gap-4">
+                  {/* Título e Status */}
                   <div className="flex-1">
-                    <h3 className="text-xl text-gray-700 font-semibold" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    <h3 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
                       {m.machineName}
                     </h3>
-                    <div className="text-base text-gray-500 mt-6" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                      {m.tipoManutencao} - {m.responsavel}
-                    </div>
-                    {/* Linhas info */}
-                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                      <div>
-                        <div className="text-base font-medium text-gray-700">Custo</div>
-                        <div className="text-gray-500 font-xs mb-0.5">R$ {m.valor.toFixed(2)}</div>
-                      </div>
-                      <div>
-                        <div className="text-base font-medium text-gray-700">Data</div>
-                        <div className="text-gray-500 font-xs mb-0.5">{m.dataManutencao || 'dd/mm/aaaa'}</div>
-                      </div>
-                      <div>
-                        <div className="text-base font-medium text-gray-700">Empresa</div>
-                        <div className="text-gray-500 font-xs mb-0.5">{m.empresaResponsavel}</div>
-                      </div>
-                      <div>
-                        <div className="text-base font-medium text-gray-700">Próxima manutenção</div>
-                        <div className="text-gray-500 font-xs mb-0.5">{m.dataProxima || 'dd/mm/aaaa'}</div>
-                      </div>
-                    </div>
                   </div>
-
-                  {/* Direita: badge + ações */}
-                  <div className="ml-auto flex flex-col items-end mr-8 flex-shrink-0">
+                  
+                  {/* Badge e Ações */}
+                  <div className="flex flex-col items-end flex-shrink-0">
                     <div
-                      className={`w-36 h-7 mr-3 flex items-center justify-center truncate text-sm rounded-full ${badgeForMaintStatus(m.status)} shadow-[0_6px_18px_rgba(0,0,0,0.08)]`}
+                      className={`w-auto px-4 h-7 flex items-center justify-center text-sm font-medium rounded-full ${badgeForMaintStatus(m.status)} shadow-[0_4px_12px_rgba(0,0,0,0.08)]`}
                       title={m.status}
-                      style={{ whiteSpace: 'nowrap' }}
                     >
                       {m.status}
                     </div>
-
-                    <div className="mt-2 flex items-center">
+                    <div className="mt-3 flex items-center gap-1">
                       <button
-                        className="p-button-text p-button-plain"
-                        style={{ color: 'black', background: 'transparent', border: 'none' }}
+                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                         onClick={() => setViewTarget(m)}
                         aria-label={`Visualizar ${m.machineName}`}
                         title="Visualizar"
                       >
-                        <i className="pi pi-eye"></i>
+                        <i className="pi pi-eye text-gray-600"></i>
                       </button>
                       <button
-                        className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        style={{ color: 'blue', background: 'transparent', border: 'none' }}
+                        className={`p-2 rounded-full transition-colors ${isManager ? 'hover:bg-blue-100' : 'opacity-50 cursor-not-allowed'}`}
                         disabled={!isManager}
                         onClick={() => isManager && setEditTarget(m)}
                         aria-label={`Editar ${m.machineName}`}
                         title="Editar"
                       >
-                        <i className="pi pi-pen-to-square"></i>
+                        <i className="pi pi-pen-to-square text-blue-500"></i>
                       </button>
                       <button
-                        className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        style={{ color: 'red', background: 'transparent', border: 'none' }}
+                        className={`p-2 rounded-full transition-colors ${!isManager ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100'}`}
                         disabled={!isManager}
                         onClick={() => isManager && handleDeleteRequest(m.id)}
+                        aria-label={`Excluir ${m.machineName}`}
+                        title="Excluir"
                       >
-                        <i className="pi pi-trash"></i>
+                        <i className="pi pi-trash text-red-500"></i>
                       </button>
                     </div>
                   </div>
                 </div>
-                {/*footer com id da manutenção*/}
-                <div className="mt-4 flex items-center justify-end">
-                  <div className="text-xs text-gray-400"> {m.id}</div>
+
+                {/* Detalhes da Manutenção */}
+                <div className="mt-4 border-t border-gray-100 pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3 text-sm" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-gray-700">Tipo</span>
+                      <span className="text-gray-600">{m.tipoManutencao}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-gray-700">Responsável</span>
+                      <span className="text-gray-600">{m.responsavel}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-gray-700">Custo</span>
+                      <span className="text-gray-600">R$ {m.valor.toFixed(2)}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-gray-700">Data</span>
+                      <span className="text-gray-600">{m.dataManutencao || 'N/A'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-gray-700">Próxima Prevista</span>
+                      <span className="text-gray-600">{m.dataProxima || 'N/A'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-gray-700">Empresa</span>
+                      <span className="text-gray-600">{m.empresaResponsavel || 'N/A'}</span>
+                    </div>
+                  </div>
+
+                  {/* Descrição */}
+                  {m.observacao && (
+                    <div className="mt-4">
+                      <h4 className="font-semibold text-gray-700">Descrição</h4>
+                      <p className="text-gray-600 text-sm mt-1 bg-gray-50 p-3 rounded-lg">
+                        {m.observacao}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer com ID */}
+                <div className="mt-3 flex items-center justify-end">
+                  <div className="text-xs text-gray-400">ID: {m.id}</div>
                 </div>
               </div>
             ))}
