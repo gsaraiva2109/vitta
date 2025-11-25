@@ -2,9 +2,9 @@
 FROM node:22-alpine AS test
 WORKDIR /usr/src/app
 RUN npm install -g npm@latest
-COPY api/package*.json ./
+COPY package*.json ./
 RUN npm install
-COPY api/ .
+COPY . .
 CMD ["npm", "test"]
 
 # Production Stage
@@ -12,9 +12,9 @@ FROM node:22-alpine AS production
 WORKDIR /usr/src/app
 RUN apk add --no-cache dumb-init
 RUN npm install -g npm@latest
-COPY api/package*.json ./
+COPY package*.json ./
 RUN npm install --omit=dev
-COPY api/ .
+COPY . .
 EXPOSE 3000
 # Run the application with a process manager that handles signals gracefully.
 CMD ["dumb-init", "node", "server.js"]
