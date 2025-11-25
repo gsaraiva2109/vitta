@@ -4,7 +4,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "k6:test": "k6 run tests/k6/*.test.js",

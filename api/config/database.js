@@ -28,13 +28,20 @@ const sequelize = process.env.DB_URL
       port: process.env.DB_PORT || 5432
     });
 
-export const connectDB = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Conectado ao PostgreSQL');
-  } catch (err) {
-    console.error('Erro ao conectar no PostgreSQL:', err);
-    throw err; // Propaga o erro para parar o servidor se falhar
+export const connectDB = async (retries = 5, delay = 2000) => {
+  while (retries > 0) {
+    try {
+      await sequelize.authenticate();
+      console.log('Conectado ao PostgreSQL');
+      return; // Success
+    } catch (err) {
+      console.error(`Erro ao conectar no PostgreSQL (tentativas restantes: ${retries - 1}):`, err.message);
+      retries -= 1;
+      if (retries === 0) {
+        throw new Error("Não foi possível conectar ao banco de dados após várias tentativas.");
+      }
+      await new Promise(res => setTimeout(res, delay));
+    }
   }
 };
 

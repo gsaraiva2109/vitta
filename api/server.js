@@ -85,14 +85,16 @@ const startServer = async () => {
   // Importar e inicializar modelos APÓS a conexão
   const { Usuario } = await import('./models/index.js');
   
-  if (process.env.NODE_ENV !== 'production') {
-    const syncOptions = process.env.DB_HOST === 'vitta-db-test' ? { alter: true } : { alter: true };
+  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+    const syncOptions = { alter: true };
     await sequelize.sync(syncOptions);
     logger.info(`Models synchronized (sequelize.sync: ${JSON.stringify(syncOptions)})`);
   }
   
-  // Passar o modelo para o seeder
-  await seedUsers(Usuario);
+  // Seed users only if not in test environment
+  if (process.env.NODE_ENV !== 'test') {
+    await seedUsers(Usuario);
+  }
 
   const PORT = process.env.PORT || 3000;
   return new Promise((resolve) => {
@@ -126,4 +128,5 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-export { app, startServer, closeServer };
+export { app, startServer, closeServer, server };
+

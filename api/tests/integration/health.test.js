@@ -1,10 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer, closeServer } from '../../server.js';
+import sequelize from '../../config/database';
 
 describe('Health Check', () => {
   beforeAll(async () => {
     await startServer();
+    await sequelize.sync({ force: true });
   });
 
   afterAll(async () => {

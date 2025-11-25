@@ -26,11 +26,8 @@ export async function getById(req, res) {
 export async function create(req, res) {
   console.log('Dados recebidos para criar manutenção:', req.body);
   try {
-    const { idMaquina } = req.params;
-    const manutencao = await manutencaoService.createManutencao({ 
-      ...req.body, 
-      idMaquina: parseInt(idMaquina, 10) 
-    });
+    // idMaquina should come from the body for a create operation
+    const manutencao = await manutencaoService.createManutencao(req.body);
     res.status(201).json(manutencao);
   } catch (error) {
     res.status(400).json({ error: error.message });

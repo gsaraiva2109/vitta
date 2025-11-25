@@ -1,16 +1,6 @@
 import { Manutencao, Maquina } from "../models/index.js";
 import { maquinaService } from "./maquinaService.js";
-import { parseISO } from "date-fns";
-
-const toDate = (dateString) => {
-  if (!dateString) return null;
-  try {
-    return parseISO(dateString);
-  } catch (error) {
-    console.error(`Invalid date format: ${dateString}`, error);
-    return null;
-  }
-};
+import { calculateNextMaintenanceDate } from "../utils/date.js";
 
 async function getAllManutencoes() {
   return Manutencao.findAll({
@@ -41,15 +31,20 @@ async function getManutencaoById(id) {
 }
 
 async function createManutencao(data) {
-  // Garante que a máquina associada existe
-  await maquinaService.getMaquinaById(data.idMaquina);
+  const maquina = await maquinaService.getMaquinaById(data.idMaquina);
 
   const payload = {
     ...data,
-    idMaquina: data.idMaquina,
-    dataManutencao: toDate(data.dataManutencao),
-    dataProxima: toDate(data.dataProxima),
+    dataManutencao: data.dataManutencao ? new Date(data.dataManutencao) : null,
+    dataProxima: data.dataProxima ? new Date(data.dataProxima) : null,
   };
+
+  if (data.tipoManutencao === "Preventiva" && maquina.intervaloManutencao) {
+    payload.dataProxima = calculateNextMaintenanceDate(
+      payload.dataManutencao,
+      maquina.intervaloManutencao
+    );
+  }
 
   const novaManutencao = await Manutencao.create(payload);
   return getManutencaoById(novaManutencao.idManutencao);
@@ -64,8 +59,8 @@ async function updateManutencao(id, data) {
 
   const payload = {
     ...data,
-    dataManutencao: toDate(data.dataManutencao),
-    dataProxima: toDate(data.dataProxima),
+    dataManutencao: data.dataManutencao ? new Date(data.dataManutencao) : null,
+    dataProxima: data.dataProxima ? new Date(data.dataProxima) : null,
   };
 
   await manutencao.update(payload);

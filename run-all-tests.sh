@@ -8,4 +8,5 @@ set -e
 ./run-test-env.sh \
     --title "Running All Vitta Backend Tests" \
     --cmd "npm test" \
+    --clean \
     "$@"
