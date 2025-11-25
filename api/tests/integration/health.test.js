@@ -1,7 +1,16 @@
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
-import app from '../../server.js';
+import { app, startServer, closeServer } from '../../server.js';
 
 describe('Health Check', () => {
+  beforeAll(async () => {
+    await startServer();
+  });
+
+  afterAll(async () => {
+    await closeServer();
+  });
+
   it('should return 200 OK for Swagger documentation', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toEqual(200);

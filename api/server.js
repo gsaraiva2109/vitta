@@ -76,7 +76,10 @@ app.use((req, res, _next) => {
 
 app.use(errorMiddleware);
 
-connectDB().then(async () => {
+let server;
+
+const startServer = async () => {
+  await connectDB();
   logger.info('Database connected successfully.');
 
   // Importar e inicializar modelos APÓS a conexão
@@ -90,16 +93,37 @@ connectDB().then(async () => {
   
   // Passar o modelo para o seeder
   await seedUsers(Usuario);
-}).catch(err => {
-  logger.error(`Database connection failed: ${err.message}`, err);
-});
 
-const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3000;
+  return new Promise((resolve) => {
+    server = app.listen(PORT, () => {
+      logger.info(`Servidor rodando na porta ${PORT}`);
+      resolve(server);
+    });
+  });
+};
+
+const closeServer = async () => {
+  if (server) {
+    await new Promise((resolve, reject) => {
+      server.close((err) => {
+        if (err) {
+          return reject(err);
+        }
+        logger.info('Server closed.');
+        resolve();
+      });
+    });
+  }
+  await sequelize.close();
+  logger.info('Database connection closed.');
+};
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    logger.info(`Servidor rodando na porta ${PORT}`);
+  startServer().catch(err => {
+    logger.error(`Server failed to start: ${err.message}`, err);
+    process.exit(1);
   });
 }
 
-export default app;
+export { app, startServer, closeServer };
