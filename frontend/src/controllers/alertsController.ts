@@ -1,98 +1,67 @@
-import type { Machine } from '../models/Machine';
+import type { Maquina } from '../models/Maquina';
+import type Manutencao from '../models/Manutencao';
 import type { Alert, AlertUrgency } from '../models/Alert';
 
-// Converte dd/mm/aaaa para Date
-const parseDate = (br: string): Date | null => {
-  if (!br) return null;
-  const [d, m, y] = br.split('/');
-  if (!d || !m || !y) return null;
+const parseDate = (date: string | Date | null): Date | null => {
+  if (!date) return null;
+  if (date instanceof Date) return date;
+  const [d, m, y] = date.split('/');
   return new Date(+y, +m - 1, +d);
 };
 
-// Retorna diferença em dias (positivo = futuro, negativo = passado)
-const daysDiff = (from: Date, to: Date) => {
-  const ms = to.getTime() - from.getTime();
-  return Math.floor(ms / (1000 * 60 * 60 * 24));
+const daysDiff = (from: Date, to: Date) => Math.floor((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+
+const determineUrgency = (diff: number): { urgency: AlertUrgency; daysOverdue?: number; daysRemaining?: number } | null => {
+  if (diff < 0) return { urgency: 'Vencida', daysOverdue: Math.abs(diff) };
+  if (diff <= 7) return { urgency: 'Urgente', daysRemaining: diff };
+  if (diff <= 30) return { urgency: 'Próxima', daysRemaining: diff };
+  return null;
 };
 
-export const generateAlerts = (machines: Machine[]): Alert[] => {
+export const generateAlerts = (machines: (Maquina & { manutencoes?: Manutencao[] })[]): Alert[] => {
   const today = new Date();
   const alerts: Alert[] = [];
 
-  machines.forEach((m) => {
-    if (m.maintenanceInterval && m.acquisitionDate) {
-      const acquired = parseDate(m.acquisitionDate);
-      if (acquired) {
-        const interval = +m.maintenanceInterval;
-        const nextMaint = new Date(acquired);
-        nextMaint.setMonth(nextMaint.getMonth() + interval);
-        const diff = daysDiff(today, nextMaint);
+  machines.forEach((machine) => {
+    const maintenanceTypes: { type: 'Manutenção Preventiva' | 'Calibração'; interval: number | undefined }[] = [
+      { type: 'Manutenção Preventiva', interval: machine.intervaloManutencao },
+      { type: 'Calibração', interval: machine.intervaloCalibracao },
+    ];
 
-        let urgency: AlertUrgency;
-        let daysOverdue: number | undefined;
-        let daysRemaining: number | undefined;
+    maintenanceTypes.forEach(({ type, interval }) => {
+      if (!interval) return;
 
-        if (diff < 0) {
-          urgency = 'Vencida';
-          daysOverdue = Math.abs(diff);
-        } else if (diff <= 7) {
-          urgency = 'Urgente';
-          daysRemaining = diff;
-        } else if (diff <= 30) {
-          urgency = 'Próxima';
-          daysRemaining = diff;
-        } else {
-          return; // ignora se >30 dias
-        }
+      // Última manutenção desse tipo
+      const manutencoesDoTipo = machine.manutencoes?.filter(m => m.tipoManutencao === type) ?? [];
+      let referenceDate = machine.dataAquisicao ? new Date(machine.dataAquisicao) : null;
 
-        alerts.push({
-          id: `${m.id}-maint`,
-          machineName: m.nome,
-          type: 'Manutenção Preventiva',
-          dueDate: `${String(nextMaint.getDate()).padStart(2, '0')}/${String(nextMaint.getMonth() + 1).padStart(2, '0')}/${nextMaint.getFullYear()}`,
-          urgency,
-          daysOverdue,
-          daysRemaining,
-        });
+      if (manutencoesDoTipo.length > 0) {
+        const lastMaint = manutencoesDoTipo.reduce((prev, curr) => {
+          return curr.dataProxima && (!prev || curr.dataProxima > prev) ? curr.dataProxima : prev;
+        }, referenceDate);
+        referenceDate = lastMaint ? new Date(lastMaint) : referenceDate;
       }
-    }
 
-    if (m.calibrationInterval && m.acquisitionDate) {
-      const acquired = parseDate(m.acquisitionDate);
-      if (acquired) {
-        const interval = +m.calibrationInterval;
-        const nextCal = new Date(acquired);
-        nextCal.setMonth(nextCal.getMonth() + interval);
-        const diff = daysDiff(today, nextCal);
+      if (!referenceDate) return;
 
-        let urgency: AlertUrgency;
-        let daysOverdue: number | undefined;
-        let daysRemaining: number | undefined;
+      // Próxima data baseada no intervalo
+      const nextDate = new Date(referenceDate);
+      nextDate.setMonth(nextDate.getMonth() + interval);
 
-        if (diff < 0) {
-          urgency = 'Vencida';
-          daysOverdue = Math.abs(diff);
-        } else if (diff <= 7) {
-          urgency = 'Urgente';
-          daysRemaining = diff;
-        } else if (diff <= 30) {
-          urgency = 'Próxima';
-          daysRemaining = diff;
-        } else {
-          return;
-        }
+      const diff = daysDiff(today, nextDate);
+      const urgencyObj = determineUrgency(diff);
+      if (!urgencyObj) return;
 
-        alerts.push({
-          id: `${m.id}-calib`,
-          machineName: m.nome,
-          type: 'Calibração',
-          dueDate: `${String(nextCal.getDate()).padStart(2, '0')}/${String(nextCal.getMonth() + 1).padStart(2, '0')}/${nextCal.getFullYear()}`,
-          urgency,
-          daysOverdue,
-          daysRemaining,
-        });
-      }
-    }
+      alerts.push({
+        id: `${machine.idMaquina}-${type}`,
+        machineName: machine.nome,
+        type,
+        dueDate: `${String(nextDate.getDate()).padStart(2, '0')}/${String(nextDate.getMonth() + 1).padStart(2, '0')}/${nextDate.getFullYear()}`,
+        urgency: urgencyObj.urgency,
+        daysOverdue: urgencyObj.daysOverdue,
+        daysRemaining: urgencyObj.daysRemaining,
+      });
+    });
   });
 
   return alerts;

@@ -14,6 +14,7 @@ import { publicUserRouter, protectedUserRouter } from './routes/usuarioRoutes.js
 import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
 import manutencaoRoutes from './routes/manutencaoRoutes.js';
+import alertaRoutes from './routes/alertaRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 
@@ -55,6 +56,7 @@ app.use('/usuarios', publicUserRouter);
 app.use('/usuarios', authMiddleware, protectedUserRouter); // Rotas de usuário protegidas
 app.use('/maquinas', authMiddleware, maquinaRoutes);
 app.use('/manutencoes', authMiddleware, manutencaoRoutes);
+app.use('/alertas', authMiddleware, alertaRoutes);
 
 // Rota coringa: deve ser a **última**
 app.use((req, res, _next) => {
