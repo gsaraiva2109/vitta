@@ -18,20 +18,7 @@ const URGENCY_LEVELS = {
   PROXIMA: "Próxima",
 };
 
-export const getMostRecentMaintenanceDate = (maintenances, acquisitionDate) => {
-  const maintenanceDates = maintenances
-    .map((m) => m.dataProxima)
-    .filter(Boolean)
-    .map((date) => parseISO(date));
-
-  const dates = acquisitionDate
-    ? [parseISO(acquisitionDate), ...maintenanceDates]
-    : maintenanceDates;
-
-  return dates.length > 0 ? max(dates) : null;
-};
-
-export const calculateUrgency = (dueDate, today) => {
+const calculateUrgency = (dueDate, today) => {
   const diff = differenceInDays(dueDate, today);
 
   if (diff < 0) {
@@ -47,6 +34,19 @@ export const calculateUrgency = (dueDate, today) => {
     return { urgency: URGENCY_LEVELS.PROXIMA, daysRemaining: diff };
   }
   return null;
+};
+
+export const getMostRecentMaintenanceDate = (maintenances, acquisitionDate) => {
+  const maintenanceDates = maintenances
+    .map((m) => m.dataProxima)
+    .filter(Boolean)
+    .map((date) => parseISO(date));
+
+  const dates = acquisitionDate
+    ? [parseISO(acquisitionDate), ...maintenanceDates]
+    : maintenanceDates;
+
+  return dates.length > 0 ? max(dates) : null;
 };
 
 const createAlert = (machine, type, dueDate, urgencyDetails) => ({
@@ -114,4 +114,3 @@ export const generateAlerts = (machines) => {
 
   return alerts;
 };
-

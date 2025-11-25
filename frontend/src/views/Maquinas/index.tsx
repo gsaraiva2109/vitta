@@ -442,32 +442,43 @@ const Maquinas = () => {
 
         {viewTarget && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
-            <div className="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl">
+               <div className="w-full max-w-[820px] max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-2xl">
+                <div className="max-h-[90vh] overflow-y-auto px-6 py-8">
+
               <ViewMachine
                 machine={viewTarget}
                 onCancel={() => setViewTarget(null)}
               />
+              </div>
             </div>
           </div>
         )}
         {showCreate && (
-          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
-            <div className="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl">
-              <CreateMachine
-                onCancel={() => setShowCreate(false)}
-                onSubmit={handleCreate}
-              />
+            <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
+               <div className="w-full max-w-[820px] max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-2xl">
+
+             {/* Conteúdo scrollável */}
+             <div className="max-h-[90vh] overflow-y-auto px-6 py-8">
+               <CreateMachine
+               onCancel={() => setShowCreate(false)}
+              onSubmit={handleCreate}
+               />
+               </div>
+
+               </div>
             </div>
-          </div>
-        )}
+)}
         {editTarget && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
-            <div className="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl">
-              <EditMachine
+               <div className="w-full max-w-[820px] max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-2xl">
+                  <div className="max-h-[90vh] overflow-y-auto px-6 py-8">
+
+                    <EditMachine
                 machine={editTarget}
                 onCancel={() => setEditTarget(null)}
                 onSubmit={handleUpdate}
               />
+              </div>
             </div>
           </div>
         )}
