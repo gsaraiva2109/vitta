@@ -382,9 +382,14 @@ const Manutencoes = () => {
         {/* Nova Manutenção */}
         {showCreate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-            <div className="w-full max-w-[820px] rounded-2xl bg-white shadow-2xl">
-              <CreateMaintenance onCancel={() => setShowCreate(false)} onSubmit={handleCreate} />
-            </div>
+            <div className="w-full max-w-[820px] max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
+              {/* Conteúdo scrollável */}
+             <div className="max-h-[90vh] overflow-y-auto px-6 py-8">
+                <CreateMaintenance onCancel={() => setShowCreate(false)} onSubmit={handleCreate} />
+
+               
+               </div>
+             </div>
           </div>
         )}
 
