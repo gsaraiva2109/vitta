@@ -6,7 +6,7 @@ export const getAlerts = async (req, res) => {
   try {
     const machines = await Maquina.findAll({
       include: [{ model: Manutencao, as: 'manutencoes' }],
-    });d
+    });
 
     const alerts = generateAlerts(
       machines.map(m => m.toJSON())

@@ -1,16 +1,4 @@
-// utils
-const parseDate = (date) => {
-  if (!date) return null;
-  if (date instanceof Date) return date;
 
-  // caso receba "dd/mm/yyyy" (apenas por segurança)
-  if (typeof date === "string" && date.includes("/")) {
-    const [d, m, y] = date.split("/");
-    return new Date(+y, +m - 1, +d);
-  }
-
-  return new Date(date);
-};
 
 const daysDiff = (from, to) => {
   return Math.floor((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
