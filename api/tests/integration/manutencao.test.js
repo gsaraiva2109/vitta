@@ -2,7 +2,7 @@ import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { app, startServer, closeServer } from '../../server';
 import sequelize from '../../config/database';
-import { Maquina, Manutencao, Usuario } from '../../models';
+import { Maquina, Usuario } from '../../models';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 let token;
