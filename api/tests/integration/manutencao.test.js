@@ -1,7 +1,6 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { app, startServer, closeServer } from '../../server';
-import sequelize from '../../config/database';
 import { Maquina, Usuario } from '../../models';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
@@ -10,8 +9,7 @@ let token;
 // Setup and Teardown for the entire test suite
 beforeAll(async () => {
   await startServer();
-  // Use `force: true` to drop and recreate tables, ensuring a clean slate
-  await sequelize.sync({ force: true });
+  // The database is synced globally in globalSetup.js
 
   // Create a test user and generate a token
   const user = await Usuario.create({

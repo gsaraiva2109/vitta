@@ -1,4 +1,5 @@
 import { usuarioService } from '../services/usuarioService.js';
+import AppError from '../utils/AppError.js';
 
 export async function getAll(req, res, next) {
   try {
@@ -12,6 +13,9 @@ export async function getAll(req, res, next) {
 export async function getById(req, res, next) {
   try {
     const usuario = await usuarioService.getUsuarioById(req.params.id);
+    if (!usuario) {
+      return next(new AppError('Usuário não encontrado', 404));
+    }
     res.json(usuario);
   } catch (error) {
     next(error);

@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import logger from './logger.js';
 dotenv.config();
 
 const commonOptions = {
@@ -32,10 +33,10 @@ export const connectDB = async (retries = 5, delay = 2000) => {
   while (retries > 0) {
     try {
       await sequelize.authenticate();
-      console.log('Conectado ao PostgreSQL');
+      logger.info('Conectado ao PostgreSQL');
       return; // Success
     } catch (err) {
-      console.error(`Erro ao conectar no PostgreSQL (tentativas restantes: ${retries - 1}):`, err.message);
+      logger.error(`Erro ao conectar no PostgreSQL (tentativas restantes: ${retries - 1}):`, err.message);
       retries -= 1;
       if (retries === 0) {
         throw new Error("Não foi possível conectar ao banco de dados após várias tentativas.");
@@ -44,5 +45,9 @@ export const connectDB = async (retries = 5, delay = 2000) => {
     }
   }
 };
+
+export const closeDB = async () => {
+  await sequelize.close();
+}
 
 export default sequelize;

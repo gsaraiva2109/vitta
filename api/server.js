@@ -14,7 +14,8 @@ import { publicUserRouter, protectedUserRouter } from './routes/usuarioRoutes.js
 import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
 import manutencaoRoutes from './routes/manutencaoRoutes.js';
-import alertaRoutes from './routes/alertaRoutes.js';
+
+import reportRoutes from './routes/reportRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 
@@ -23,7 +24,6 @@ import { specs } from './config/swagger.js';
 
 dotenv.config();
 logger.info('Environment variables loaded.');
-console.log("senha capturada:", process.env.DB_PASSWORD);
 
 const app = express();
 
@@ -64,7 +64,7 @@ app.use('/usuarios', publicUserRouter);
 app.use('/usuarios', authMiddleware, protectedUserRouter); // Rotas de usuário protegidas
 app.use('/maquinas', authMiddleware, maquinaRoutes);
 app.use('/manutencoes', authMiddleware, manutencaoRoutes);
-app.use('/alertas', authMiddleware, alertaRoutes);
+app.use('/reports', authMiddleware, reportRoutes);
 
 // Rota coringa: deve ser a **última**
 app.use((req, res, _next) => {

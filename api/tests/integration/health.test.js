@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer, closeServer } from '../../server.js';
-import sequelize from '../../config/database';
 
 describe('Health Check', () => {
   beforeAll(async () => {
     await startServer();
-    await sequelize.sync({ force: true });
+    // The database is synced globally in globalSetup.js
   });
 
   afterAll(async () => {

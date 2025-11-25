@@ -5,11 +5,7 @@ async function getAllMaquinas() {
 }
 
 async function getMaquinaById(id) {
-  const maquina = await Maquina.findByPk(id);
-  if (!maquina) {
-    throw new Error('Máquina não encontrada');
-  }
-  return maquina;
+  return Maquina.findByPk(id);
 }
 
 async function getMaquinaByPatrimonio(patrimonio) {

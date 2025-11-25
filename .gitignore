@@ -12,20 +12,12 @@ frontend/node_modules
 dist
 dist-ssr
 *.local
+codeql-cli/*
+codeql-linux64.zip
 
 vite.svg
 react.svg
 CRUSH.md
-test-local.sh
-stop-local.sh
-logs-local.sh
-DOCKER-TESTING.md
-deploy-local.sh
-final-deploy-test.sh
-README-WINDOWS.md
-run-feature.sh
-update-snapshots.sh
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
