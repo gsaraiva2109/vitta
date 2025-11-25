@@ -64,7 +64,7 @@ app.use('/usuarios', publicUserRouter);
 app.use('/usuarios', authMiddleware, protectedUserRouter); // Rotas de usuário protegidas
 app.use('/maquinas', authMiddleware, maquinaRoutes);
 app.use('/manutencoes', authMiddleware, manutencaoRoutes);
-app.use('/alerts', authMiddleware, alertaRoutes);
+app.use('/alertas', authMiddleware, alertaRoutes);
 
 // Rota coringa: deve ser a **última**
 app.use((req, res, _next) => {

@@ -1,5 +1,4 @@
-import Maquina from "../models/Maquina.js";
-import Manutencao from "../models/Manutencao.js";
+import {Maquina, Manutencao} from '../models/index.js';
 import { generateAlerts } from "../services/alertaService.js";
 
 
