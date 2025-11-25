@@ -23,9 +23,7 @@ DOCKER-TESTING.md
 deploy-local.sh
 final-deploy-test.sh
 README-WINDOWS.md
-run-all-tests.sh
 run-feature.sh
-run-test-env.sh
 update-snapshots.sh
 
 # Editor directories and files
