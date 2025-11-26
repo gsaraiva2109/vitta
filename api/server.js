@@ -14,6 +14,7 @@ import { publicUserRouter, protectedUserRouter } from './routes/usuarioRoutes.js
 import authRoutes from './routes/authRoutes.js';
 import maquinaRoutes from './routes/maquinaRoutes.js';
 import manutencaoRoutes from './routes/manutencaoRoutes.js';
+import alertaRoutes from './routes/alertaRoutes.js';
 
 import reportRoutes from './routes/reportRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
@@ -64,6 +65,7 @@ app.use('/usuarios', publicUserRouter);
 app.use('/usuarios', authMiddleware, protectedUserRouter); // Rotas de usuário protegidas
 app.use('/maquinas', authMiddleware, maquinaRoutes);
 app.use('/manutencoes', authMiddleware, manutencaoRoutes);
+app.use('/alertas', authMiddleware, alertaRoutes);
 app.use('/reports', authMiddleware, reportRoutes);
 
 // Rota coringa: deve ser a **última**
