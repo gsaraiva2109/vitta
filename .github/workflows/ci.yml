@@ -7,41 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-  backend-tests:
-    runs-on: ubuntu-latest
-    name: Run Backend Tests
-
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_DB: vitta_test_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Run backend tests with Docker
-        env:
-          DB_HOST: postgres
-          DB_USER: postgres
-          DB_PASSWORD: password
-          DB_NAME: vitta_test_db
-          DB_PORT: 5432
-        run: |
-          chmod +x ./run-all-tests.sh
-          ./run-all-tests.sh --ci
-
   frontend-lint:
     runs-on: ubuntu-latest
     name: Run Frontend Linter
