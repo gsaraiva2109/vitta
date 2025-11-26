@@ -17,8 +17,10 @@ interface Props {
 
 
 const statusOptions = [
-  { label: 'Concluída', value: 'Concluida' },
-  { label: 'Pendente', value: 'Pendente' },
+  { label: 'Em andamento', value: 'Em andamento' },
+  { label: 'Concluída', value: 'Concluída' },
+  { label: 'Cancelada', value: 'Cancelada' },
+  { label: 'Descartado', value: 'Descartado' },
 ];
 
 const typeOptions = [
@@ -42,7 +44,7 @@ const CreateMaintenance = ({ onCancel, onSubmit }: Props) => {
     idMaquina: '',
     valor: 'R$ ',
     tipoManutencao: 'Preventiva',
-    status: 'Pendente',
+    status: 'Em andamento',
     responsavel: '',
     dataManutencao: '',
     empresaResponsavel: '',

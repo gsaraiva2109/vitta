@@ -27,7 +27,8 @@ const router = express.Router();
  *           description: Valor da manutenção
  *         status:
  *           type: string
- *           description: Status da manutenção (ex. Pendente, Concluída)
+ *           description: Status da manutenção
+ *           enum: [Concluída, Em andamento, Cancelada, Descartado]
  *         responsavel:
  *           type: string
  *           description: Responsável pela manutenção
