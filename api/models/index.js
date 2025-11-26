@@ -1,8 +1,9 @@
-import sequelize from '../config/database.js';
+import getSequelize from '../config/database.js';
 import initUsuario from './Usuario.js';
 import initMaquina from './Maquina.js';
 import initManutencao from './Manutencao.js';
 
+const sequelize = getSequelize();
 const Usuario = initUsuario(sequelize);
 const Maquina = initMaquina(sequelize);
 const Manutencao = initManutencao(sequelize);
