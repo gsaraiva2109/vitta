@@ -7,6 +7,10 @@ import { loadMachinesFromAPI } from "./machinesApiController";
 import { loadMaintenancesFromAPI } from "./maintenancesApiController";
 import type { Machine } from "../models/Machine";
 import type { Maintenance } from "../models/Maintenance";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 // Converte dd/mm/yyyy para objeto Date
 const parseBRDate = (br: string): Date | null => {
@@ -154,9 +158,6 @@ export const generateReport = async (
   return { data: filteredData, summary };
 };
 
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
-
 export const exportToExcel = async (data: ReportData[], reportType: string) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Relatório");
@@ -182,6 +183,19 @@ export const exportToExcel = async (data: ReportData[], reportType: string) => {
 };
 
 export const exportToPDF = (data: ReportData[], reportType: string) => {
-  console.log(`Exportando ${data.length} registros para PDF - ${reportType}`);
-  // Implementação futura com biblioteca como jsPDF
+  const doc = new jsPDF();
+
+  const headers = data.length > 0 ? Object.keys(data[0]) : [];
+  // Convert objects to arrays of values
+  const rows = data.map(item => Object.values(item));
+
+  doc.text(`Relatório - ${reportType}`, 14, 15);
+
+  autoTable(doc, {
+    head: [headers],
+    body: rows,
+    startY: 20,
+  });
+
+  doc.save(`relatorio-${reportType}.pdf`);
 };

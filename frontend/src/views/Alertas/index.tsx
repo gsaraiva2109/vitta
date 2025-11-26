@@ -3,7 +3,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { useEffect, useMemo, useState } from 'react';
 import type { Alert } from '../../models/Alert';
-import {getAlerts} from '../../services/alertaService';
+import {getAlerts} from '../../controllers/alertController';
 
 
 const badgeForUrgency = (urgency: string) => {
