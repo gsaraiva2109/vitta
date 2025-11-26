@@ -22,7 +22,7 @@ const normalizeMaintStatus = (s: string) => {
   if (v.includes("andament")) return "andamento";
   if (v.includes("conclu")) return "concluida";
   if (v.includes("cancel")) return "cancelada";
-  if (v.includes("pendent")) return "pendente";
+  if (v.includes("descart")) return "descartado";
   return "outro";
 };
 
@@ -31,7 +31,7 @@ const badgeForMaintStatus = (status: string) => {
   if (s === "concluida") return "bg-[#8AE67E] text-gray-800";
   if (s === "andamento") return "bg-[#DBD83B] text-gray-800";
   if (s === "cancelada") return "bg-[#D2D1D1] text-gray-800";
-  if (s === "pendente") return "bg-[#D9D555] text-gray-800";
+  if (s === "descartado") return "bg-[#D95555] text-gray-800";
   return "bg-gray-100 text-gray-700";
 };
 
@@ -79,7 +79,7 @@ const Manutencoes = () => {
     { label: "Concluída", value: "concluida" },
     { label: "Em Andamento", value: "andamento" },
     { label: "Cancelada", value: "cancelada" },
-    { label: "Pendente", value: "pendente" },
+    { label: "Descartada", value: "descartado" },
   ];
 
   const typeOptions = [
@@ -213,11 +213,10 @@ const Manutencoes = () => {
 
             {/* Botão Nova Manutenção */}
             <button
-              disabled={!isManager}
               className={`bg-[#0084FF] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform shadow-[0_12px_30px_rgba(0,132,255,0.18)] 
-                         ${isManager ? 'hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2' : 'opacity-50 cursor-not-allowed'}`}
+                         hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2`}
               style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
-              onClick={() => isManager && setShowCreate(true)}
+              onClick={() => setShowCreate(true)}
             >
               <i className="pi pi-plus" style={{ fontSize: '1.5rem' }} />
               <span className="text-base">Nova Manutenção</span>
@@ -313,18 +312,36 @@ const Manutencoes = () => {
                         <i className="pi pi-eye text-gray-600"></i>
                       </button>
                       <button
-                        className={`p-2 rounded-full transition-colors ${isManager ? 'hover:bg-blue-100' : 'opacity-50 cursor-not-allowed'}`}
-                        disabled={!isManager}
-                        onClick={() => isManager && setEditTarget(m)}
+                        className={`p-2 rounded-full transition-colors`}
+                        onClick={() => {
+                          if (!isManager) {
+                            toast.current?.show({
+                              severity: 'warn',
+                              summary: 'Acesso Negado',
+                              detail: 'Você não tem permissão para editar manutenções.',
+                            });
+                          } else {
+                            setEditTarget(m);
+                          }
+                        }}
                         aria-label={`Editar ${m.machineName}`}
                         title="Editar"
                       >
                         <i className="pi pi-pen-to-square text-blue-500"></i>
                       </button>
                       <button
-                        className={`p-2 rounded-full transition-colors ${!isManager ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100'}`}
-                        disabled={!isManager}
-                        onClick={() => isManager && handleDeleteRequest(m.id)}
+                        className={`p-2 rounded-full transition-colors`}
+                        onClick={() => {
+                          if (!isManager) {
+                            toast.current?.show({
+                              severity: 'warn',
+                              summary: 'Acesso Negado',
+                              detail: 'Você não tem permissão para excluir manutenções.',
+                            });
+                          } else {
+                            handleDeleteRequest(m.id);
+                          }
+                        }}
                         aria-label={`Excluir ${m.machineName}`}
                         title="Excluir"
                       >

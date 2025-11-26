@@ -37,6 +37,13 @@ export async function create(req, res) {
     const manutencao = await manutencaoService.createManutencao(data);
     res.status(201).json(manutencao);
   } catch (error) {
+    logger.error(
+      `Error creating maintenance: ${error.message}`,
+      {
+        idMaquina: req.params.idMaquina,
+        requestBody: JSON.stringify(data, null, 2),
+      },
+    );
     res.status(400).json({ error: error.message });
   }
 }

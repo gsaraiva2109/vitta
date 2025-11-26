@@ -1,5 +1,6 @@
 import express from 'express';
 import { getAll, getById, create, update, remove } from '../controllers/manutencaoController.js';
+import { managerMiddleware } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
@@ -157,7 +158,7 @@ router.post('/', create);
  *         description: Manutenção não encontrada
  */
 router.get('/:id', getById);
-router.put('/:id', update);
-router.delete('/:id', remove);
+router.put('/:id', managerMiddleware, update);
+router.delete('/:id', managerMiddleware, remove);
 
 export default router;

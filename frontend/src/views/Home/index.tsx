@@ -13,7 +13,7 @@ const normalizeStatus = (status: string) => {
   if (s.includes('manuten') || s.includes('manutenção')) return 'manutencao';
   if (s.includes('inativ')) return 'inativo';
   if (s.includes('ativ') && !s.includes('inativ')) return 'ativo';
-  if (s.includes('pend')) return 'pendente';
+  if (s.includes('descart')) return 'descartado';
   return 'outro';
 };
 
@@ -21,7 +21,7 @@ const badgeForStatus = (status: string) => {
   const s = status?.toLowerCase();
   if (s.includes('conclu') || s.includes('ativo')) return 'bg-[#8AE67E] text-gray-800';
   if (s.includes('manuten') || s.includes('andamento')) return 'bg-[#DBD83B] text-gray-800';
-  if (s.includes('pendente') || s.includes('cancel')) return 'bg-[#D95555] text-gray-800';
+  if (s.includes('descartado') || s.includes('cancel')) return 'bg-[#D95555] text-gray-800';
   return 'bg-gray-100 text-gray-700';
 };
 
@@ -65,8 +65,8 @@ const Home = () => {
     const total = machines.length;
     const ativo = machines.filter(m => normalizeStatus(m.status) === 'ativo').length;
     const manutencao = machines.filter(m => normalizeStatus(m.status) === 'manutencao').length;
-    const pendente = machines.filter(m => normalizeStatus(m.status) === 'pendente').length;
-    return { total, ativo, manutencao, pendente };
+    const descartado = machines.filter(m => normalizeStatus(m.status) === 'descartado').length;
+    return { total, ativo, manutencao, descartado };
   }, [machines]);
 
   // Processamento para "Últimas Manutenções" (Histórico Geral)
@@ -201,7 +201,7 @@ const Home = () => {
                       Alertas
                     </div>
                     <div className="text-xl text-[#F21515] font-semibold leading-tight" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
-                      {metrics.pendente}
+                      {metrics.descartado}
                     </div>
                   </div>
                 </div>

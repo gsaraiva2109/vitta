@@ -8,7 +8,15 @@ const initManutencao = (sequelize) => {
       autoIncrement: true
     },
     valor: DataTypes.DECIMAL(10,2),
-    status: DataTypes.STRING,
+    status: {
+      type: DataTypes.STRING,
+      validate: {
+        isIn: {
+          args: [['Concluída', 'Em andamento', 'Cancelada', 'Descartado']],
+          msg: "Status inválido"
+        }
+      }
+    },
     tipoManutencao: DataTypes.STRING,
     responsavel: DataTypes.STRING,
     dataManutencao: DataTypes.DATE,

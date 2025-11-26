@@ -26,13 +26,25 @@ if [ "$SKIP_DB_SETUP" = false ]; then
     -e POSTGRES_USER=postgres \
     -e POSTGRES_PASSWORD=postgres \
     -e POSTGRES_DB=vitta_test \
-    -p 5432:5432 \
+    -p 5433:5432 \
     --rm \
     postgres:13
 
 
   echo "--- Aguardando o banco de dados iniciar... ---"
-  sleep 5
+  # Adiciona um loop de espera para o banco de dados aceitar conexões
+  echo "Aguardando o PostgreSQL iniciar..."
+  retries=10
+  while ! docker exec vitta_db_test pg_isready -q -U postgres; do
+    retries=$((retries-1))
+    if [ $retries -eq 0 ]; then
+      echo "PostgreSQL não iniciou a tempo."
+      exit 1
+    fi
+    echo "Aguardando... ($retries tentativas restantes)"
+    sleep 2
+  done
+  echo "PostgreSQL iniciado."
 fi
 
 echo "--- Rodando os testes do Backend... ---"
@@ -44,6 +56,7 @@ if [ "$SKIP_DB_SETUP" = true ]; then
 else
   # Localmente, o banco de dados está no localhost
   export DB_HOST="localhost"
+  export DB_PORT="5433"
 fi
 npm install
 npm test

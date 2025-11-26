@@ -96,7 +96,7 @@ docker run \
     --name "$BACKEND_CONTAINER_NAME" \
     --network "$NETWORK_NAME" \
     -e NODE_ENV=test \
-    -e TZ='UTC' \
+    -e TZ='UTC-3' \
     -e DB_HOST="$DB_CONTAINER_NAME" \
     -e DB_USER=postgres \
     -e DB_PASSWORD=postgres \

@@ -337,7 +337,7 @@ const Relatorios = () => {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                          {item.dataAquisicao}
+                          {isoToBR(item.dataAquisicao)}
                         </td>
                       </tr>
                     ))}

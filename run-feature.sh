@@ -30,8 +30,11 @@ if [ -z "$TEST_FILE" ]; then
     exit 1
 fi
 
+# Remove the 'api/' prefix from the test file path for Jest inside Docker
+DOCKER_TEST_FILE=${TEST_FILE#api/}
+
 # Pass --clean to this script to force a prune and no-cache build
 ./run-test-env.sh \
     --title "Running Vitta Feature Test" \
-    --cmd "npm test -- \"$TEST_FILE\"" \
+    --cmd "npx jest --runInBand -- \"$DOCKER_TEST_FILE\"" \
     "${OTHER_ARGS[@]}"

@@ -9,10 +9,12 @@ interface Props {
 }
 
 const statusOptions = [
-  { label: "Concluída", value: "Concluida" },
-  { label: "Em Andamento", value: "Em Andamento" },
+  { label: "Concluída", value: "Concluída" },
+  { label: "Em Andamento", value: "Em andamento" },
+  { label: "Agendada", value: "Agendada" },
   { label: "Cancelada", value: "Cancelada" },
   { label: "Pendente", value: "Pendente" },
+  { label: "Descartado", value: "Descartado" },
 ];
 
 const typeOptions = [

@@ -68,13 +68,8 @@ else
     echo -e "${GREEN}✅ PostgreSQL container is already running.${NC}"
 fi
 
-if [ "$CLEAN_BUILD" = true ]; then
-    echo -e "${BLUE}🏗️  Building API image...${NC}"
-    docker build -t "$API_IMAGE_NAME" --target production -f api/Dockerfile .
-else
-    echo -e "${BLUE}🏗️  Building API image...${NC}"
-    docker build -t "$API_IMAGE_NAME" --target production -f api/Dockerfile .
-fi
+echo -e "${BLUE}🏗️  Building API image...${NC}"
+docker build -t "$API_IMAGE_NAME" --target production -f api/Dockerfile api
 
 echo -e "${BLUE}🚀 Starting API container...${NC}"
 docker run -d \
@@ -91,13 +86,8 @@ docker run -d \
     --restart unless-stopped \
     "$API_IMAGE_NAME"
 
-if [ "$CLEAN_BUILD" = true ]; then
-    echo -e "${BLUE}🏗️  Building frontend image...${NC}"
-    docker build -t "$FRONTEND_IMAGE_NAME" frontend
-else
-    echo -e "${BLUE}🏗️  Building frontend image...${NC}"
-    docker build -t "$FRONTEND_IMAGE_NAME" frontend
-fi
+echo -e "${BLUE}🏗️  Building frontend image...${NC}"
+docker build -t "$FRONTEND_IMAGE_NAME" frontend
 
 echo -e "${BLUE}🚀 Starting frontend container...${NC}"
 docker run -d \

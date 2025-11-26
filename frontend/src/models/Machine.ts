@@ -2,7 +2,7 @@ export interface Machine {
   id: string;
   nome: string;
   patrimony: string;
-  status: 'Ativo' | 'Manutenção' | 'Pendente' | 'Inativo' | string;
+  status: 'Ativo' | 'Manutenção' | 'Descartado' | 'Inativo' | string;
   funcao: string;
   fabricante: string;
   acquisitionDate: string; // formato BR: dd/mm/aaaa

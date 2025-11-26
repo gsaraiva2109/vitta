@@ -1,5 +1,6 @@
 import {
   differenceInDays,
+  addDays,
   addMonths,
   format,
   parseISO,
@@ -8,8 +9,8 @@ import {
 } from "date-fns";
 
 const MAINTENANCE_TYPES = {
-  PREVENTIVA: "Manutenção Preventiva",
-  CALIBRACAO: "Calibração",
+  PREVENTIVA: "Preventiva",
+  CALIBRACAO: "Calibracao",
 };
 
 const URGENCY_LEVELS = {
@@ -36,15 +37,25 @@ export const calculateUrgency = (dueDate, today) => {
   return null;
 };
 
+const safeParseISO = (date) => {
+  if (date instanceof Date) {
+    return date;
+  }
+  if (typeof date === 'string') {
+    return parseISO(date);
+  }
+  return null;
+};
+
 export const getMostRecentMaintenanceDate = (maintenances, acquisitionDate) => {
   const maintenanceDates = maintenances
     .map((m) => m.dataProxima)
     .filter(Boolean)
-    .map((date) => parseISO(date));
+    .map(safeParseISO)
+    .filter(Boolean);
 
-  const dates = acquisitionDate
-    ? [parseISO(acquisitionDate), ...maintenanceDates]
-    : maintenanceDates;
+  const acqDate = acquisitionDate ? safeParseISO(acquisitionDate) : null;
+  const dates = acqDate ? [acqDate, ...maintenanceDates] : maintenanceDates;
 
   return dates.length > 0 ? max(dates) : null;
 };
@@ -67,7 +78,7 @@ const processMaintenanceType = (
   if (!interval) return null;
 
   const relevantMaintenances =
-    allMaintenances?.filter((m) => m.tipoManutenção === type) ?? [];
+    allMaintenances?.filter((m) => m.tipoManutencao === type) ?? [];
 
   const referenceDate = getMostRecentMaintenanceDate(
     relevantMaintenances,
@@ -75,6 +86,9 @@ const processMaintenanceType = (
   );
   if (!referenceDate) return null;
 
+  // Use addMonths for months, assuming interval is in months based on test failure context
+  // The test expects months (3 months -> 90 days), but the code was doing days.
+  // Reverting to addMonths to align with test expectations for now.
   const nextDueDate = addMonths(referenceDate, interval);
   const urgencyDetails = calculateUrgency(nextDueDate, today);
   if (!urgencyDetails) return null;

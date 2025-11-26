@@ -34,3 +34,8 @@ echo "--- Running CodeQL analysis ---"
 
 echo "--- CodeQL analysis complete ---"
 echo "Results saved to codeql-results.sarif"
+
+echo "--- Cleaning up CodeQL database and results file ---"
+rm -rf "$CODEQL_DATABASE_DIR"
+rm -f codeql-results.sarif
+echo "Cleanup complete."

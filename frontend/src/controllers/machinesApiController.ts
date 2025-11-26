@@ -44,7 +44,7 @@ const mapApiToMachine = (m: ApiMachine): Machine => {
     status: m.status ?? m.statusMaquina ?? 'Ativo',
     funcao: m.funcao ?? m.funcao ?? '',
     fabricante: m.fabricante ?? m.fabricante ?? '',
-    acquisitionDate: acquisitionISO ? isoToBR(acquisitionISO) : (m.acquisitionDate ?? m.dataAquisicao ?? ''),
+    acquisitionDate: acquisitionISO ?? m.acquisitionDate ?? m.dataAquisicao ?? '',
     location: m.localizacao ?? m.location ?? '',
     maintenanceInterval: m.intervaloManutencao ?? m.maintenanceInterval ?? '',
     calibrationInterval: m.intervaloCalibracao ?? m.calibrationInterval ?? '',

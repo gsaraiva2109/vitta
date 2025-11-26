@@ -5,8 +5,9 @@ import helmet from 'helmet';
 // import rateLimit from 'express-rate-limit';
 import logger from './config/logger.js';
 
-import { connectDB, default as sequelize } from './config/database.js';
-import { seedUsers } from './config/seed.js';
+import getSequelize, { connectDB, closeDB } from './config/database.js';
+import { seedData } from './config/seed.js';
+
 
 
 
@@ -84,18 +85,17 @@ const startServer = async () => {
   await connectDB();
   logger.info('Database connected successfully.');
 
-  // Importar e inicializar modelos APÓS a conexão
-  const { Usuario } = await import('./models/index.js');
-  
-  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
-    const syncOptions = { alter: true };
-    await sequelize.sync(syncOptions);
-    logger.info(`Models synchronized (sequelize.sync: ${JSON.stringify(syncOptions)})`);
-  }
-  
+
+  await import('./models/index.js');
+
+  const sequelize = getSequelize();
+  const syncOptions = { alter: true };
+  await sequelize.sync(syncOptions);
+  logger.info(`Models synchronized (sequelize.sync: ${JSON.stringify(syncOptions)})`);
+
   // Seed users only if not in test environment
   if (process.env.NODE_ENV !== 'test') {
-    await seedUsers(Usuario);
+    await seedData();
   }
 
   const PORT = process.env.PORT || 3000;
@@ -119,7 +119,7 @@ const closeServer = async () => {
       });
     });
   }
-  await sequelize.close();
+  await closeDB();
   logger.info('Database connection closed.');
 };
 

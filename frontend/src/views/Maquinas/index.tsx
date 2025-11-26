@@ -110,7 +110,7 @@ const Maquinas = () => {
     if (s.includes("manuten") || s.includes("manutenção")) return "manutencao";
     if (s.includes("inativ")) return "inativo";
     if (s.includes("ativ") && !s.includes("inativ")) return "ativo";
-    if (s.includes("pend")) return "pendente";
+    if (s.includes("descart")) return "descartado";
     return "outro";
   };
 
@@ -118,7 +118,8 @@ const Maquinas = () => {
     { label: "Todos os status", value: "" },
     { label: "Ativos", value: "ativo" },
     { label: "Inativos", value: "inativo" },
-    { label: "Em Manutenção", value: "manutencao" }
+    { label: "Em Manutenção", value: "manutencao" },
+    { label: "Descartados", value: "descartado" }
   ];
 
   const badgeForStatus = (status: string | undefined) => {
@@ -127,7 +128,7 @@ const Maquinas = () => {
       return "bg-[#DBD83B] text-gray-800";
     if (s.includes("inativo")) return "bg-[#D2D1D1] text-gray-800";
     if (s.includes("ativo")) return "bg-[#8AE67E] text-gray-800";
-    if (s.includes("pendente")) return "bg-[#D95555] text-gray-800";
+    if (s.includes("descartado")) return "bg-[#D95555] text-gray-800";
     return "bg-gray-100 text-gray-700";
   };
 
@@ -197,6 +198,12 @@ const Maquinas = () => {
     setConfirmVisible(false);
   };
 
+  const isoToBR = (iso: string) => {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  };
+
   return (
     <div className="h-screen bg-[#F4EEEE] w-full overflow-hidden flex">
       <Toast ref={toast} />
@@ -250,12 +257,11 @@ const Maquinas = () => {
 
             {/* Botão Nova Máquina */}
             <button
-              disabled={!isManager}
               className={`bg-[#0084FF] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform
                          shadow-[0_12px_30px_rgba(0,132,255,0.18)]
-                         ${isManager ? 'hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2' : 'opacity-50 cursor-not-allowed'}`}
+                         hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2`}
               style={{ fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
-              onClick={() => isManager && setShowCreate(true)}
+              onClick={() => setShowCreate(true)}
             >
               <i className="pi pi-plus" style={{ fontSize: "1.5rem"}}></i>
               <span className="text-lg">Nova Máquina</span>
@@ -361,27 +367,45 @@ const Maquinas = () => {
                           <i className="pi pi-eye"></i>
                         </button>
                         <button
-                          className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          className={`p-button-text p-button-plain`}
                           style={{
                             color: "blue",
                             background: "transparent",
                             border: "none",
                           }}
-                          disabled={!isManager}
-                          onClick={() => isManager && setEditTarget(m)}
+                          onClick={() => {
+                            if (!isManager) {
+                              toast.current?.show({
+                                severity: 'warn',
+                                summary: 'Acesso Negado',
+                                detail: 'Você não tem permissão para editar máquinas.',
+                              });
+                            } else {
+                              setEditTarget(m);
+                            }
+                          }}
                           aria-label={`Editar ${m.nome}`}
                         >
                           <i className="pi pi-pen-to-square"></i>
                         </button>
                         <button
-                          className={`p-button-text p-button-plain ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          className={`p-button-text p-button-plain`}
                           style={{
                             color: "red",
                             background: "transparent",
                             border: "none",
                           }}
-                          disabled={!isManager}
-                          onClick={() => isManager && handleDeleteRequest(m.id)}
+                          onClick={() => {
+                            if (!isManager) {
+                              toast.current?.show({
+                                severity: 'warn',
+                                summary: 'Acesso Negado',
+                                detail: 'Você não tem permissão para remover máquinas.',
+                              });
+                            } else {
+                              handleDeleteRequest(m.id);
+                            }
+                          }}
                           aria-label={`Remover ${m.nome}`}
                         >
                           <i className="pi pi-trash"></i>
@@ -417,7 +441,7 @@ const Maquinas = () => {
                         Data de aquisição
                       </div>
                       <div className="text-gray-500 font-xs mb-0.5">
-                        {m.acquisitionDate}
+                        {isoToBR(m.acquisitionDate)}
                       </div>
                     </div>
                     <div>

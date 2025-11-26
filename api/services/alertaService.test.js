@@ -57,41 +57,41 @@ describe("generateAlerts", () => {
     const alerts = generateAlerts(machines);
     expect(alerts).toEqual([
       {
-        "id": "1-Manutenção Preventiva",
+        "id": "1-Preventiva",
         "machineName": "Machine A",
-        "type": "Manutenção Preventiva",
+        "type": "Preventiva",
         "dueDate": "31/03/2023",
         "urgency": "Vencida",
         "daysOverdue": 877
       },
       {
-        "id": "1-Calibração",
+        "id": "1-Calibracao",
         "machineName": "Machine A",
-        "type": "Calibração",
+        "type": "Calibracao",
         "dueDate": "30/06/2023",
         "urgency": "Vencida",
         "daysOverdue": 786
       },
       {
-        "id": "2-Manutenção Preventiva",
+        "id": "2-Preventiva",
         "machineName": "Machine B",
-        "type": "Manutenção Preventiva",
+        "type": "Preventiva",
         "dueDate": "28/02/2023",
         "urgency": "Vencida",
         "daysOverdue": 908
       },
       {
-        "id": "4-Manutenção Preventiva",
+        "id": "4-Preventiva",
         "machineName": "Machine D",
-        "type": "Manutenção Preventiva",
+        "type": "Preventiva",
         "dueDate": "19/12/2024",
         "urgency": "Vencida",
         "daysOverdue": 248
       },
       {
-        "id": "4-Calibração",
+        "id": "4-Calibracao",
         "machineName": "Machine D",
-        "type": "Calibração",
+        "type": "Calibracao",
         "dueDate": "19/12/2024",
         "urgency": "Vencida",
         "daysOverdue": 248
