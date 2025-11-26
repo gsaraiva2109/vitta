@@ -1,7 +1,5 @@
 import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
 import logger from './logger.js';
-dotenv.config();
 
 const commonOptions = {
   dialect: 'postgres',
