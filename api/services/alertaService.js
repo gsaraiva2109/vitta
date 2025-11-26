@@ -49,9 +49,11 @@ const safeParseISO = (date) => {
 
 export const getMostRecentMaintenanceDate = (maintenances, acquisitionDate) => {
   const maintenanceDates = maintenances
-    .map((m) => m.dataProxima)
-    .filter(Boolean)
-    .map(safeParseISO)
+    .map((m) => {
+      // Prefer dataProxima if available (predictive chain), otherwise use dataManutencao (performed date)
+      const date = m.dataProxima || m.dataManutencao;
+      return safeParseISO(date);
+    })
     .filter(Boolean);
 
   const acqDate = acquisitionDate ? safeParseISO(acquisitionDate) : null;
@@ -60,8 +62,8 @@ export const getMostRecentMaintenanceDate = (maintenances, acquisitionDate) => {
   return dates.length > 0 ? max(dates) : null;
 };
 
-const createAlert = (machine, type, dueDate, urgencyDetails) => ({
-  id: `${machine.idMaquina}-${type}`,
+const createAlert = (machine, type, dueDate, urgencyDetails, isScheduled = false) => ({
+  id: isScheduled ? `${machine.idMaquina}-${type}-${dueDate.getTime()}` : `${machine.idMaquina}-${type}`,
   machineName: machine.nome,
   type,
   dueDate: format(dueDate, "dd/MM/yyyy"),
@@ -78,7 +80,7 @@ const processMaintenanceType = (
   if (!interval) return null;
 
   const relevantMaintenances =
-    allMaintenances?.filter((m) => m.tipoManutencao === type) ?? [];
+    allMaintenances?.filter((m) => m.tipoManutencao === type && m.status === 'Concluída') ?? [];
 
   const referenceDate = getMostRecentMaintenanceDate(
     relevantMaintenances,
@@ -86,15 +88,35 @@ const processMaintenanceType = (
   );
   if (!referenceDate) return null;
 
-  // Use addMonths for months, assuming interval is in months based on test failure context
-  // The test expects months (3 months -> 90 days), but the code was doing days.
-  // Reverting to addMonths to align with test expectations for now.
   const nextDueDate = addMonths(referenceDate, interval);
   const urgencyDetails = calculateUrgency(nextDueDate, today);
   if (!urgencyDetails) return null;
 
   return createAlert(machine, type, nextDueDate, urgencyDetails);
 };
+
+const processScheduledMaintenances = (machine, today) => {
+  const alerts = [];
+  // Strictly define active statuses. 'Concluída', 'Cancelada', 'Descartado' are ignored.
+  const activeStatuses = ['Em andamento', 'Pendente', 'Agendada']; 
+  
+  const openMaintenances = machine.manutencoes?.filter(m => 
+    m.status && activeStatuses.includes(m.status.trim())
+  ) || [];
+
+  openMaintenances.forEach(m => {
+      const dueDate = safeParseISO(m.dataManutencao);
+      if (!dueDate) return;
+
+      const urgencyDetails = calculateUrgency(dueDate, today);
+      if (urgencyDetails) {
+           const type = m.tipoManutencao || 'Manutenção';
+           // Create alert for the scheduled task
+           alerts.push(createAlert(machine, type, dueDate, urgencyDetails, true));
+      }
+  });
+  return alerts;
+}
 
 export const generateAlerts = (machines) => {
   const today = startOfDay(new Date());
@@ -107,6 +129,11 @@ export const generateAlerts = (machines) => {
       manutencoes,
     } = machine;
 
+    // 1. Process Scheduled/Open Tasks (Active Maintenances)
+    const scheduledAlerts = processScheduledMaintenances(machine, today);
+    alerts.push(...scheduledAlerts);
+
+    // 2. Process Predictive Alerts (Based on Intervals)
     const preventiveAlert = processMaintenanceType(
       machine,
       MAINTENANCE_TYPES.PREVENTIVA,

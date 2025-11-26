@@ -53,7 +53,7 @@ const Alertas = () => {
     { label: 'Todas as urgências', value: '' },
     { label: 'Vencidas', value: 'vencida' },
     { label: 'Urgentes', value: 'urgente' },
-    { label: 'Próximas', value: 'proxima' },
+    { label: 'Próximas', value: 'próxima' },
   ];
 
   const filtered = useMemo(() => {
