@@ -24,17 +24,10 @@ export async function getById(req, res) {
 }
 
 export async function create(req, res) {
-  // Combine data from body and params
-  const data = {
-    ...req.body,
-    // If idMaquina is in the URL params, it takes precedence
-    idMaquina: req.params.idMaquina || req.body.idMaquina,
-  };
-
-  logger.debug('Dados recebidos para criar manutenção:', data);
-
+  logger.debug('Dados recebidos para criar manutenção:', req.body);
   try {
-    const manutencao = await manutencaoService.createManutencao(data);
+    // idMaquina should come from the body for a create operation
+    const manutencao = await manutencaoService.createManutencao(req.body);
     res.status(201).json(manutencao);
   } catch (error) {
     res.status(400).json({ error: error.message });
