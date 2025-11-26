@@ -37,8 +37,14 @@ fi
 
 echo "--- Rodando os testes do Backend... ---"
 cd api
-# No CI, o host do banco é 'postgres', localmente é 'localhost'
-export DB_HOST=${DB_HOST:-localhost}
+# No CI, o host do banco é 'postgres' ou o valor de DB_HOST, localmente é 'localhost'
+if [ "$SKIP_DB_SETUP" = true ]; then
+  # No ambiente de CI, o DB_HOST é fornecido pelo workflow do GitHub Actions
+  export DB_HOST=${DB_HOST:-postgres}
+else
+  # Localmente, o banco de dados está no localhost
+  export DB_HOST="localhost"
+fi
 npm install
 npm test
 cd ..
