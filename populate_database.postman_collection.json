@@ -6,7 +6,46 @@
   },
   "item": [
     {
-      "name": "Create Health Machines",
+      "name": "1. Login as Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set(\"token\", jsonData.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"matricula\": \"admin\",\n    \"senha\": \"123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Create Health Machines",
       "item": [
         {
           "name": "Create Máquina 1 - Monitor de Sinais Vitais",
@@ -288,13 +327,23 @@
             },
             "response": []
           }
-      ]
+      ],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			}
     },
     {
-      "name": "Create Maintenances",
+      "name": "3. Create Maintenances",
       "item": [
         {
-          "name": "Create Manutenção para Máquina 1",
+          "name": "Create Manutenção para Máquina 21",
           "request": {
             "method": "POST",
             "header": [],
@@ -303,12 +352,12 @@
               "raw": "{\n  \"valor\": 250.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Carlos Pereira\",\n  \"dataManutencao\": \"2024-10-15\",\n  \"observacao\": \"Troca de sensor de SpO2 e calibração de PNI.\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/maquinas/1/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "1", "manutencoes" ] }
+            "url": { "raw": "{{baseUrl}}/maquinas/21/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "21", "manutencoes" ] }
           },
           "response": []
         },
         {
-          "name": "Create Manutenção para Máquina 2",
+          "name": "Create Manutenção para Máquina 22",
           "request": {
             "method": "POST",
             "header": [],
@@ -317,12 +366,12 @@
               "raw": "{\n  \"valor\": 450.00,\n  \"status\": \"Agendada\",\n  \"tipoManutencao\": \"Calibração\",\n  \"responsavel\": \"Ana Lima\",\n  \"dataManutencao\": \"2024-11-30\",\n  \"observacao\": \"Verificação anual de carga e pás.\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/maquinas/2/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "2", "manutencoes" ] }
+            "url": { "raw": "{{baseUrl}}/maquinas/22/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "22", "manutencoes" ] }
           },
           "response": []
         },
         {
-            "name": "Create Manutenção para Máquina 3",
+            "name": "Create Manutenção para Máquina 23",
             "request": {
               "method": "POST",
               "header": [],
@@ -331,12 +380,12 @@
                 "raw": "{\n  \"valor\": 180.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Mariana Costa\",\n  \"dataManutencao\": \"2024-09-01\",\n  \"observacao\": \"Limpeza dos eletrodos e verificação do cabo do paciente.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/3/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "3", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/23/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "23", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 4",
+            "name": "Create Manutenção para Máquina 24",
             "request": {
               "method": "POST",
               "header": [],
@@ -345,12 +394,12 @@
                 "raw": "{\n  \"valor\": 800.00,\n  \"status\": \"Em andamento\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"Pedro Almeida\",\n  \"dataManutencao\": \"2024-11-25\",\n  \"observacao\": \"Falha no motor principal. Peça solicitada.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/4/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "4", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/24/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "24", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 5",
+            "name": "Create Manutenção para Máquina 25",
             "request": {
               "method": "POST",
               "header": [],
@@ -359,12 +408,12 @@
                 "raw": "{\n  \"valor\": 1200.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"Juliana Martins\",\n  \"dataManutencao\": \"2024-11-20\",\n  \"observacao\": \"Substituição do circuito de controle de fluxo.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/5/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "5", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/25/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "25", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 6",
+            "name": "Create Manutenção para Máquina 26",
             "request": {
               "method": "POST",
               "header": [],
@@ -373,12 +422,12 @@
                 "raw": "{\n  \"valor\": 350.00,\n  \"status\": \"Agendada\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Fernando Ribeiro\",\n  \"dataManutencao\": \"2024-12-10\",\n  \"observacao\": \"Inspeção semestral e troca de filtros.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/6/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "6", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/26/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "26", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 7",
+            "name": "Create Manutenção para Máquina 27",
             "request": {
               "method": "POST",
               "header": [],
@@ -387,12 +436,12 @@
                 "raw": "{\n  \"valor\": 550.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Calibração\",\n  \"responsavel\": \"Beatriz Gomes\",\n  \"dataManutencao\": \"2024-07-15\",\n  \"observacao\": \"Ajuste de foco e ganho dos transdutores.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/7/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "7", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/27/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "27", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 8",
+            "name": "Create Manutenção para Máquina 28",
             "request": {
               "method": "POST",
               "header": [],
@@ -401,12 +450,12 @@
                 "raw": "{\n  \"valor\": 2000.00,\n  \"status\": \"Pendente\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"Lucas Santos\",\n  \"dataManutencao\": \"2024-11-01\",\n  \"observacao\": \"Equipamento não liga. Aguardando avaliação técnica.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/8/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "8", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/28/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "28", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 9",
+            "name": "Create Manutenção para Máquina 29",
             "request": {
               "method": "POST",
               "header": [],
@@ -415,12 +464,12 @@
                 "raw": "{\n  \"valor\": 3500.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Eduardo Rocha\",\n  \"dataManutencao\": \"2024-10-05\",\n  \"observacao\": \"Manutenção trimestral do tubo de raios-x e sistema de refrigeração.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/9/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "9", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/29/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "29", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 10",
+            "name": "Create Manutenção para Máquina 30",
             "request": {
               "method": "POST",
               "header": [],
@@ -429,12 +478,12 @@
                 "raw": "{\n  \"valor\": 150.00,\n  \"status\": \"Agendada\",\n  \"tipoManutencao\": \"Calibração\",\n  \"responsavel\": \"Camila Fernandes\",\n  \"dataManutencao\": \"2025-01-20\",\n  \"observacao\": \"Verificação de potência de corte e coagulação.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/10/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "10", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/30/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "30", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 11",
+            "name": "Create Manutenção para Máquina 31",
             "request": {
               "method": "POST",
               "header": [],
@@ -443,12 +492,12 @@
                 "raw": "{\n  \"valor\": 100.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Felipe Andrade\",\n  \"dataManutencao\": \"2024-08-10\",\n  \"observacao\": \"Lubrificação das articulações e verificação do sistema elétrico.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/11/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "11", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/31/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "31", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 12",
+            "name": "Create Manutenção para Máquina 32",
             "request": {
               "method": "POST",
               "header": [],
@@ -457,12 +506,12 @@
                 "raw": "{\n  \"valor\": 600.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Renata Barros\",\n  \"dataManutencao\": \"2024-10-22\",\n  \"observacao\": \"Troca da junta da porta e validação do ciclo de esterilização.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/12/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "12", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/32/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "32", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 13",
+            "name": "Create Manutenção para Máquina 33",
             "request": {
               "method": "POST",
               "header": [],
@@ -471,12 +520,12 @@
                 "raw": "{\n  \"valor\": 50.00,\n  \"status\": \"Pendente\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"José Oliveira\",\n  \"dataManutencao\": \"2024-11-24\",\n  \"observacao\": \"Display não está ligando. Necessário verificar bateria.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/13/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "13", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/33/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "33", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 14",
+            "name": "Create Manutenção para Máquina 34",
             "request": {
               "method": "POST",
               "header": [],
@@ -485,12 +534,12 @@
                 "raw": "{\n  \"valor\": 950.00,\n  \"status\": \"Em andamento\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"Tatiane Souza\",\n  \"dataManutencao\": \"2024-11-22\",\n  \"observacao\": \"Alarme de temperatura alta. Sistema de umidificação em análise.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/14/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "14", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/34/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "34", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 15",
+            "name": "Create Manutenção para Máquina 35",
             "request": {
               "method": "POST",
               "header": [],
@@ -499,12 +548,12 @@
                 "raw": "{\n  \"valor\": 400.00,\n  \"status\": \"Agendada\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Márcio Mendes\",\n  \"dataManutencao\": \"2024-12-15\",\n  \"observacao\": \"Troca de linhas e filtros conforme protocolo.\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/maquinas/15/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "15", "manutencoes" ] }
+            "url": { "raw": "{{baseUrl}}/maquinas/35/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "35", "manutencoes" ] }
           },
           "response": []
         },
         {
-            "name": "Create Manutenção para Máquina 16",
+            "name": "Create Manutenção para Máquina 36",
             "request": {
               "method": "POST",
               "header": [],
@@ -513,12 +562,12 @@
                 "raw": "{\n  \"valor\": 100.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Felipe Andrade\",\n  \"dataManutencao\": \"2024-08-10\",\n  \"observacao\": \"Lubrificação das articulações e verificação do sistema elétrico.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/16/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "16", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/36/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "36", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 17",
+            "name": "Create Manutenção para Máquina 37",
             "request": {
               "method": "POST",
               "header": [],
@@ -527,12 +576,12 @@
                 "raw": "{\n  \"valor\": 600.00,\n  \"status\": \"Concluída\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Renata Barros\",\n  \"dataManutencao\": \"2024-10-22\",\n  \"observacao\": \"Troca da junta da porta e validação do ciclo de esterilização.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/17/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "17", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/37/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "37", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 18",
+            "name": "Create Manutenção para Máquina 38",
             "request": {
               "method": "POST",
               "header": [],
@@ -541,12 +590,12 @@
                 "raw": "{\n  \"valor\": 50.00,\n  \"status\": \"Pendente\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"José Oliveira\",\n  \"dataManutencao\": \"2024-11-24\",\n  \"observacao\": \"Display não está ligando. Necessário verificar bateria.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/18/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "18", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/38/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "38", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 19",
+            "name": "Create Manutenção para Máquina 39",
             "request": {
               "method": "POST",
               "header": [],
@@ -555,12 +604,12 @@
                 "raw": "{\n  \"valor\": 950.00,\n  \"status\": \"Em andamento\",\n  \"tipoManutencao\": \"Corretiva\",\n  \"responsavel\": \"Tatiane Souza\",\n  \"dataManutencao\": \"2024-11-22\",\n  \"observacao\": \"Alarme de temperatura alta. Sistema de umidificação em análise.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/19/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "19", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/39/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "39", "manutencoes" ] }
             },
             "response": []
           },
           {
-            "name": "Create Manutenção para Máquina 20",
+            "name": "Create Manutenção para Máquina 40",
             "request": {
               "method": "POST",
               "header": [],
@@ -569,11 +618,33 @@
                 "raw": "{\n  \"valor\": 400.00,\n  \"status\": \"Agendada\",\n  \"tipoManutencao\": \"Preventiva\",\n  \"responsavel\": \"Márcio Mendes\",\n  \"dataManutencao\": \"2024-12-15\",\n  \"observacao\": \"Troca de linhas e filtros conforme protocolo.\"\n}",
                 "options": { "raw": { "language": "json" } }
               },
-              "url": { "raw": "{{baseUrl}}/maquinas/20/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "20", "manutencoes" ] }
+              "url": { "raw": "{{baseUrl}}/maquinas/40/manutencoes", "host": [ "{{baseUrl}}" ], "path": [ "maquinas", "40", "manutencoes" ] }
             },
             "response": []
           }
-      ]
+      ],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			}
     }
-  ]
+  ],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
 }

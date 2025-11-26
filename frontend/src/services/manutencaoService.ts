@@ -27,10 +27,14 @@ export function createManutencao(manutencaoData: Partial<ApiMaintenance>): Promi
   if (!idMaquina) {
     throw new Error("idMaquina é obrigatório para criar uma manutenção");
   }
+
+  // Clone the data and remove idMaquina from the body payload, as it's in the URL
+  const bodyPayload = { ...manutencaoData };
+  delete bodyPayload.idMaquina;
   
   return authenticatedFetch<ApiMaintenance>(`/maquinas/${idMaquina}/manutencoes`, {
     method: "POST",
-    body: JSON.stringify(manutencaoData),
+    body: JSON.stringify(bodyPayload),
   });
 }
 

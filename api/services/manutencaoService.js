@@ -33,6 +33,13 @@ async function getManutencaoById(id) {
 async function createManutencao(data) {
   const maquina = await maquinaService.getMaquinaById(data.idMaquina);
 
+  if (!maquina) {
+    // Lança um erro se a máquina não for encontrada, evitando o crash.
+    const error = new Error(`Máquina com ID ${data.idMaquina} não encontrada.`);
+    error.statusCode = 404; // Not Found
+    throw error;
+  }
+
   const payload = {
     ...data,
     dataManutencao: data.dataManutencao ? new Date(data.dataManutencao) : null,
