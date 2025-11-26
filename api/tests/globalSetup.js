@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
 import getSequelize, { connectDB } from '../config/database.js';
 import '../models/index.js'; // Import models to register them with Sequelize
+
+dotenv.config({ path: './.env.test' });
 
 export default async () => {
   console.log('\n[GlobalSetup] Connecting to database...');
