@@ -5,12 +5,6 @@ import { Op } from "sequelize";
 export const getAlerts = async (req, res) => {
   try {
     const machines = await Maquina.findAll({
-      where: {
-        [Op.or]: [
-          { intervaloManutencao: { [Op.ne]: null } },
-          { intervaloCalibracao: { [Op.ne]: null } },
-        ],
-      },
       include: [{ model: Manutencao, as: "manutencoes" }],
     });
 

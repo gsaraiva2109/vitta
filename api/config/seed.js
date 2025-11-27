@@ -35,7 +35,7 @@ export const seedData = async () => {
         funcao: 'Prensa',
         fabricante: 'Fabricante Padrão',
         dataAquisicao: new Date('2023-01-01'),
-        intervaloManutencao: 30 // Intervalo em DIAS
+        intervaloManutencao: 1 // Intervalo em MESES (Code uses addMonths)
       });
     }
     await Maquina.bulkCreate(maquinas);
@@ -44,25 +44,25 @@ export const seedData = async () => {
     // 3. Seed Maintenances to Trigger Alerts
     const manutencoes = [
       // Alerta Vencido (hoje é 26/11/2025)
-      { idMaquina: 1, dataManutencao: '2025-10-25', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vencida.' },
+      { idMaquina: 1, dataManutencao: '2025-10-25', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vencida.' },
       // Alerta Vence Hoje
-      { idMaquina: 2, dataManutencao: '2025-10-27', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence hoje.' },
+      { idMaquina: 2, dataManutencao: '2025-10-27', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence hoje.' },
       // Alerta Vence em 1 dia
-      { idMaquina: 3, dataManutencao: '2025-10-28', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 1 dia.' },
+      { idMaquina: 3, dataManutencao: '2025-10-28', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 1 dia.' },
       // Alerta Vence em 7 dias
-      { idMaquina: 4, dataManutencao: '2025-11-03', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 7 dias.' },
+      { idMaquina: 4, dataManutencao: '2025-11-03', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 7 dias.' },
        // Alerta Vence em 10 dias
-      { idMaquina: 5, dataManutencao: '2025-11-06', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 10 dias.' },
+      { idMaquina: 5, dataManutencao: '2025-11-06', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 10 dias.' },
       // Alerta Vence em 15 dias
-      { idMaquina: 6, dataManutencao: '2025-11-11', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 15 dias.' },
+      { idMaquina: 6, dataManutencao: '2025-11-11', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 15 dias.' },
       // Alerta Vence em 20 dias
-      { idMaquina: 7, dataManutencao: '2025-11-16', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 20 dias.' },
+      { idMaquina: 7, dataManutencao: '2025-11-16', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 20 dias.' },
       // Alerta Vence em 25 dias
-      { idMaquina: 8, dataManutencao: '2025-11-21', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 25 dias.' },
+      { idMaquina: 8, dataManutencao: '2025-11-21', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 25 dias.' },
       // Alerta Vence em 29 dias
-      { idMaquina: 9, dataManutencao: '2025-11-25', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção vence em 29 dias.' },
+      { idMaquina: 9, dataManutencao: '2025-11-25', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção vence em 29 dias.' },
       // Manutenção futura, não deve gerar alerta
-      { idMaquina: 10, dataManutencao: '2025-11-26', tipo: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', descricao: 'Manutenção recente, sem alerta.' }
+      { idMaquina: 10, dataManutencao: '2025-11-26', tipoManutencao: 'Preventiva', status: 'Concluída', custo: 100, responsavel: 'Admin', observacao: 'Manutenção recente, sem alerta.' }
     ];
     await Manutencao.bulkCreate(manutencoes);
     console.log('Default maintenances created to trigger alerts.');

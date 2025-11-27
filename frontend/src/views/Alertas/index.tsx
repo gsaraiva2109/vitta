@@ -3,7 +3,52 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { useEffect, useMemo, useState } from 'react';
 import type { Alert } from '../../models/Alert';
+import type { Maintenance, MaintenanceStatus, MaintenanceType } from '../../models/Maintenance';
 import {getAlerts} from '../../services/alertaService';
+import { getManutencaoById } from '../../services/manutencaoService';
+import ViewMaintenance from '../../views/Manutencoes/ViewMaintenance';
+import { isoToBr } from '../../utils/date';
+
+// Type for the raw API response (duplicated from controller to ensure type safety here)
+interface ApiMaintenance {
+  idManutencao?: number;
+  id?: number;
+  valor?: string;
+  status?: MaintenanceStatus;
+  tipoManutencao?: MaintenanceType;
+  responsavel?: string;
+  dataManutencao?: string | null; // ISO date
+  dataProxima?: string | null; // ISO date
+  empresaResponsavel?: string;
+  rcOc?: string;
+  modelo?: string;
+  observacao?: string;
+  idMaquina?: string;
+  maquina?: {
+    idMaquina: string;
+    nome: string;
+  };
+}
+
+// Maps an API record to the frontend Maintenance model
+const mapApiToMaintenance = (m: ApiMaintenance): Maintenance => {
+  const id = m.idManutencao ?? m.id;
+
+  return {
+    id: id ? String(id) : "",
+    idMaquina: m.maquina?.idMaquina ?? (m.idMaquina || ""),
+    machineName: m.maquina?.nome ?? "",
+    tipoManutencao: m.tipoManutencao ?? "N/A",
+    responsavel: m.responsavel ?? "N/A",
+    empresaResponsavel: m.empresaResponsavel ?? "",
+    valor: parseFloat(m.valor || "") || 0,
+    dataManutencao: m.dataManutencao ? isoToBr(m.dataManutencao) : "",
+    dataProxima: m.dataProxima ? isoToBr(m.dataProxima) : "",
+    status: m.status ?? "Pendente",
+    rcOc: m.rcOc ?? "",
+    observacao: m.observacao ?? "",
+  };
+};
 
 
 const badgeForUrgency = (urgency: string) => {
@@ -31,6 +76,8 @@ const Alertas = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [selectedMaintenance, setSelectedMaintenance] = useState<Maintenance | null>(null);
+
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
@@ -53,7 +100,7 @@ const Alertas = () => {
     { label: 'Todas as urgências', value: '' },
     { label: 'Vencidas', value: 'vencida' },
     { label: 'Urgentes', value: 'urgente' },
-    { label: 'Próximas', value: 'proxima' },
+    { label: 'Próximas', value: 'próxima' },
   ];
 
   const filtered = useMemo(() => {
@@ -77,6 +124,18 @@ const Alertas = () => {
     const proximas = alerts.filter(a => a.urgency === 'Próxima').length;
     return { total, vencidas, urgentes, proximas };
   }, [alerts]);
+
+  const handleViewDetails = async (idManutencao: number) => {
+    try {
+      const apiMaintenance = await getManutencaoById(idManutencao);
+      // Cast to ApiMaintenance because the service returns a specific type that matches our interface structure essentially
+      const maintenance = mapApiToMaintenance(apiMaintenance as unknown as ApiMaintenance);
+      setSelectedMaintenance(maintenance); 
+    } catch (err) {
+      console.error('Erro ao carregar detalhes da manutenção:', err);
+      // Falha ao carregar detalhes da manutenção pode ser tratada com um toast se disponível
+    }
+  };
 
   return (
     <div className="h-screen bg-[#F4EEEE] w-full overflow-hidden flex">
@@ -250,7 +309,19 @@ const Alertas = () => {
                         {a.daysRemaining !== undefined && ` (${a.daysRemaining} dia${a.daysRemaining > 1 ? 's' : ''} restante${a.daysRemaining > 1 ? 's' : ''})`}
                       </p>
                     </div>
-                    <UrgencyBadge urgency={a.urgency} />
+                    <div className="flex flex-col items-end gap-2">
+                      <UrgencyBadge urgency={a.urgency} />
+                      {a.idManutencao && (
+                        <button
+                          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                          onClick={() => handleViewDetails(a.idManutencao!)}
+                          aria-label="Ver Detalhes"
+                          title="Ver Detalhes"
+                        >
+                          <i className="pi pi-eye text-gray-600"></i>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -258,6 +329,17 @@ const Alertas = () => {
           </div>
         </div>
       </div>
+
+      {selectedMaintenance && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl">
+            <ViewMaintenance
+              maintenance={selectedMaintenance}
+              onCancel={() => setSelectedMaintenance(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
