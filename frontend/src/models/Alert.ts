@@ -8,4 +8,5 @@ export interface Alert {
   urgency: AlertUrgency;
   daysOverdue?: number; // só para Vencidas
   daysRemaining?: number; // só para Urgente/Próxima
+  idManutencao?: number; // ID da manutenção associada, se for uma tarefa agendada
 }

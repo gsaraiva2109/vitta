@@ -62,12 +62,13 @@ export const getMostRecentMaintenanceDate = (maintenances, acquisitionDate) => {
   return dates.length > 0 ? max(dates) : null;
 };
 
-const createAlert = (machine, type, dueDate, urgencyDetails, isScheduled = false) => ({
+const createAlert = (machine, type, dueDate, urgencyDetails, isScheduled = false, maintenanceId = null) => ({
   id: isScheduled ? `${machine.idMaquina}-${type}-${dueDate.getTime()}` : `${machine.idMaquina}-${type}`,
   machineName: machine.nome,
   type,
   dueDate: format(dueDate, "dd/MM/yyyy"),
   ...urgencyDetails,
+  ...(maintenanceId && { idManutencao: maintenanceId }),
 });
 
 const processMaintenanceType = (
@@ -111,8 +112,8 @@ const processScheduledMaintenances = (machine, today) => {
       const urgencyDetails = calculateUrgency(dueDate, today);
       if (urgencyDetails) {
            const type = m.tipoManutencao || 'Manutenção';
-           // Create alert for the scheduled task
-           alerts.push(createAlert(machine, type, dueDate, urgencyDetails, true));
+           // Create alert for the scheduled task, passing its idManutencao
+           alerts.push(createAlert(machine, type, dueDate, urgencyDetails, true, m.idManutencao));
       }
   });
   return alerts;

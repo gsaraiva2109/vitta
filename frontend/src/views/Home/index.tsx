@@ -73,7 +73,7 @@ const Home = () => {
   const recentMaintenances = useMemo(() => {
     // Copiar e ordenar por data de manutenção decrescente
     return [...maintenances]
-      .filter(m => m.dataManutencao && m.status === 'Concluida') // Somente manutenções concluídas
+      .filter(m => m.dataManutencao && m.status?.toLowerCase().includes('conclu')) // Somente manutenções concluídas
       .sort((a, b) => {
         const dateA = parse(a.dataManutencao, 'dd/MM/yyyy', new Date());
         const dateB = parse(b.dataManutencao, 'dd/MM/yyyy', new Date());
