@@ -117,16 +117,22 @@ const Home = () => {
     const today = startOfDay(new Date());
     
     return [...maintenances]
-      .filter(m => m.dataProxima && m.status === 'Pendente') // Somente manutenções pendentes com data próxima
+      .filter(m => {
+        const s = (m.status || '').toLowerCase();
+        return s.includes('pendente') || s.includes('agendada') || s.includes('andamento');
+      })
       .sort((a, b) => {
-        const dateA = parse(a.dataProxima!, 'dd/MM/yyyy', new Date());
-        const dateB = parse(b.dataProxima!, 'dd/MM/yyyy', new Date());
+        // Usar dataManutencao pois é a data de execução da tarefa agendada
+        const dateA = parse(a.dataManutencao || '', 'dd/MM/yyyy', new Date());
+        const dateB = parse(b.dataManutencao || '', 'dd/MM/yyyy', new Date());
         if (!isValid(dateA) || !isValid(dateB)) return 0;
         return compareAsc(dateA, dateB);
       })
       .filter(m => {
-         const date = parse(m.dataProxima!, 'dd/MM/yyyy', new Date());
-         return isValid(date) && (isAfter(date, today) || date.getTime() === today.getTime());
+         const date = parse(m.dataManutencao || '', 'dd/MM/yyyy', new Date());
+         // Mostrar se for hoje ou futuro, OU se estiver "Em andamento" (mesmo que data passada)
+         const isActive = (m.status || '').toLowerCase().includes('andamento');
+         return isValid(date) && (isActive || isAfter(date, today) || date.getTime() === today.getTime());
       })
       .slice(0, 4);
   }, [maintenances]);
@@ -320,7 +326,7 @@ const Home = () => {
                             {m.machineName || `Máquina ${m.idMaquina}`}
                           </span>
                           <span className="text-xs text-gray-500 font-medium">
-                             {m.dataProxima}
+                             {m.dataManutencao}
                           </span>
                         </div>
                         <p className="text-[#595454] text-[11px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>

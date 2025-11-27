@@ -259,9 +259,11 @@ const Maquinas = () => {
             <button
               className={`bg-[#0084FF] text-white font-semibold mt-20 px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 transform
                          shadow-[0_12px_30px_rgba(0,132,255,0.18)]
-                         hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2`}
+                         hover:bg-[#0073E6] hover:shadow-[0_20px_45px_rgba(0,132,255,0.22)] active:translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#0084FF33] focus:ring-offset-2
+                         ${!isManager ? 'opacity-50 cursor-not-allowed' : ''}`}
               style={{ fontFamily: "Poppins, sans-serif", fontWeight: 600 }}
               onClick={() => setShowCreate(true)}
+              disabled={!isManager}
             >
               <i className="pi pi-plus" style={{ fontSize: "1.5rem"}}></i>
               <span className="text-lg">Nova Máquina</span>
