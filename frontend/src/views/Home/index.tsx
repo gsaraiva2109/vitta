@@ -227,8 +227,8 @@ const Home = () => {
 
             {/* GRID COM O RESTANTE DO CONTEÚDO */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
-              {/* Coluna direita: Previsões (Gráfico e Lista) */}
-              <div className="flex flex-col gap-4">
+              {/* Coluna direita: Gráfico e Últimas Manutenções */}
+              <div className="flex flex-col gap-4 overflow-hidden">
                 
                 {/* Gráfico de Manutenções (30 dias) */}
                 <div className="bg-white rounded-[10px] p-6 h-[280px] flex flex-col">
@@ -265,7 +265,38 @@ const Home = () => {
                   </div>
                 </div>
 
-                {/* Lista de Próximas Manutenções */}
+                {/* Lista de Últimas Manutenções */}
+                <div className="bg-white rounded-[10px] p-6 flex-1 overflow-hidden flex flex-col">
+                  <div className="flex items-center gap-[7px] mb-[21px]">
+                    <svg className="w-7 h-[27px] text-[#373535]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
+                    </svg>
+                    <h2 className="text-[#373535] text-base" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                      Últimas Manutenções
+                    </h2>
+                  </div>
+                  <div className="space-y-2 overflow-y-auto flex-1">
+                    {recentMaintenances.length === 0 ? (
+                      <div className="text-sm text-gray-500">Nenhum registro.</div>
+                    ) : recentMaintenances.map((m) => (
+                      <div key={m.id} className="bg-[#D9D9D970] rounded-lg p-4 flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-black text-[14px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
+                            {m.machineName || `Máquina ${m.idMaquina}`}
+                          </span>
+                          <StatusBadge status={m.status} />
+                        </div>
+                        <p className="text-[#595454] text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
+                          {m.tipoManutencao} - {m.dataManutencao}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Coluna esquerda: Próximas Manutenções */}
+              <div className="flex flex-col h-full">
                 <div className="bg-white rounded-[10px] p-6 flex-1 overflow-hidden flex flex-col">
                   <div className="flex items-center gap-[7px] mb-[15px]">
                     <svg className="w-7 h-[27px] text-[#373535]" fill="currentColor" viewBox="0 0 20 20">
@@ -290,37 +321,6 @@ const Home = () => {
                         </div>
                         <p className="text-[#595454] text-[11px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
                           {m.tipoManutencao}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Coluna esquerda: Últimas Manutenções (Listagem Real) */}
-              <div className="flex flex-col">
-                <div className="bg-white rounded-[10px] p-6 flex-1 overflow-hidden flex flex-col">
-                  <div className="flex items-center gap-[7px] mb-[21px]">
-                    <svg className="w-7 h-[27px] text-[#373535]" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
-                    </svg>
-                    <h2 className="text-[#373535] text-base" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
-                      Últimas Manutenções
-                    </h2>
-                  </div>
-                  <div className="space-y-2 overflow-y-auto flex-1">
-                    {recentMaintenances.length === 0 ? (
-                      <div className="text-sm text-gray-500">Nenhum registro.</div>
-                    ) : recentMaintenances.map((m) => (
-                      <div key={m.id} className="bg-[#D9D9D970] rounded-lg p-4 flex flex-col gap-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-black text-[14px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 500 }}>
-                            {m.machineName || `Máquina ${m.idMaquina}`}
-                          </span>
-                          <StatusBadge status={m.status} />
-                        </div>
-                        <p className="text-[#595454] text-[12px]" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
-                          {m.tipoManutencao} - {m.dataManutencao}
                         </p>
                       </div>
                     ))}
