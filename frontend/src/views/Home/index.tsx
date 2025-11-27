@@ -4,6 +4,7 @@ import type { Machine } from '../../models/Machine';
 import type { Maintenance } from '../../models/Maintenance';
 import { loadMachinesFromAPI } from '../../controllers/machinesApiController';
 import { loadMaintenancesFromAPI } from '../../controllers/maintenancesApiController';
+import { getAlerts } from '../../services/alertaService';
 import { parse, isAfter, subDays, isWithinInterval, startOfDay, format, isValid, compareDesc, compareAsc } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
@@ -38,6 +39,7 @@ const StatusBadge = ({ status }: { status: string }) => (
 const Home = () => {
   const [machines, setMachines] = useState<Machine[]>([]);
   const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
+  const [alertsCount, setAlertsCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,12 +48,14 @@ const Home = () => {
         try {
             setLoading(true);
             setError(null);
-            const [machinesData, maintenancesData] = await Promise.all([
+            const [machinesData, maintenancesData, alertsData] = await Promise.all([
               loadMachinesFromAPI(),
-              loadMaintenancesFromAPI()
+              loadMaintenancesFromAPI(),
+              getAlerts()
             ]);
             setMachines(machinesData);
             setMaintenances(maintenancesData);
+            setAlertsCount(alertsData.length);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
         } finally {
@@ -65,9 +69,9 @@ const Home = () => {
     const total = machines.length;
     const ativo = machines.filter(m => normalizeStatus(m.status) === 'ativo').length;
     const manutencao = machines.filter(m => normalizeStatus(m.status) === 'manutencao').length;
-    const descartado = machines.filter(m => normalizeStatus(m.status) === 'descartado').length;
-    return { total, ativo, manutencao, descartado };
-  }, [machines]);
+    // const descartado = machines.filter(m => normalizeStatus(m.status) === 'descartado').length;
+    return { total, ativo, manutencao, alertas: alertsCount };
+  }, [machines, alertsCount]);
 
   // Processamento para "Últimas Manutenções" (Histórico Geral)
   const recentMaintenances = useMemo(() => {
@@ -201,7 +205,7 @@ const Home = () => {
                       Alertas
                     </div>
                     <div className="text-xl text-[#F21515] font-semibold leading-tight" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}>
-                      {metrics.descartado}
+                      {metrics.alertas}
                     </div>
                   </div>
                 </div>
